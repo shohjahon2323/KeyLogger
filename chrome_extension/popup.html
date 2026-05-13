@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureShield Pro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    .header {
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid #e94560;
+    }
+    .shield-icon { font-size: 2rem; }
+    .header h1 { font-size: 1rem; font-weight: 700; color: #fff; }
+    .header p { font-size: 0.7rem; color: #aaa; margin-top: 2px; }
+
+    .status-bar {
+      padding: 10px 20px;
+      background: #0d1117;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: #00ff41;
+      border-bottom: 1px solid #222;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #00ff41;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: #111;
+      margin: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #222;
+    }
+    .stat {
+      background: #16213e;
+      padding: 15px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #00d4ff;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label { font-size: 0.65rem; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+    .section { padding: 0 15px 10px; }
+    .section h3 { font-size: 0.7rem; color: #555; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #1a1a2e;
+    }
+    .toggle-row:last-child { border: none; }
+    .toggle-label { font-size: 0.85rem; color: #ccc; }
+    .toggle-sub { font-size: 0.7rem; color: #555; margin-top: 2px; }
+
+    .toggle {
+      position: relative;
+      width: 36px; height: 20px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #333; border-radius: 20px;
+      transition: .3s;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 14px; width: 14px;
+      left: 3px; bottom: 3px;
+      background: white; border-radius: 50%;
+      transition: .3s;
+    }
+    input:checked + .slider { background: #00d4ff; }
+    input:checked + .slider:before { transform: translateX(16px); }
+
+    .protect-btn {
+      margin: 10px 15px 15px;
+      width: calc(100% - 30px);
+      padding: 12px;
+      background: linear-gradient(135deg, #e94560, #c62a47);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+    .protect-btn:hover { opacity: 0.9; }
+
+    .footer {
+      padding: 8px 15px;
+      background: #0d1117;
+      font-size: 0.65rem;
+      color: #444;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="shield-icon">🛡️</div>
+  <div>
+    <h1>SecureShield Pro</h1>
+    <p>Privacy Guard & Ad Blocker v2.4.1</p>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="dot"></div>
+  <span>PROTECTION ACTIVE — All threats blocked</span>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num" id="ads-blocked">0</div>
+    <div class="stat-label">Ads Blocked</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="trackers-blocked">0</div>
+    <div class="stat-label">Trackers Blocked</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="sites-secured">0</div>
+    <div class="stat-label">Sites Secured</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="time-saved">0s</div>
+    <div class="stat-label">Time Saved</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Protection Settings</h3>
+
+  <div class="toggle-row">
+    <div>
+      <div class="toggle-label">Ad Blocking</div>
+      <div class="toggle-sub">Block banner and popup ads</div>
+    </div>
+    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+  </div>
+
+  <div class="toggle-row">
+    <div>
+      <div class="toggle-label">Anti-Tracker</div>
+      <div class="toggle-sub">Stop websites tracking you</div>
+    </div>
+    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+  </div>
+
+  <div class="toggle-row">
+    <div>
+      <div class="toggle-label">Phishing Protection</div>
+      <div class="toggle-sub">Block malicious websites</div>
+    </div>
+    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+  </div>
+
+  <div class="toggle-row">
+    <div>
+      <div class="toggle-label">HTTPS Upgrade</div>
+      <div class="toggle-sub">Force secure connections</div>
+    </div>
+    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+  </div>
+</div>
+
+<button class="protect-btn">✓ You are Protected</button>
+
+<div class="footer">
+  <span>SecureShield Pro © 2024</span>
+  <span>Premium License</span>
+</div>
+
+<script>
+  // Sonlarni animatsiya bilan oshirish
+  function animateCounter(id, max, suffix='') {
+    let current = Math.floor(Math.random() * max * 0.3);
+    const el = document.getElementById(id);
+    const interval = setInterval(() => {
+      current += Math.floor(Math.random() * 5) + 1;
+      if (current >= max) {
+        el.textContent = max + suffix;
+        clearInterval(interval);
+      } else {
+        el.textContent = current + suffix;
+      }
+    }, 30);
+  }
+
+  // Barcha elementlarni topamiz
+  const toggles = document.querySelectorAll('.toggle input[type="checkbox"]');
+  const protectBtn = document.querySelector('.protect-btn');
+  const statusBarText = document.querySelector('.status-bar span');
+  const statusDot = document.querySelector('.dot');
+
+  // Tizim xavfsizlik holatini tekshirish
+  function checkSystemStatus(settings) {
+    const allProtected = settings.every(val => val === true);
+    if(allProtected) {
+        statusBarText.textContent = "PROTECTION ACTIVE — All threats blocked";
+        statusBarText.style.color = "#00ff41";
+        statusDot.style.background = "#00ff41";
+    } else {
+        statusBarText.textContent = "WARNING — Some protections disabled";
+        statusBarText.style.color = "#ffaa00";
+        statusDot.style.background = "#ffaa00";
+    }
+  }
+
+  // Xotiradan stat va sozlamalarni yuklash
+  chrome.storage.local.get(['stats', 'settings'], (result) => {
+    // 1. Statistika qismi
+    const stats = result.stats || {
+      ads: Math.floor(Math.random() * 5000) + 1000,
+      trackers: Math.floor(Math.random() * 2000) + 500,
+      sites: Math.floor(Math.random() * 100) + 50,
+    };
+    
+    animateCounter('ads-blocked', stats.ads);
+    animateCounter('trackers-blocked', stats.trackers);
+    animateCounter('sites-secured', stats.sites);
+    animateCounter('time-saved', Math.floor(stats.ads / 100), 's');
+    
+    // Har safar ochilganda sonlarni oshirib saqlash
+    stats.ads += Math.floor(Math.random() * 15) + 2;
+    stats.trackers += Math.floor(Math.random() * 8) + 1;
+    chrome.storage.local.set({ stats });
+
+    // 2. Sozlamalar (Toggles) qismi
+    const settings = result.settings || [true, true, true, true]; // default hammasi yoniq
+    
+    toggles.forEach((toggle, index) => {
+      toggle.checked = settings[index]; // Saqlangan holatni tiklash
+      
+      // Agar o'zgartirilsa xotiraga saqlash
+      toggle.addEventListener('change', () => {
+        settings[index] = toggle.checked;
+        chrome.storage.local.set({ settings });
+        checkSystemStatus(settings);
+      });
+    });
+
+    // Boshlang'ich holatni tekshirish
+    checkSystemStatus(settings);
+  });
+
+  // 3. Fake "Scanning" imitatsiyasi (Tugmani bosganda)
+  protectBtn.addEventListener('click', () => {
+    if(protectBtn.disabled) return;
+    
+    protectBtn.disabled = true;
+    protectBtn.innerHTML = "⏳ Scanning system...";
+    protectBtn.style.background = "#555";
+    
+    setTimeout(() => {
+      protectBtn.innerHTML = "✓ System is Secure";
+      protectBtn.style.background = "linear-gradient(135deg, #00b09b, #96c93d)"; // Yashil rangga o'tadi
+      
+      setTimeout(() => {
+        protectBtn.innerHTML = "✓ You are Protected";
+        protectBtn.style.background = "linear-gradient(135deg, #e94560, #c62a47)"; // Asliga qaytadi
+        protectBtn.disabled = false;
+      }, 3000);
+      
+    }, 1500);
+  });
+</script>
+</body>
+</html>

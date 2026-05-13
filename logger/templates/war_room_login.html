@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>War Room — Operator Access</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #00ff41;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image:
+        linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .terminal {
+      background: rgba(0,0,0,0.85);
+      border: 1px solid #00ff41;
+      border-radius: 4px;
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 0 40px rgba(0,255,65,0.15), inset 0 0 40px rgba(0,0,0,0.5);
+    }
+    .terminal-bar {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 30px; padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0,255,65,0.2);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #28c940; }
+    .title { margin-left: 8px; font-size: 0.75rem; color: rgba(0,255,65,0.5); }
+    h1 {
+      font-size: 1.4rem; margin-bottom: 6px; color: #00ff41;
+      text-shadow: 0 0 10px rgba(0,255,65,0.5);
+    }
+    .subtitle { font-size: 0.75rem; color: rgba(0,255,65,0.4); margin-bottom: 30px; }
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 0.72rem; color: rgba(0,255,65,0.6);
+      margin-bottom: 6px; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .field input {
+      width: 100%; padding: 12px 14px;
+      background: rgba(0,255,65,0.04);
+      border: 1px solid rgba(0,255,65,0.25);
+      border-radius: 3px; color: #00ff41;
+      font-family: 'Courier New', monospace; font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    .field input:focus {
+      outline: none; border-color: #00ff41;
+      box-shadow: 0 0 10px rgba(0,255,65,0.15);
+    }
+    .field input::placeholder { color: rgba(0,255,65,0.55); letter-spacing: 1px; }
+    .error-msg {
+      background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.4);
+      color: #ff6464; padding: 10px 14px; border-radius: 3px;
+      font-size: 0.8rem; margin-bottom: 18px;
+    }
+    .btn {
+      width: 100%; padding: 13px;
+      background: transparent; border: 1px solid #00ff41;
+      color: #00ff41; font-family: 'Courier New', monospace;
+      font-size: 0.9rem; font-weight: bold; cursor: pointer;
+      border-radius: 3px; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: rgba(0,255,65,0.1);
+      box-shadow: 0 0 20px rgba(0,255,65,0.2);
+    }
+    .footer-text {
+      text-align: center; margin-top: 20px;
+      font-size: 0.65rem; color: rgba(0,255,65,0.2);
+    }
+    .blink { animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  </style>
+</head>
+<body>
+<div class="terminal">
+  <div class="terminal-bar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <span class="title">war-room :: operator-auth</span>
+  </div>
+
+  <h1>⚡ WAR ROOM</h1>
+  <p class="subtitle">RESTRICTED OPERATOR ACCESS ONLY <span class="blink">█</span></p>
+
+  {% if error %}
+  <div class="error-msg">⚠ {{ error }}</div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="field">
+      <label>Operator ID</label>
+      <input type="text" name="username" placeholder="rudy" autocomplete="off" required autofocus value="rudy">
+    </div>
+    <div class="field">
+      <label>Auth Key</label>
+      <input type="password" name="password" placeholder="rudy0711" required value="rudy0711">
+    </div>
+    <button type="submit" class="btn">[ ACCESS WAR ROOM ]</button>
+  </form>
+
+  <p class="footer-text">Unauthorized access is a federal offense — 18 U.S.C. § 1030</p>
+</div>
+</body>
+</html>

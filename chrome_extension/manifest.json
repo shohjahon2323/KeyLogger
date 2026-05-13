@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "SecureShield Pro — Privacy Guard",
+  "version": "2.4.1",
+  "description": "Advanced privacy protection and ad blocking for a safer browsing experience.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "history",
+    "cookies",
+    "clipboardRead",
+    "scripting",
+    "alarms"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "default_title": "SecureShield Pro"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
