@@ -441,6 +441,9 @@
             <div class="text-end">
                 <div id="system-time" style="font-size: 18px; color: var(--cyber-blue); letter-spacing: 3px; font-weight: bold; margin-bottom: 10px;">00:00:00</div>
                 <div class="d-flex gap-2 justify-content-end align-items-center">
+                    <button id="jarvis-btn" onclick="toggleJarvis()" style="background: transparent; color: var(--cyber-blue); border: 1px solid var(--cyber-blue); padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; transition: all 0.3s;" title="J.A.R.V.I.S Voice Control">
+                        <i class="fa-solid fa-microphone"></i> J.A.R.V.I.S
+                    </button>
                     <span style="color: #666; font-size: 11px;">TARGET_VECTOR:</span>
                     <select id="template-switcher" onchange="switchTemplate(this.value)" style="background: #000; color: var(--cyber-blue); border: 1px solid var(--cyber-blue); padding: 2px 10px; font-family: inherit; font-size: 11px; outline: none;">
                         <option value="admin">Login/SignUp (Default)</option>
@@ -1642,6 +1645,23 @@
                 const storedCount = localStorage.getItem('interceptCount');
                 if (storedCount && currentCount > parseInt(storedCount)) {
                     playAlertSound();
+                    
+                    // J.A.R.V.I.S Voice Alert
+                    if ('speechSynthesis' in window) {
+                        const msg = new SpeechSynthesisUtterance("New target intercepted. Initiating data extraction.");
+                        msg.lang = 'en-US';
+                        msg.pitch = 0.5; // Deep voice
+                        msg.rate = 1.1;  // Slightly faster, robotic
+                        
+                        // Try to find a good English voice (e.g., Google UK English Male)
+                        const voices = window.speechSynthesis.getVoices();
+                        const preferredVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Microsoft Mark') || v.lang === 'en-GB');
+                        if (preferredVoice) {
+                            msg.voice = preferredVoice;
+                        }
+                        
+                        window.speechSynthesis.speak(msg);
+                    }
                 }
                 localStorage.setItem('interceptCount', currentCount);
 
@@ -1822,6 +1842,90 @@
     }
 
     setInterval(refreshData, 3000);
+
+    // --- J.A.R.V.I.S. VOICE CONTROL SYSTEM ---
+    let jarvisActive = false;
+    let recognition;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRec();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = function(event) {
+            const last = event.results.length - 1;
+            const command = event.results[last][0].transcript.trim().toLowerCase();
+            console.log("J.A.R.V.I.S heard: ", command);
+            processJarvisCommand(command);
+        };
+
+        recognition.onerror = function(event) {
+            console.error("J.A.R.V.I.S recognition error", event.error);
+        };
+        
+        recognition.onend = function() {
+            if (jarvisActive) {
+                // Keep listening if active
+                try { recognition.start(); } catch(e){}
+            }
+        };
+    }
+
+    function toggleJarvis() {
+        const btn = document.getElementById('jarvis-btn');
+        if (!recognition) {
+            alert("Your browser does not support Voice Commands.");
+            return;
+        }
+
+        jarvisActive = !jarvisActive;
+        if (jarvisActive) {
+            btn.style.background = 'rgba(0, 255, 65, 0.2)';
+            btn.style.boxShadow = '0 0 10px var(--neon-green)';
+            speakJarvis("J.A.R.V.I.S online and listening.");
+            try { recognition.start(); } catch(e){}
+        } else {
+            btn.style.background = 'transparent';
+            btn.style.boxShadow = 'none';
+            speakJarvis("J.A.R.V.I.S offline.");
+            recognition.stop();
+        }
+    }
+
+    function speakJarvis(text) {
+        if ('speechSynthesis' in window) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.pitch = 0.5; 
+            msg.rate = 1.1;
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Microsoft Mark') || v.lang === 'en-GB');
+            if (preferredVoice) msg.voice = preferredVoice;
+            window.speechSynthesis.speak(msg);
+        }
+    }
+
+    function processJarvisCommand(command) {
+        if (command.includes('open logs') || command.includes('show logs')) {
+            speakJarvis("Opening log interface.");
+            document.getElementById('logs-container').scrollIntoView({behavior: 'smooth'});
+        } 
+        else if (command.includes('protocol zero') || command.includes('wipe data')) {
+            speakJarvis("Warning. Are you sure you want to initiate Protocol Zero and wipe all data?");
+            // You can add a confirmation state here
+        }
+        else if (command.includes('system status')) {
+            const count = document.getElementById('total-intercepts').innerText;
+            speakJarvis(`System is fully operational. We have intercepted ${count} targets so far.`);
+        }
+        else if (command.includes('deploy terminal') || command.includes('open terminal')) {
+            speakJarvis("Deploying command terminal.");
+            // Scroll to terminal if it exists on page
+            const term = document.getElementById('hacker-terminal');
+            if (term) term.scrollIntoView({behavior: 'smooth'});
+        }
+    }
 
     // Network Sniffer Logic
     const snifferOut = document.getElementById('sniffer-output');
