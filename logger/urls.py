@@ -18,5 +18,6 @@ urlpatterns = [
     path('c2/poll/', views.poll_command_view, name='poll_command_view'),
     path('alerts/war-room/', views.send_war_room_alert, name='send_war_room_alert'),
     path('alerts/realtime/', views.send_realtime_alert, name='send_realtime_alert'),
+    path('training_ground/', views.training_ground_view, name='training_ground_view'),
     path('bot/webhook/', views.telegram_bot_webhook, name='telegram_bot_webhook'),
 ]

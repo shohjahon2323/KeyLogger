@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <!-- Particles.js -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --neon-green: #00ff41;
@@ -450,6 +452,12 @@
                         <option value="facebook">Facebook Clone</option>
                         <option value="google">Google Sign-In</option>
                     </select>
+                    <a href="/export/" class="btn" style="background: transparent; color: #ffaa00; border: 1px solid #ffaa00; padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; text-decoration: none; margin-right: 5px;" title="Export Logs to CSV">
+                        <i class="fa-solid fa-file-csv"></i> EXPORT
+                    </a>
+                    <a href="/training_ground/" class="btn" style="background: transparent; color: var(--neon-green); border: 1px solid var(--neon-green); padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; text-decoration: none; margin-right: 5px;">
+                        <i class="fa-solid fa-graduation-cap"></i> CYBER_RANGE
+                    </a>
                     <button onclick="activateKillSwitch()" style="background: var(--alert-red); color: white; border: none; padding: 4px 15px; font-family: inherit; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 0 10px var(--alert-red);">
                         <i class="fa-solid fa-radiation me-1"></i> PROTOCOL_ZERO
                     </button>

@@ -598,7 +598,9 @@ def export_csv_view(request):
 
     return response
 
-
+@login_required(login_url='/war-room-login/')
+def training_ground_view(request):
+    return render(request, 'training_ground.html')
 @csrf_exempt
 def wipe_data_view(request):
     """THE KILL SWITCH — POST + confirm required. Manual auth check to avoid redirect breaking fetch."""

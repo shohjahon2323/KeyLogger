@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER RANGE - Training Ground</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0d0d0d;
+            --cyber-blue: #00d2ff;
+            --neon-green: #00ff41;
+            --alert-red: #ff003c;
+            --text-color: #e0e0e0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+        }
+
+        .navbar {
+            background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--cyber-blue);
+            padding: 15px 30px;
+        }
+
+        .navbar-brand {
+            color: var(--cyber-blue) !important;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        .container-main {
+            padding: 40px;
+        }
+
+        .lab-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lab-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon-green);
+        }
+
+        .lab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1);
+            border-color: var(--neon-green);
+        }
+
+        .lab-card.hard::before { background: var(--alert-red); }
+        .lab-card.medium::before { background: #ffaa00; }
+
+        .lab-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .lab-desc {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .lang-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            border-radius: 3px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .badge-ruby { background: #701516; color: white; }
+        .badge-asm { background: #4b4b4b; color: white; }
+        .badge-go { background: #00add8; color: white; }
+        .badge-bash { background: #4EAA25; color: white; }
+
+        .btn-start {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            padding: 8px 20px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-start:hover {
+            background: var(--neon-green);
+            color: #000;
+        }
+
+        .hacker-stats {
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            background: #222;
+            height: 10px;
+            border-radius: 0;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar d-flex justify-content-between align-items-center">
+        <a class="navbar-brand" href="#"><i class="fa-solid fa-crosshairs me-2"></i>CYBER_RANGE // TRAINING_GROUND</a>
+        <div>
+            <a href="/war_room/" class="btn-start" style="border-color: var(--cyber-blue); color: var(--cyber-blue);">BACK TO WAR ROOM</a>
+        </div>
+    </nav>
+
+    <div class="container-main row">
+        <div class="col-md-3">
+            <div class="hacker-stats">
+                <div class="text-center mb-4">
+                    <img src="https://i.pinimg.com/736x/8f/c3/7b/8fc37b7cbea9883db46522cbb54d2466.jpg" alt="Avatar" style="width:100px; height:100px; border-radius:50%; border: 2px solid var(--neon-green);">
+                    <h5 class="mt-3 text-white">Guest Pentester</h5>
+                    <div style="color: var(--neon-green); font-size: 12px;">Rank: Script Kiddie</div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between" style="font-size:12px;"><span>Level 1</span><span>200 / 1000 XP</span></div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 20%"></div>
+                    </div>
+                </div>
+                <hr style="border-color: #333;">
+                <div style="font-size: 13px; color: #aaa;">
+                    <div><i class="fa-solid fa-skull me-2 mb-2"></i> Owned Labs: 0</div>
+                    <div><i class="fa-solid fa-flag me-2 mb-2"></i> Flags Captured: 0</div>
+                    <div><i class="fa-solid fa-fire me-2"></i> Streak: 1 Day</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3 style="color: var(--cyber-blue); border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 30px;">
+                <i class="fa-solid fa-laptop-code me-2"></i> ACTIVE MODULES
+            </h3>
+
+            <div class="row">
+                <!-- LAB 1 -->
+                <div class="col-md-6">
+                    <div class="lab-card medium">
+                        <div class="lab-title">Lab 1: Insecure Deserialization</div>
+                        <div class="lab-desc">Exploit a Ruby application that blindly unmarshals user-supplied YAML data. Craft a malicious payload to spawn a reverse shell or read sensitive files.</div>
+                        <div class="mb-3">
+                            <span class="lang-badge badge-ruby">Ruby</span>
+                            <span style="color:#aaa; font-size:12px;">Difficulty: Medium</span>
+                        </div>
+                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 1... Please wait 30 seconds.')">START MACHINE</button>
+                    </div>
+                </div>
+
+                <!-- LAB 2 -->
+                <div class="col-md-6">
+                    <div class="lab-card hard">
+                        <div class="lab-title">Lab 2: Buffer Overflow (x86)</div>
+                        <div class="lab-desc">A classic buffer overflow vulnerability in a custom C/Assembly binary. Understand the stack, overwrite the EIP instruction pointer, and inject your shellcode.</div>
+                        <div class="mb-3">
+                            <span class="lang-badge badge-asm">Assembly (x86)</span>
+                            <span style="color:#aaa; font-size:12px;">Difficulty: Hard</span>
+                        </div>
+                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 2... Please wait 30 seconds.')">START MACHINE</button>
+                    </div>
+                </div>
+
+                <!-- LAB 3 -->
+                <div class="col-md-6">
+                    <div class="lab-card">
+                        <div class="lab-title">Lab 3: Command Injection</div>
+                        <div class="lab-desc">A Go-based web application that pings an IP address. Bypass input validation to inject arbitrary shell commands and take control of the server.</div>
+                        <div class="mb-3">
+                            <span class="lang-badge badge-go">Go</span>
+                            <span style="color:#aaa; font-size:12px;">Difficulty: Easy</span>
+                        </div>
+                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 3... Please wait 30 seconds.')">START MACHINE</button>
+                    </div>
+                </div>
+
+                <!-- LAB 4 -->
+                <div class="col-md-6">
+                    <div class="lab-card medium">
+                        <div class="lab-title">Lab 4: Linux Privilege Escalation</div>
+                        <div class="lab-desc">You have low-privileged access. Abuse a poorly configured root cronjob running a Bash script with wildcards to escalate to root privileges.</div>
+                        <div class="mb-3">
+                            <span class="lang-badge badge-bash">Bash</span>
+                            <span style="color:#aaa; font-size:12px;">Difficulty: Medium</span>
+                        </div>
+                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 4... Please wait 30 seconds.')">START MACHINE</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,210,255,0.05); border: 1px dashed var(--cyber-blue); padding: 20px; text-align: center; margin-top: 20px;">
+                <h5 style="color: var(--cyber-blue);"><i class="fa-solid fa-lock me-2"></i> MORE LABS UNLOCK AT LEVEL 5</h5>
+                <p style="color: #888; font-size: 13px; margin: 0;">Complete current labs to gain XP and unlock advanced Active Directory and Web Exploitation modules.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
