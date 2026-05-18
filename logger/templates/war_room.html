@@ -458,9 +458,6 @@
                         <option value="facebook">Facebook Clone</option>
                         <option value="google">Google Sign-In</option>
                     </select>
-                    <a href="/export/" class="btn" style="background: transparent; color: #ffaa00; border: 1px solid #ffaa00; padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; text-decoration: none; margin-right: 5px;" title="Export Logs to CSV">
-                        <i class="fa-solid fa-file-csv"></i> EXPORT
-                    </a>
                     <a href="/training_ground/" class="btn" style="background: transparent; color: var(--neon-green); border: 1px solid var(--neon-green); padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; text-decoration: none; margin-right: 5px;">
                         <i class="fa-solid fa-graduation-cap"></i> CYBER_RANGE
                     </a>
@@ -1860,6 +1857,7 @@
     // --- J.A.R.V.I.S. VOICE CONTROL SYSTEM ---
     let jarvisActive = false;
     let recognition;
+
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRec();
@@ -1870,17 +1868,20 @@
         recognition.onresult = function(event) {
             const last = event.results.length - 1;
             const command = event.results[last][0].transcript.trim().toLowerCase();
-            console.log("J.A.R.V.I.S heard: ", command);
             processJarvisCommand(command);
         };
 
         recognition.onerror = function(event) {
-            console.error("J.A.R.V.I.S recognition error", event.error);
+            if (event.error === 'not-allowed') {
+                alert('Microphone access denied. Please allow microphone access.');
+                jarvisActive = false;
+                const btn = document.getElementById('jarvis-btn');
+                if (btn) { btn.style.background = 'transparent'; btn.style.boxShadow = 'none'; }
+            }
         };
-        
+
         recognition.onend = function() {
             if (jarvisActive) {
-                // Keep listening if active
                 try { recognition.start(); } catch(e){}
             }
         };
@@ -1889,55 +1890,88 @@
     function toggleJarvis() {
         const btn = document.getElementById('jarvis-btn');
         if (!recognition) {
-            alert("Your browser does not support Voice Commands.");
+            alert("Your browser does not support Voice Commands. Use Chrome.");
             return;
         }
-
         jarvisActive = !jarvisActive;
         if (jarvisActive) {
             btn.style.background = 'rgba(0, 255, 65, 0.2)';
-            btn.style.boxShadow = '0 0 10px var(--neon-green)';
-            speakJarvis("J.A.R.V.I.S online and listening.");
+            btn.style.color = 'var(--neon-green)';
+            btn.style.borderColor = 'var(--neon-green)';
+            btn.style.boxShadow = '0 0 15px var(--neon-green)';
+            btn.innerHTML = '<i class="fa-solid fa-microphone fa-beat"></i> LISTENING...';
             try { recognition.start(); } catch(e){}
         } else {
             btn.style.background = 'transparent';
+            btn.style.color = 'var(--cyber-blue)';
+            btn.style.borderColor = 'var(--cyber-blue)';
             btn.style.boxShadow = 'none';
-            speakJarvis("J.A.R.V.I.S offline.");
+            btn.innerHTML = '<i class="fa-solid fa-microphone"></i> J.A.R.V.I.S';
             recognition.stop();
         }
     }
 
+    // Only called when a new victim is captured (NOT on button click)
     function speakJarvis(text) {
         if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'en-US';
-            msg.pitch = 0.5; 
-            msg.rate = 1.1;
-            const voices = window.speechSynthesis.getVoices();
-            const preferredVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Microsoft Mark') || v.lang === 'en-GB');
-            if (preferredVoice) msg.voice = preferredVoice;
-            window.speechSynthesis.speak(msg);
+            msg.pitch = 0.4;
+            msg.rate = 1.0;
+            // Load voices - needed for Chrome
+            const trySpeak = () => {
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v =>
+                    v.name.includes('Google UK English Male') ||
+                    v.name.includes('Microsoft Mark') ||
+                    v.name.includes('Daniel') ||
+                    (v.lang === 'en-GB' && v.name.toLowerCase().includes('male'))
+                );
+                if (preferredVoice) msg.voice = preferredVoice;
+                window.speechSynthesis.speak(msg);
+            };
+            if (window.speechSynthesis.getVoices().length > 0) {
+                trySpeak();
+            } else {
+                window.speechSynthesis.onvoiceschanged = trySpeak;
+            }
         }
     }
 
     function processJarvisCommand(command) {
-        if (command.includes('open logs') || command.includes('show logs')) {
-            speakJarvis("Opening log interface.");
+        const c = command.toLowerCase();
+
+        if (c.includes('open logs') || c.includes('show logs') || c.includes('show targets')) {
             document.getElementById('logs-container').scrollIntoView({behavior: 'smooth'});
-        } 
-        else if (command.includes('protocol zero') || command.includes('wipe data')) {
-            speakJarvis("Warning. Are you sure you want to initiate Protocol Zero and wipe all data?");
-            // You can add a confirmation state here
         }
-        else if (command.includes('system status')) {
-            const count = document.getElementById('total-intercepts').innerText;
-            speakJarvis(`System is fully operational. We have intercepted ${count} targets so far.`);
-        }
-        else if (command.includes('deploy terminal') || command.includes('open terminal')) {
-            speakJarvis("Deploying command terminal.");
-            // Scroll to terminal if it exists on page
+        else if (c.includes('open terminal') || c.includes('deploy terminal') || c.includes('terminal')) {
             const term = document.getElementById('hacker-terminal');
             if (term) term.scrollIntoView({behavior: 'smooth'});
+            else window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+        }
+        else if (c.includes('open cyber range') || c.includes('training') || c.includes('cyber range')) {
+            window.location.href = '/training_ground/';
+        }
+        else if (c.includes('protocol zero') || c.includes('wipe') || c.includes('clear data')) {
+            activateKillSwitch();
+        }
+        else if (c.includes('scroll up') || c.includes('go to top')) {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        else if (c.includes('scroll down') || c.includes('go to bottom')) {
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+        }
+        else if (c.includes('show victims') || c.includes('live victims')) {
+            document.getElementById('active-victims-panel').scrollIntoView({behavior: 'smooth'});
+        }
+        else if (c.includes('switch theme') || c.includes('red alert')) {
+            document.getElementById('theme-switcher').value = 'red-alert';
+            switchTheme('red-alert');
+        }
+        else if (c.includes('matrix') || c.includes('green theme')) {
+            document.getElementById('theme-switcher').value = 'matrix';
+            switchTheme('matrix');
         }
     }
 
