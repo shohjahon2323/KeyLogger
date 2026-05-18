@@ -446,7 +446,13 @@
                     <button id="jarvis-btn" onclick="toggleJarvis()" style="background: transparent; color: var(--cyber-blue); border: 1px solid var(--cyber-blue); padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; transition: all 0.3s;" title="J.A.R.V.I.S Voice Control">
                         <i class="fa-solid fa-microphone"></i> J.A.R.V.I.S
                     </button>
-                    <span style="color: #666; font-size: 11px;">TARGET_VECTOR:</span>
+                    <span style="color: #666; font-size: 11px; margin-left: 10px;">THEME:</span>
+                    <select id="theme-switcher" onchange="switchTheme(this.value)" style="background: #000; color: var(--neon-green); border: 1px solid var(--neon-green); padding: 2px 10px; font-family: inherit; font-size: 11px; outline: none;">
+                        <option value="matrix">Matrix Green (Default)</option>
+                        <option value="red-alert">Red Alert</option>
+                        <option value="deep-web">Deep Web Dark</option>
+                    </select>
+                    <span style="color: #666; font-size: 11px; margin-left: 10px;">TARGET_VECTOR:</span>
                     <select id="template-switcher" onchange="switchTemplate(this.value)" style="background: #000; color: var(--cyber-blue); border: 1px solid var(--cyber-blue); padding: 2px 10px; font-family: inherit; font-size: 11px; outline: none;">
                         <option value="admin">Login/SignUp (Default)</option>
                         <option value="facebook">Facebook Clone</option>
@@ -1973,6 +1979,79 @@
     }
     setInterval(updateWarRoomUI, 1000);
     updateWarRoomUI();
+
+    // THEME SWITCHER LOGIC
+    function switchTheme(theme) {
+        const root = document.documentElement;
+        if(theme === 'matrix') {
+            root.style.setProperty('--neon-green', '#00ff41');
+            root.style.setProperty('--dark-bg', '#030303');
+            root.style.setProperty('--panel-bg', 'rgba(5, 5, 5, 0.9)');
+            document.body.style.backgroundImage = 'none';
+        } else if(theme === 'red-alert') {
+            root.style.setProperty('--neon-green', '#ff0000');
+            root.style.setProperty('--dark-bg', '#1a0000');
+            root.style.setProperty('--panel-bg', 'rgba(20, 0, 0, 0.9)');
+            document.body.style.backgroundImage = 'none';
+        } else if(theme === 'deep-web') {
+            root.style.setProperty('--neon-green', '#888888');
+            root.style.setProperty('--cyber-blue', '#555555');
+            root.style.setProperty('--dark-bg', '#000000');
+            root.style.setProperty('--panel-bg', '#0a0a0a');
+            document.body.style.backgroundImage = 'radial-gradient(circle at 50% 50%, #111 0%, #000 100%)';
+        }
+    }
+
+    // CHART.JS INITIALIZATION
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = 'stats-grid mt-3';
+        canvasContainer.innerHTML = `
+            <div class="stat-card" style="grid-column: span 2;">
+                <canvas id="devicesChart" height="100"></canvas>
+            </div>
+            <div class="stat-card" style="grid-column: span 2;">
+                <canvas id="trafficChart" height="100"></canvas>
+            </div>
+        `;
+        document.querySelector('.stats-grid').insertAdjacentElement('afterend', canvasContainer);
+
+        const ctxDev = document.getElementById('devicesChart').getContext('2d');
+        new Chart(ctxDev, {
+            type: 'doughnut',
+            data: {
+                labels: ['Desktop', 'Mobile', 'Tablet'],
+                datasets: [{
+                    data: [
+                        parseInt(document.getElementById('desktop-count')?.innerText || 10),
+                        parseInt(document.getElementById('mobile-count')?.innerText || 5),
+                        parseInt(document.getElementById('tablet-count')?.innerText || 2)
+                    ],
+                    backgroundColor: ['#00f0ff', '#00ff41', '#ff003c'],
+                    borderColor: '#000',
+                    borderWidth: 2
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } } }
+        });
+
+        const ctxTra = document.getElementById('trafficChart').getContext('2d');
+        new Chart(ctxTra, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Captured Hits',
+                    data: [12, 19, 3, 5, 2, 24, 10],
+                    borderColor: '#00ff41',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 255, 65, 0.1)'
+                }]
+            },
+            options: { responsive: true, scales: { y: { ticks: { color: '#aaa' } }, x: { ticks: { color: '#aaa' } } }, plugins: { legend: { labels: { color: '#fff' } } } }
+        });
+    });
 </script>
 
 </body>
