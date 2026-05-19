@@ -402,7 +402,7 @@
     <script>
         const categories = {
             recon: {
-                title: "01 - RECONNAISSANCE MODULES",
+                title: "01 - RECONNAISSANCE MODULES (OSINT)",
                 desc: "Analyze headers, extract metadata, and gather cyber intelligence.",
                 labs: `
                     <div class="glass-card">
@@ -424,7 +424,7 @@
                 `
             },
             resource: {
-                title: "02 - RESOURCE DEVELOPMENT MODULES",
+                title: "02 - RESOURCE DEVELOPMENT",
                 desc: "Establish command and control domains, configure redirects, and build campaign infrastructure.",
                 labs: `
                     <div class="glass-card">
@@ -434,6 +434,12 @@
                         <button class="btn-kali" onclick="convertPunycode()">Convert to Punycode</button>
                         <div id="idn-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-key me-2 text-info"></i> Honey-tokens & Canary Credentials Generator</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Generate unique Canary tokens (honey credentials) to place inside files or local databases. Receive simulated alerts when they are accessed.</p>
+                        <button class="btn-kali" onclick="generateCanaryToken()">Generate Canary Honey-Token</button>
+                        <div id="canary-result" class="mt-3"></div>
+                    </div>
                 `
             },
             initial: {
@@ -441,7 +447,7 @@
                 desc: "Simulate and analyze entry vectors, credential capture triggers, and session persistence.",
                 labs: `
                     <div class="glass-card">
-                        <h5 class="share-tech text-white"><i class="fa-solid fa-shield-halved me-2 text-info"></i> MFA Bypass Simulator (Session Hijacking)</h5>
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-shield-halved me-2 text-info"></i> MFA Proxy Bypass Simulation (Session Hijacking)</h5>
                         <p class="text-muted" style="font-size:13.5px;">Understand how modern AitM (Adversary-in-the-Middle) phishing proxies bypass multi-factor security by exfiltrating live Session Cookies.</p>
                         <div style="background:#050811; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px; color:#aaa; margin-bottom:15px;">
                             [+] Target MFA status: <span class="text-warning">ACTIVE (TOTP / SMS enabled)</span><br>
@@ -449,6 +455,17 @@
                         </div>
                         <button class="btn-kali" onclick="simulateMfaBypass()">Initiate Proxy Intercept</button>
                         <div id="mfa-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-envelope-open-text me-2 text-info"></i> Phishing Campaign Payload Designer</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Configure mock Facebook, Google, or custom portals to study credential harvesting templates.</p>
+                        <select class="lab-input" id="phish-temp-select">
+                            <option value="facebook">Facebook Login Portal</option>
+                            <option value="google">Google Workspace Portal</option>
+                            <option value="microsoft">Microsoft Azure Portal</option>
+                        </select>
+                        <button class="btn-kali" onclick="testPhishTemplate()">Inspect Payload Formatting</button>
+                        <div id="phish-temp-result" class="mt-3"></div>
                     </div>
                 `
             },
@@ -463,6 +480,13 @@
                         <button class="btn-kali" onclick="exploitDeserialization()">Execute Payload</button>
                         <div id="deserialization-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-terminal me-2 text-info"></i> Go Command Injection Lab</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Input an IP address to ping, but bypass standard validation using shell control commands to execute system commands.</p>
+                        <input type="text" class="lab-input" id="ping-target" value="127.0.0.1; whoami" placeholder="8.8.8.8">
+                        <button class="btn-kali" onclick="runCommandInjection()">Run Diagnostics</button>
+                        <div id="injection-result" class="mt-3"></div>
+                    </div>
                 `
             },
             persistence: {
@@ -475,6 +499,13 @@
                         <input type="text" class="lab-input" id="cron-input" value="*/5 * * * * /tmp/backdoor.sh" placeholder="Cron schedule...">
                         <button class="btn-kali" onclick="addCronjob()">Register Persistent Cron</button>
                         <div id="cron-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-window-restore me-2 text-info"></i> Windows Registry Run Key Persistence</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Write persistent executable paths into Windows Run registries to survive system reboots.</p>
+                        <input type="text" class="lab-input" id="registry-input" value="HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Backdoor" placeholder="Registry key path...">
+                        <button class="btn-kali" onclick="addRegistryKey()">Inject Windows Registry Key</button>
+                        <div id="registry-result" class="mt-3"></div>
                     </div>
                 `
             },
@@ -491,6 +522,13 @@
                         </div>
                         <button class="btn-kali" onclick="triggerPrivEsc()">Trigger Privilege Escalation</button>
                         <div id="privesc-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-crown me-2 text-info"></i> SUID Binary Privilege Escalation</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Identify and exploit misconfigured SUID binaries (like find, nmap, vim) with elevated administrative bits to spawn a root shell.</p>
+                        <input type="text" class="lab-input" id="suid-binary" value="find . -exec /bin/sh -p \\; -quit" placeholder="SUID exploit command...">
+                        <button class="btn-kali" onclick="exploitSUID()">Execute SUID Exploit</button>
+                        <div id="suid-result" class="mt-3"></div>
                     </div>
                 `
             },
@@ -509,6 +547,13 @@
                         </div>
                         <div id="waf-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-code me-2 text-info"></i> Javascript Code Obfuscator Playground</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Obfuscate client-side javascript payloads to bypass static signature analysis and endpoint antivirus scanning.</p>
+                        <textarea class="lab-input" rows="3" id="js-code-obfuscate" placeholder="function stealCookies() { return document.cookie; }"></textarea>
+                        <button class="btn-kali" onclick="obfuscateJSCode()">Generate Obfuscated JS</button>
+                        <div id="js-obfuscate-result" class="mt-3"></div>
+                    </div>
                 `
             },
             credentials: {
@@ -523,6 +568,12 @@
                             <canvas id="keystrokeChart" height="80"></canvas>
                         </div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-microchip me-2 text-info"></i> Live Keylogger Capturer (Simulated Feed)</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Observe real-time incoming keystroke captures directly from connected host systems.</p>
+                        <button class="btn-kali" onclick="startMockKeylogFeed()">Initialize Keylogger Stream</button>
+                        <div id="keylog-feed-result" class="mt-3"></div>
+                    </div>
                 `
             },
             discovery: {
@@ -535,6 +586,12 @@
                         <input type="text" class="lab-input" id="scan-target" value="192.168.1.1" placeholder="Target IP...">
                         <button class="btn-kali" onclick="runPortScan()">Run Nmap Port Scan</button>
                         <div id="scan-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-satellite me-2 text-info"></i> Network Sniffer & SNMP MIB Walker</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Audit public SNMP servers to walk MIB indices and discover system parameters, usernames, and open port bindings.</p>
+                        <button class="btn-kali" onclick="walkSnmpMib()">Query SNMP MIB Directory</button>
+                        <div id="snmp-result" class="mt-3"></div>
                     </div>
                 `
             },
@@ -549,6 +606,12 @@
                         <button class="btn-kali" onclick="triggerPtH()">Pass the Hash</button>
                         <div id="pth-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-network-wired me-2 text-info"></i> WinRM Session Impersonator</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Simulate administrative command executions over Windows Remote Management (WinRM) using harvested hashes/tokens.</p>
+                        <button class="btn-kali" onclick="simulateWinRMConnection()">Establish WinRM Connection</button>
+                        <div id="winrm-result" class="mt-3"></div>
+                    </div>
                 `
             },
             collection: {
@@ -560,6 +623,12 @@
                         <p class="text-muted" style="font-size:13.5px;">Simulate client-side collection targeting copied password streams and system variables.</p>
                         <button class="btn-kali" onclick="readHackerClipboard()">Capture Copied clipboard</button>
                         <div id="clip-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-box-archive me-2 text-info"></i> LocalStorage Session Grabber</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Extract JWT tokens, API keys, and session properties stored in HTML5 LocalStorage buffers.</p>
+                        <button class="btn-kali" onclick="grabLocalStorage()">Dump LocalStorage Tokens</button>
+                        <div id="storage-result" class="mt-3"></div>
                     </div>
                 `
             },
@@ -574,6 +643,16 @@
                         <button class="btn-kali" onclick="dispatchAICommand()">Dispatch Command</button>
                         <div id="c2-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-robot me-2 text-info"></i> Telegram-Interactive AI C2 Co-Pilot</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Simulate C2 alert forwarding and command execution via a highly polished interactive Telegram Bot simulator.</p>
+                        <div style="background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:15px; font-family:monospace; margin-bottom:15px; max-height:150px; overflow-y:auto;" id="telegram-chat">
+                            <div style="color:#58a6ff;">[Telegram Bot Booting...]</div>
+                            <div style="color:#8b949e;">[Bot]: Standing by for commands. Say '/help' or '/status' to begin.</div>
+                        </div>
+                        <input type="text" class="lab-input" id="tg-command" value="/status" placeholder="Type Telegram command (e.g. /status, /wipe, /victim)...">
+                        <button class="btn-kali" onclick="sendTelegramCommand()">Send Bot Command</button>
+                    </div>
                 `
             },
             exfiltration: {
@@ -587,6 +666,12 @@
                         <button class="btn-kali" onclick="encodeDnsTunnel()">Encode covert DNS Query</button>
                         <div id="exfil-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-network-wired me-2 text-info"></i> Network Telemetry & Data Exfiltration Analyzer</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Analyze network packet flows (PCAP logs) to detect abnormal data exfiltration tunnels like DNS tunneling, HTTP POST leakage, or ICMP payload insertions.</p>
+                        <button class="btn-kali" onclick="analyzePcapTelemetry()">Analyze PCAP Telemetry Logs</button>
+                        <div id="pcap-result" class="mt-3"></div>
+                    </div>
                 `
             },
             impact: {
@@ -598,6 +683,12 @@
                         <p class="text-muted" style="font-size:13.5px;">Initiate emergency kill switch actions to purge all log databases, caches, and exfiltrated payloads.</p>
                         <button class="btn-kali" style="border-color:var(--alert-red); color:var(--alert-red);" onclick="activateKillSwitch()">Trigger Protocol Zero</button>
                         <div id="impact-result" class="mt-3"></div>
+                    </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-lock me-2 text-info"></i> Cryptographic Ransomware Simulator</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Simulate secure cryptographic file encryption mechanisms. Generates a safe AES-256 encrypted dummy file along with a simulated ransom note.</p>
+                        <button class="btn-kali" onclick="runRansomwareSim()">Initiate Cryptographic Test</button>
+                        <div id="ransom-result" class="mt-3"></div>
                     </div>
                 `
             },
@@ -616,6 +707,16 @@
                         <button class="btn-kali" onclick="testYaraRule()">Compile & Run YARA Rule</button>
                         <div id="yara-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-unlock me-2 text-info"></i> Cryptographic Decryption & Key Recovery Lab</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Recover plain credentials by decrypting a database row encrypted with a weak XOR/Caesar key logic.</p>
+                        <div style="background:#050811; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px; color:#aaa; margin-bottom:15px;">
+                            [+] Encrypted String in DB: <span class="text-warning">U1RFR0FOT0dSQVBIWQ==</span> (Hint: It is Base64 encoded)<br>
+                        </div>
+                        <input type="text" class="lab-input" id="decrypt-input" placeholder="Decoded Plaintext...">
+                        <button class="btn-kali" onclick="decryptDbString()">Verify Plaintext Key</button>
+                        <div id="decrypt-result" class="mt-3"></div>
+                    </div>
                 `
             },
             services: {
@@ -628,10 +729,23 @@
                         <button class="btn-kali" onclick="generateDynamicScenario()">Generate AI Challenge</button>
                         <div id="scenario-result" class="mt-3"></div>
                     </div>
+                    <div class="glass-card">
+                        <h5 class="share-tech text-white"><i class="fa-solid fa-cookie-bite me-2 text-info"></i> MFA & Cookie Protection Sandbox</h5>
+                        <p class="text-muted" style="font-size:13.5px;">Configure secure HTTP cookies flag rules (HttpOnly, Secure, SameSite) to protect credentials and sessions against keylogger injection and script harvesting.</p>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="cookie-httponly" checked>
+                            <label class="form-check-label text-white" for="cookie-httponly">Enable HttpOnly flag (Blocks Javascript cookie theft)</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="cookie-secure" checked>
+                            <label class="form-check-label text-white" for="cookie-secure">Enable Secure flag (Encrypts cookie transport over HTTPS)</label>
+                        </div>
+                        <button class="btn-kali" onclick="saveCookiePolicy()">Save Policy</button>
+                        <div id="cookie-policy-result" class="mt-3"></div>
+                    </div>
                 `
             }
         };
-
         // Load active view
         function loadCategory(key) {
             // Update sidebar classes
@@ -852,6 +966,178 @@
                     [+] Generating dynamic Ruby Deserialization bypass lab...<br>
                     [+] Sandbox initialized on port 9999.<br>
                     [+] Hint: Bypass filtration strings by using HEX-encoded characters.
+                </div>`;
+        }
+
+        function generateCanaryToken() {
+            document.getElementById('canary-result').innerHTML = `
+                <div style="background:rgba(0,240,255,0.1); border:1px solid var(--kali-neon); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    <span class="text-success">[Canary Token Active]</span><br>
+                    [+] Token URL: <span class="text-info">http://canarytokens.org/about/feedback/h6t8y...</span><br>
+                    [+] Honey AWS Key ID: <span class="text-warning">AKIAIOSFODNN7EXAMPLE</span><br>
+                    [+] Trigger: Any access to this key triggers a J.A.R.V.I.S audio/telegram alert!
+                </div>`;
+        }
+
+        function testPhishTemplate() {
+            const portal = document.getElementById('phish-temp-select').value;
+            document.getElementById('phish-temp-result').innerHTML = `
+                <div style="background:rgba(255,165,0,0.1); border:1px solid orange; padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-info mb-2">TEMPLATE ACTIVE</span><br>
+                    [+] Design: <span class="text-white">${portal.toUpperCase()} Phishing Gateway</span><br>
+                    [+] Elements: Intercept-on-submit, keylogger-hook, responsive-bootstrap-4.<br>
+                    [+] HTML Code verified: <span class="text-success">&lt;form action="/capture/" method="POST"&gt;</span>
+                </div>`;
+        }
+
+        function runCommandInjection() {
+            const target = document.getElementById('ping-target').value;
+            const res = document.getElementById('injection-result');
+            res.innerHTML = `
+                <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    <span class="status-badge badge-danger mb-2">COMMAND INJECTED</span><br>
+                    [+] Command: <span class="text-white">ping -c 3 ${target}</span><br>
+                    [+] Output:<br>
+                    <span class="text-muted">PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+                    64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.04 ms
+                    --- 127.0.0.1 ping statistics ---
+                    3 packets transmitted, 3 received, 0% packet loss</span><br>
+                    <span class="text-warning">compromised_user_id: uid=1001(pentester) gid=1001(pentester) groups=1001(pentester)</span>
+                </div>`;
+        }
+
+        function addRegistryKey() {
+            document.getElementById('registry-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-success mb-2">REGISTRY INJECTED</span><br>
+                    [+] Registry Path: <span class="text-info">HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run</span><br>
+                    [+] Value: <span class="text-white">"keylogger" = "C:\\Windows\\Temp\\keylogger.exe -silent"</span>
+                </div>`;
+        }
+
+        function exploitSUID() {
+            document.getElementById('suid-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-success mb-2">ROOT SHELL SPAWNED</span><br>
+                    [+] Exploit: find . -exec /bin/sh -p ; -quit<br>
+                    [+] Escalated user: <span class="text-warning">root (uid=0)</span>
+                </div>`;
+        }
+
+        function obfuscateJSCode() {
+            const code = document.getElementById('js-code-obfuscate').value || 'console.log("hello")';
+            const enc = btoa(code);
+            const obf = `eval(atob("${enc}"));`;
+            document.getElementById('js-obfuscate-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="text-info">Obfuscated Code:</span><br>
+                    <textarea class="lab-input mt-2" style="font-size:12px; color:var(--neon-green);" readonly>${obf}</textarea>
+                </div>`;
+        }
+
+        function startMockKeylogFeed() {
+            const res = document.getElementById('keylog-feed-result');
+            res.innerHTML = `<span class="text-warning">[+] Connecting stream...</span>`;
+            let ticks = 0;
+            const words = ["A", "Ad", "Adm", "Admin", "AdminP", "AdminPa", "AdminPas", "AdminPass", "AdminPass1", "AdminPass12", "AdminPass123"];
+            const interval = setInterval(() => {
+                if (ticks >= words.length) {
+                    clearInterval(interval);
+                    res.innerHTML += `<br><span class="text-success">[+] Stream completed successfully.</span>`;
+                } else {
+                    res.innerHTML = `
+                        <div style="background:#000; border:1px solid #112; padding:15px; border-radius:4px; font-family:monospace;">
+                            <span class="text-info">[Live Feed]:</span> <span class="text-white">${words[ticks]}</span>
+                        </div>`;
+                    ticks++;
+                }
+            }, 300);
+        }
+
+        function walkSnmpMib() {
+            document.getElementById('snmp-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12px;">
+                    [+] iso.3.6.1.2.1.1.1.0 = STRING: "Linux Ubuntu 22.04 LTS"<br>
+                    [+] iso.3.6.1.2.1.1.5.0 = STRING: "production-server-01"<br>
+                    [+] iso.3.6.1.2.1.25.6.3.1.2 = STRING: "admin-login-token-998"
+                </div>`;
+        }
+
+        function simulateWinRMConnection() {
+            document.getElementById('winrm-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace;">
+                    <span class="status-badge badge-success mb-2">WINRM CONNECTION SUCCESS</span><br>
+                    [+] Handshake complete.<br>
+                    [+] Authentication: <span class="text-warning">NTLM Hash Passed</span><br>
+                    [+] Spawned process: <span class="text-info">powershell.exe -NoProfile -ExecutionPolicy Bypass</span>
+                </div>`;
+        }
+
+        function grabLocalStorage() {
+            document.getElementById('storage-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    [+] Dumped local keys:<br>
+                    [+] <span class="text-warning">jwt_token</span>: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...<br>
+                    [+] <span class="text-warning">app_session</span>: shohjahon_admin_session_keylogger_2026
+                </div>`;
+        }
+
+        function sendTelegramCommand() {
+            const cmd = document.getElementById('tg-command').value;
+            const chat = document.getElementById('telegram-chat');
+            chat.innerHTML += `<div style="color:#a6e22e; margin-top:5px;">&gt; ${cmd}</div>`;
+            setTimeout(() => {
+                if(cmd.includes('status')) {
+                    chat.innerHTML += `<div style="color:#f8f8f2;">[Bot]: Host status: ACTIVE. Live targets connected: 3. Keylogger active.</div>`;
+                } else if(cmd.includes('wipe')) {
+                    chat.innerHTML += `<div style="color:#f92672;">[Bot]: PROTOCOL ZERO INITIATED. ALL CACHES PURGED.</div>`;
+                } else if(cmd.includes('victim')) {
+                    chat.innerHTML += `<div style="color:#66d9ef;">[Bot]: Last active target: admin-pc-10. Tashkent, Uzbekistan.</div>`;
+                } else {
+                    chat.innerHTML += `<div style="color:#f8f8f2;">[Bot]: Command recognized. Simulating payload forward.</div>`;
+                }
+                chat.scrollTop = chat.scrollHeight;
+            }, 300);
+        }
+
+        function analyzePcapTelemetry() {
+            document.getElementById('pcap-result').innerHTML = `
+                <div style="background:#070a14; border:1px solid var(--kali-blue); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    [+] Packet 1-100: Normal HTTPS traffic on port 443.<br>
+                    [+] Packet 101: Anomalous DNS query to <span class="text-warning">Uz1hbnNvbXdhemd1eQ==.c2-domain.com</span>.<br>
+                    [+] Threat Severity: <span class="text-danger">HIGH</span> (DNS Tunneling exfiltration detected).
+                </div>`;
+        }
+
+        function runRansomwareSim() {
+            document.getElementById('ransom-result').innerHTML = `
+                <div style="background:rgba(255,0,60,0.1); border:1px solid var(--alert-red); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    <span class="status-badge badge-danger mb-2"><i class="fa-solid fa-lock"></i> RANSOMWARE SIMULATOR TRIGGERED</span><br>
+                    [+] Target directory: <span class="text-white">C:\\Users\\MockTarget\\Documents</span><br>
+                    [+] Action: AES-256-CBC Encrypted 5 mock text files.<br>
+                    [+] File modified: <span class="text-warning">mock_passwords.txt.locked</span><br>
+                    [+] Note generated: <span class="text-danger">README_FOR_DECRYPTION.txt</span>
+                </div>`;
+        }
+
+        function decryptDbString() {
+            const input = document.getElementById('decrypt-input').value;
+            const res = document.getElementById('decrypt-result');
+            if(input.toLowerCase() === 'steganography') {
+                res.innerHTML = `<span class="status-badge badge-success">Correct Plaintext! Decryption successful. Key verified.</span>`;
+            } else {
+                res.innerHTML = `<span class="status-badge badge-danger">Incorrect Plaintext. Hint: Base64 decode 'U1RFR0FOT0dSQVBIWQ=='</span>`;
+            }
+        }
+
+        function saveCookiePolicy() {
+            const httponly = document.getElementById('cookie-httponly').checked;
+            const secure = document.getElementById('cookie-secure').checked;
+            document.getElementById('cookie-policy-result').innerHTML = `
+                <div style="background:rgba(0,255,65,0.1); border:1px solid var(--neon-green); padding:15px; border-radius:4px; font-family:monospace; font-size:12.5px;">
+                    <span class="status-badge badge-success mb-2">COOKIE POLICY DEPLOYED</span><br>
+                    [+] Flag HttpOnly: <span class="text-info">${httponly ? 'ENABLED (Prevents cross-site script keyloggers)' : 'DISABLED'}</span><br>
+                    [+] Flag Secure: <span class="text-info">${secure ? 'ENABLED (Forces secure transport)' : 'DISABLED'}</span>
                 </div>`;
         }
 
